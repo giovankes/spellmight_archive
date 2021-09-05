@@ -1,18 +1,19 @@
 import Phaser from "phaser";
-import PhaserDefaultScene from './scenes/phaser_default'
+import LoadScene from "./scenes/load";
+import MenuScene from "./scenes/menu";
+import TestScene from "./scenes/test_scene";
 
 const config = {
-  type: Phaser.AUTO,
-  parent: "phaser-example",
-  width: 1600,
-  height: 750,
-  scene: [PhaserDefaultScene],
+  width: 800,
+  height: 600,
+  scene: [LoadScene, MenuScene, TestScene],
+  pixelArt: true,
   physics: {
-    default: 'arcade',
-    ardace: {
-      debug: false
-    }
-  }
+    default: "arcade",
+    arcade: {
+      debug: false,
+    },
+  },
 };
 
 const game = new Phaser.Game(config);
