@@ -3,15 +3,19 @@ import Phaser from "phaser";
 class Character extends Phaser.GameObjects.Sprite {
   constructor(config) {
     super(config.scene, config.x, config.y, "character");
-    this.maxJumps = 2;
-    this.jumpHeight = 750;
-    this.accelerationX = 2500;
-    this.accelerationX = 2500;
-    this.accelerationDown = 5000;
-    this.drag = 2500;
-    this.normalVelocity = 300;
-    this.sprintVelocity = 550;
-    this.gravity = 2200;
+
+    // Editable values
+    this.maxJumps = 2; // How many jumps the character can do before having to touch the ground
+    this.jumpHeight = 750; // Height of each jump
+    this.accelerationX = 2500; // How fast the character can start walking and change directions
+    this.accelerationX = 2500; // How fast the character can start walking and change directions
+    this.accelerationDown = 5000; // How fast the character goes down when pressing the down key
+    this.drag = 2500; // How fast the character can stop moving left or right
+    this.normalVelocity = 300; // The maximum speed while walking
+    this.sprintVelocity = 550; // The maximum speed while sprinting
+    this.gravity = 2200; // How heavy the character is
+
+    // Non-editable values
     this.touchingGround = false;
     this.currentJumps = 0;
     this.sprintLeft = {
@@ -30,13 +34,7 @@ class Character extends Phaser.GameObjects.Sprite {
       config.y,
       "character"
     );
-    this.sprite.displayHeight = 40;
-    this.sprite.displayWidth = 40;
-    this.sprite.setGravityY(this.gravity);
-    this.sprite.setMaxVelocity(this.normalVelocity, 2500);
-    this.sprite.setDrag(this.drag, 0);
-    this.sprite.body.collideWorldBounds = true;
-    this.sprite.body.onWorldBounds = true;
+    this.sprite.setTintFill(config.color || 0xff0000);
   }
 
   jump() {}
@@ -67,6 +65,7 @@ class Character extends Phaser.GameObjects.Sprite {
         break;
     }
 
+    const sprintTimeoutTime = 300;
     switch (direction) {
       case "pressed down":
         this.sprite.setAccelerationY(this.accelerationDown);
@@ -82,11 +81,16 @@ class Character extends Phaser.GameObjects.Sprite {
         this.sprintLeft.doubleTap = true;
         this.sprintLeft.timeOut = setTimeout(() => {
           this.sprintLeft.doubleTap = false;
-        }, 200);
+        }, sprintTimeoutTime);
         break;
 
       case "unpressed left":
         if (this.sprintLeft.value) {
+          this.sprintLeft.doubleTap = true;
+          this.sprintLeft.timeOut = setTimeout(() => {
+            this.sprintLeft.doubleTap = false;
+          }, sprintTimeoutTime);
+
           this.sprintLeft.value = false;
           this.sprite.setTintFill("0x5a92bf");
         }
@@ -102,14 +106,20 @@ class Character extends Phaser.GameObjects.Sprite {
         this.sprintRight.doubleTap = true;
         this.sprintRight.timeOut = setTimeout(() => {
           this.sprintRight.doubleTap = false;
-        }, 200);
+        }, sprintTimeoutTime);
         break;
 
       case "unpressed right":
         if (this.sprintRight.value) {
+          this.sprintRight.doubleTap = true;
+          this.sprintRight.timeOut = setTimeout(() => {
+            this.sprintRight.doubleTap = false;
+          }, sprintTimeoutTime);
+
           this.sprintRight.value = false;
           this.sprite.setTintFill("0x5a92bf");
         }
+
         break;
 
       case "pressed up":
@@ -127,6 +137,29 @@ class Character extends Phaser.GameObjects.Sprite {
       default:
         break;
     }
+  }
+
+  setup() {
+    this.sprite.displayHeight = 40;
+    this.sprite.displayWidth = 40;
+    this.sprite.setGravityY(this.gravity);
+    this.sprite.setMaxVelocity(this.normalVelocity, 2500);
+    this.sprite.setDrag(this.drag, 0);
+    this.sprite.body.collideWorldBounds = true;
+    this.sprite.body.onWorldBounds = true;
+  }
+
+  setupAsPlayer() {
+    this.sprite.displayHeight = 40;
+    this.sprite.displayWidth = 40;
+    this.sprite.setGravityY(this.gravity);
+    this.sprite.setMaxVelocity(this.normalVelocity, 2500);
+    this.sprite.setDrag(this.drag, 0);
+    this.sprite.body.collideWorldBounds = true;
+    this.sprite.body.onWorldBounds = true;
+    this.sprite.data = {
+      player: true,
+    };
   }
 }
 

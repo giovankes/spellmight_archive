@@ -29,6 +29,12 @@ class PhaserDefaultScene extends Phaser.Scene {
       x: this.sys.game.config.width / 1.5,
       y: 150,
     });
+
+    this.EnemyClass = new Character({
+      scene: this,
+      x: this.sys.game.config.width / 1.5,
+      y: 150,
+    });
     this.CharacterClass.sprite.setTintFill("0x5a92bf");
 
     this.cameras.main.startFollow(this.CharacterClass.sprite);
@@ -39,6 +45,33 @@ class PhaserDefaultScene extends Phaser.Scene {
       null,
       this
     );
+
+    this.players = this.physics.add.group([
+      this.CharacterClass.sprite,
+      this.EnemyClass.sprite,
+    ]);
+
+    this.CharacterClass.setupAsPlayer();
+    this.EnemyClass.setup();
+
+    const charactersOverlap = this.physics.add.overlap(
+      this.EnemyClass.sprite,
+      this.CharacterClass.sprite,
+      this.handleCharactersOverlap,
+      null,
+      this
+    );
+    const players = this.players.getChildren();
+
+    players.forEach((player) => {
+      this.physics.add.collider(
+        player,
+        this.ground,
+        this.touchingGround,
+        null,
+        this
+      );
+    });
     this.ground.setImmovable();
     this.spacebar = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -55,6 +88,26 @@ class PhaserDefaultScene extends Phaser.Scene {
     this.physics.world.on("worldbounds", (body) => {
       this.resetPlayer(body.gameObject);
     });
+  }
+
+  handleCharactersOverlap(character1, character2) {
+    console.log("CHAR 1 " + character1.body.overlapX);
+    if (character1.body.overlapX > 10 && character2.body.overlapX) {
+      character1.setVelocityX(character1.body.overlapX * 10);
+      character2.setVelocityX(character1.body.overlapX * -1 * 10);
+    } else if (character1.body.overlapX > 0 && character2.body.overlapX > 0) {
+      character1.setVelocityX(-250);
+      character2.setVelocityX(250);
+    } else if (
+      character1.body.overlapX < -20 &&
+      character2.body.overlapX < -20
+    ) {
+      character1.setVelocityX(character1.body.overlapX * 10);
+      character2.setVelocityX(character1.body.overlapX * -1 * 10);
+    } else if (character1.body.overlapX < 0 && character2.body.overlapX < 0) {
+      character1.setVelocityX(250);
+      character2.setVelocityX(-250);
+    }
   }
 
   touchingGround(object1, object2) {
