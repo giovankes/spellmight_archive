@@ -1,5 +1,5 @@
-import { CST } from "../../../CST";
-import Character from "./character";
+import { CST } from '../../../CST'
+import Character from './character'
 
 class CharacterDebug extends Character {
   constructor(config) {
@@ -28,7 +28,7 @@ class CharacterDebug extends Character {
       isPlayer: config.isPlayer,
       anims: [
         {
-          key: "left",
+          key: 'left',
           frames: {
             key: CST.SPRITESHEET.CHARACTERS.TEST,
             startEnd: { start: 0, end: 3 },
@@ -37,7 +37,7 @@ class CharacterDebug extends Character {
           repeat: -1,
         },
         {
-          key: "turn",
+          key: 'turn',
           frames: {
             key: CST.SPRITESHEET.CHARACTERS.TEST,
             startEnd: { start: 4, end: 4 },
@@ -46,7 +46,7 @@ class CharacterDebug extends Character {
           repeat: 0,
         },
         {
-          key: "right",
+          key: 'right',
           frames: {
             key: CST.SPRITESHEET.CHARACTERS.TEST,
             startEnd: { start: 5, end: 8 },
@@ -55,8 +55,8 @@ class CharacterDebug extends Character {
           repeat: -1,
         },
       ],
-    });
+    })
   }
 }
 
-export default CharacterDebug;
+export default CharacterDebug

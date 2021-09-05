@@ -11,36 +11,36 @@ import StageField from './scenes/stages/stage_field.js'
 import HUD from './scenes/ingame_interface'
 
 const config = {
-    // type: Phaser.AUTO,
-    // parent: 'phaser-example',
-    width: 480,
-    height: 270,
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+  // type: Phaser.AUTO,
+  // parent: 'phaser-example',
+  width: 480,
+  height: 270,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  scene: [
+    LOADER,
+    MenuEntry,
+    MenuMain,
+    MenuCharacter,
+    MenuStages,
+    StageLoad,
+    StageTest,
+    StageField,
+    HUD,
+  ],
+  pixelArt: true,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: true,
     },
-    scene: [
-        LOADER,
-        MenuEntry,
-        MenuMain,
-        MenuCharacter,
-        MenuStages,
-        StageLoad,
-        StageTest,
-        StageField,
-        HUD
-    ],
-    pixelArt: true,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            debug: true
-        }
-    }
+  },
 }
 
 const game = new Phaser.Game(config)
 
 function preload() {
-    console.log('test')
+  console.log('test')
 }

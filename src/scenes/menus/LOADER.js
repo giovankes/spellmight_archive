@@ -14,47 +14,51 @@ import Back from '../../assets/images/ui/menu/back.png'
 import Ready from '../../assets/images/ui/menu/ready.png'
 import mapGame from '../../assets/images/ui/map/map.svg'
 class MenuLoad extends Phaser.Scene {
-    constructor() {
-        super({ key: CST.SCENES.MENU.LOAD })
-    }
+  constructor() {
+    super({ key: CST.SCENES.MENU.LOAD })
+  }
 
-    preload() {
-        this.load.image(CST.IMAGE.MENU.ENTRY_BG, BackgroundEntry)
-        this.load.image(CST.IMAGE.MENU.MAIN_BG, BackgroundMain)
-        this.load.image(CST.IMAGE.UI.MENU.BUTTON_BIG, ButtonBig)
-        this.load.image(CST.IMAGE.UI.MENU.BUTTON_OPTIONS, ButtonOptions)
-        this.load.image(CST.SPRITESHEET.CHARACTERS.MAGE, CharacterMage)
-        this.load.image(CST.IMAGE.UI.MENU.MENU_BAR, MenuBar)
-        this.load.image(CST.IMAGE.UI.MENU.MENU_SELECTED, MenuSelected)
-        this.load.image(CST.IMAGE.UI.MENU.MENU_ITEM, MenuItem)
-        this.load.image(CST.IMAGE.UI.MENU.BACK, Back)
-        this.load.image(CST.IMAGE.CHARACTER.MAGE.PORTRAIT, CharacterPortraitMage)
-        this.load.image(CST.IMAGE.UI.MENU.READY, Ready)
-        this.load.svg(CST.SCENES.MENU.MAP, mapGame)
-        let loadingBar = this.add.graphics({
-            fillStyle: {
-                color: 0xffffff
-            }
-        })
+  preload() {
+    this.load.image(CST.IMAGE.MENU.ENTRY_BG, BackgroundEntry)
+    this.load.image(CST.IMAGE.MENU.MAIN_BG, BackgroundMain)
+    this.load.image(CST.IMAGE.UI.MENU.BUTTON_BIG, ButtonBig)
+    this.load.image(CST.IMAGE.UI.MENU.BUTTON_OPTIONS, ButtonOptions)
+    this.load.image(CST.SPRITESHEET.CHARACTERS.MAGE, CharacterMage)
+    this.load.image(CST.IMAGE.UI.MENU.MENU_BAR, MenuBar)
+    this.load.image(CST.IMAGE.UI.MENU.MENU_SELECTED, MenuSelected)
+    this.load.image(CST.IMAGE.UI.MENU.MENU_ITEM, MenuItem)
+    this.load.image(CST.IMAGE.UI.MENU.BACK, Back)
+    this.load.image(CST.IMAGE.CHARACTER.MAGE.PORTRAIT, CharacterPortraitMage)
+    this.load.image(CST.IMAGE.UI.MENU.READY, Ready)
+    this.load.svg(CST.SCENES.MENU.MAP, mapGame)
+    let loadingBar = this.add.graphics({
+      fillStyle: {
+        color: 0xffffff,
+      },
+    })
 
-        this.load.on('progress', (percent) => {
-            loadingBar.fillRect(0, this.game.renderer.height / 2, this.game.renderer.width * percent, 50)
-            console.log(percent)
-        })
+    this.load.on('progress', (percent) => {
+      loadingBar.fillRect(
+        0,
+        this.game.renderer.height / 2,
+        this.game.renderer.width * percent,
+        50
+      )
+      console.log(percent)
+    })
 
-        this.load.on('complete', () => {
-            console.log('done')
-        })
-    }
+    this.load.on('complete', () => {
+      console.log('done')
+    })
+  }
 
-
-    create() {
-        // this.scene.start(CST.SCENES.STAGES.LOAD, {
-        //     character: 1,
-        //     stage: 1
-        // })
-        this.scene.start(CST.SCENES.MENU.ENTRY)
-    }
+  create() {
+    // this.scene.start(CST.SCENES.STAGES.LOAD, {
+    //     character: 1,
+    //     stage: 1
+    // })
+    this.scene.start(CST.SCENES.MENU.ENTRY)
+  }
 }
 
 export default MenuLoad

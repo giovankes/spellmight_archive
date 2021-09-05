@@ -1,6 +1,6 @@
-import Phaser from "phaser";
-import { CST } from "../../../CST";
-import Character from "./character";
+import Phaser from 'phaser'
+import { CST } from '../../../CST'
+import Character from './character'
 
 class MageCharacter extends Character {
   constructor(config) {
@@ -62,7 +62,7 @@ class MageCharacter extends Character {
         cooldown: 4000,
         exec: () => {},
       },
-    };
+    }
 
     super({
       // Edittable values
@@ -89,8 +89,8 @@ class MageCharacter extends Character {
       isPlayer: config.isPlayer,
       anims: [],
       attacks,
-    });
+    })
   }
 }
 
-export default MageCharacter;
+export default MageCharacter

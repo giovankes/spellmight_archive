@@ -19,7 +19,7 @@
 //         this.ground = this.physics.add.sprite(groundX, groundY, CST.IMAGE.STAGES.TEST.FLOOR)
 //         this.ground.displayWidth = background.displayWidth * 0.6
 //         this.ground.displayHeight = 100
-//         this.ground.setTintFill('0x4a4039')   
+//         this.ground.setTintFill('0x4a4039')
 //         this.CharacterClass = new Character({
 //             scene: this,
 //             x: this.sys.game.config.width / 1.5,
@@ -86,13 +86,13 @@
 //             frameRate: 10,
 //             repeat: -1
 //         });
-        
+
 //         this.anims.create({
 //             key: 'turn',
 //             frames: [ { key: CST.SPRITESHEET.CHARACTERS.TEST, frame: 4 } ],
 //             frameRate: 20
 //         });
-        
+
 //         this.anims.create({
 //             key: 'right',
 //             frames: this.anims.generateFrameNumbers(CST.SPRITESHEET.CHARACTERS.TEST, { start: 5, end: 8 }),
@@ -118,9 +118,9 @@
 //             if (player.id !== characterID) return
 //             player.sprite.setDrag(2500, 0)
 //         })
-        
+
 //     }
-    
+
 //     resetPlayer(character) {
 //         character.gameObject.setX(1000)
 //         character.gameObject.setY(150)
@@ -137,7 +137,7 @@
 //         this.CharacterClass.sprite.setAccelerationY(0)
 
 //         if (this.cursors.left.isDown) {
-//             this.CharacterClass.movementManager('holding left') 
+//             this.CharacterClass.movementManager('holding left')
 //         }
 
 //         if (this.cursors.right.isDown) {
