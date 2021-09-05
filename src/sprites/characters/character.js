@@ -1,8 +1,12 @@
 import Phaser from "phaser";
+import UUIDv4 from "uuid/v4";
+import { CST } from "../../CST";
+
+import Hitbox from "../hitbox";
 
 class Character extends Phaser.GameObjects.Sprite {
   constructor(config) {
-    super(config.scene, config.x, config.y, "character");
+    super(config.scene, config.x, config.y);
 
     // Editable values
     this.maxJumps = 2; // How many jumps the character can do before having to touch the ground
@@ -17,7 +21,10 @@ class Character extends Phaser.GameObjects.Sprite {
 
     // Non-editable values
     this.touchingGround = false;
+    this.hitMultiplier = 1;
     this.currentJumps = 0;
+    this.facingRight = false;
+    this.id = UUIDv4();
     this.sprintLeft = {
       value: false,
       doubleTap: false,
@@ -32,19 +39,18 @@ class Character extends Phaser.GameObjects.Sprite {
     this.sprite = config.scene.physics.add.sprite(
       config.x,
       config.y,
-      "character"
+      CST.SPRITESHEET.CHARACTERS.TEST
     );
-    this.sprite.setTintFill(config.color || 0xff0000);
   }
-
-  jump() {}
 
   movementManager(direction) {
     switch (direction) {
       case "holding left":
+        this.facingRight = false;
         if (this.sprintLeft.value) {
           this.sprite.setMaxVelocity(this.sprintVelocity, 2500);
           this.sprite.setAccelerationX(-this.accelerationX * 1.25);
+          this.sprite.anims.play("left", true);
         } else {
           this.sprite.setMaxVelocity(this.normalVelocity, 2500);
           this.sprite.setAccelerationX(-this.accelerationX);
@@ -52,6 +58,7 @@ class Character extends Phaser.GameObjects.Sprite {
         break;
 
       case "holding right":
+        this.facingRight = true;
         if (this.sprintRight.value) {
           this.sprite.setMaxVelocity(this.sprintVelocity, 2500);
           this.sprite.setAccelerationX(this.accelerationX * 1.25);
@@ -74,7 +81,6 @@ class Character extends Phaser.GameObjects.Sprite {
       case "pressed left":
         if (this.sprintLeft.doubleTap) {
           this.sprintLeft.value = true;
-          this.sprite.setTintFill("0x6505ff");
           return;
         }
 
@@ -92,14 +98,12 @@ class Character extends Phaser.GameObjects.Sprite {
           }, sprintTimeoutTime);
 
           this.sprintLeft.value = false;
-          this.sprite.setTintFill("0x5a92bf");
         }
         break;
 
       case "pressed right":
         if (this.sprintRight.doubleTap) {
           this.sprintRight.value = true;
-          this.sprite.setTintFill("0x6505ff");
           return;
         }
 
@@ -117,13 +121,12 @@ class Character extends Phaser.GameObjects.Sprite {
           }, sprintTimeoutTime);
 
           this.sprintRight.value = false;
-          this.sprite.setTintFill("0x5a92bf");
         }
 
         break;
 
       case "pressed up":
-        if (this.touchingGround) {
+        if (this.sprite.data.touchingGround) {
           this.currentJumps = 1;
         } else if (this.currentJumps < this.maxJumps) {
           this.currentJumps += 1;
@@ -139,26 +142,89 @@ class Character extends Phaser.GameObjects.Sprite {
     }
   }
 
+  attackManager(attack) {
+    let hitbox = null;
+    let variable = 0;
+    switch (attack) {
+      case "neutral fast":
+        this.facingRight ? (variable = 50) : (variable = -10);
+        hitbox = new Hitbox({
+          scene: this.scene,
+          x: this.sprite.body.x + variable,
+          y: this.sprite.body.y + 10,
+        });
+        break;
+
+      case "forward fast":
+        console.log(attack);
+        return;
+
+      default:
+        break;
+    }
+
+    const players = this.scene.players.getChildren();
+    const hitboxBounds = hitbox.getBounds();
+
+    players.forEach((player) => {
+      if (player.id === this.id) return;
+      const playerBounds = player.sprite.getBounds();
+      const output = Phaser.Geom.Rectangle.Overlaps(hitboxBounds, playerBounds);
+      if (output === true) {
+        player.handleAttack(attack, variable > 0 ? false : true);
+      }
+    });
+  }
+
+  handleAttack(attack, directionIsLeft) {
+    this.sprite.setMaxVelocity(9000);
+    this.sprite.setDrag(10);
+    switch (attack) {
+      case "neutral fast":
+        if (directionIsLeft) {
+          this.sprite.setVelocity(
+            -500 * this.hitMultiplier,
+            -500 * this.hitMultiplier
+          );
+        } else {
+          this.sprite.setVelocity(
+            500 * this.hitMultiplier,
+            -500 * this.hitMultiplier
+          );
+        }
+        this.hitMultiplier += 0.1;
+        break;
+
+      default:
+        break;
+    }
+  }
+
   setup() {
     this.sprite.displayHeight = 40;
     this.sprite.displayWidth = 40;
     this.sprite.setGravityY(this.gravity);
     this.sprite.setMaxVelocity(this.normalVelocity, 2500);
-    this.sprite.setDrag(this.drag, 0);
     this.sprite.body.collideWorldBounds = true;
+    this.sprite.setDrag(this.drag, 10);
     this.sprite.body.onWorldBounds = true;
+    this.sprite.data = {
+      touchingGround: false,
+      id: this.id,
+    };
   }
 
   setupAsPlayer() {
     this.sprite.displayHeight = 40;
     this.sprite.displayWidth = 40;
     this.sprite.setGravityY(this.gravity);
-    this.sprite.setMaxVelocity(this.normalVelocity, 2500);
-    this.sprite.setDrag(this.drag, 0);
     this.sprite.body.collideWorldBounds = true;
+    this.sprite.setDrag(this.drag, 0);
     this.sprite.body.onWorldBounds = true;
     this.sprite.data = {
+      touchingGround: false,
       player: true,
+      id: this.id,
     };
   }
 }

@@ -1,21 +1,17 @@
 import Phaser from "phaser";
-import { CST } from "../CST";
+import { CST } from "../../CST";
 
-class MenuScene extends Phaser.Scene {
+class MenuMain extends Phaser.Scene {
   constructor() {
-    super({ key: "MENU" });
-  }
-  init(data) {
-    console.log(data);
-    console.log("I GOT IT");
+    super({ key: CST.SCENES.MENU.MAIN });
   }
   create() {
-    this.add.image(0, 0, "menu-bg").setOrigin(0);
+    this.add.image(0, 0, CST.IMAGE.MENU.MAIN_BG).setOrigin(0);
     this.add
       .image(
         this.game.renderer.width / 2,
         this.game.renderer.height * 0.2,
-        "logo"
+        CST.IMAGE.MENU.LOGO
       )
       .setDepth(0)
       .setTintFill("0xffffff");
@@ -23,7 +19,7 @@ class MenuScene extends Phaser.Scene {
       .image(
         this.game.renderer.width / 2,
         this.game.renderer.height * 0.5,
-        "button-play"
+        CST.IMAGE.MENU.BTN_PLAY
       )
       .setDepth(0)
       .setTintFill("0xffffff")
@@ -32,7 +28,7 @@ class MenuScene extends Phaser.Scene {
       .image(
         this.game.renderer.width / 2,
         this.game.renderer.height * 0.6,
-        "button-options"
+        CST.IMAGE.MENU.BTN_OPTIONS
       )
       .setDepth(0)
       .setTintFill("0xffffff")
@@ -40,7 +36,7 @@ class MenuScene extends Phaser.Scene {
 
     buttonPlay.setInteractive();
     buttonPlay.on("pointerup", () => {
-      this.scene.start(CST.SCENES.TEST);
+      this.scene.start(CST.SCENES.MENU.STAGES);
     });
 
     buttonOptions.setInteractive();
@@ -50,4 +46,4 @@ class MenuScene extends Phaser.Scene {
   }
 }
 
-export default MenuScene;
+export default MenuMain;
