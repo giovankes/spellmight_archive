@@ -13,7 +13,8 @@ export const CST = {
             ENTRY: 'MENU_ENTRY',
             MAIN: 'MENU_MAIN',
             CHARACTER: 'MENU_CHARACTER',
-            STAGES: 'MENU_STAGES'
+            STAGES: 'MENU_STAGES',
+            MAP: 'MAP'
         },
         STAGES: {
             LOAD: 'STAGE_LOAD',
@@ -52,7 +53,9 @@ export const CST = {
                 BUTTON_OPTIONS: 'IMG_UI_BUTTON_OPTIONS',
                 MENU_BAR: 'IMG_MENU_BAR',
                 MENU_SELECTED: 'IMG_MENU_SELECTED',
-                MENU_ITEM: 'IMG_MENU_ITEM'
+                MENU_ITEM: 'IMG_MENU_ITEM',
+                BACK: 'BACK',
+                READY:'READY'
             }
         },
         CHARACTER: {
