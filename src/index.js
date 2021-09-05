@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 
-import MenuLoad from './scenes/menus/menu_load.js'
+import LOADER from './scenes/menus/LOADER.js'
+import MenuEntry from './scenes/menus/menu_entry.js'
 import MenuMain from './scenes/menus/menu_main.js'
 import MenuCharacter from './scenes/menus/menu_character.js'
 import MenuStages from './scenes/menus/menu_stages.js'
@@ -12,10 +13,15 @@ import HUD from './scenes/ingame_interface'
 const config = {
     // type: Phaser.AUTO,
     // parent: 'phaser-example',
-    width: 960,
-    height: 540,
+    width: 480,
+    height: 270,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     scene: [
-        MenuLoad,
+        LOADER,
+        MenuEntry,
         MenuMain,
         MenuCharacter,
         MenuStages,
@@ -24,7 +30,7 @@ const config = {
         StageField,
         HUD
     ],
-    pixelArt: false,
+    pixelArt: true,
     physics: {
         default: 'arcade',
         arcade: {

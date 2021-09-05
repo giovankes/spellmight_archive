@@ -8,6 +8,10 @@ class MenuStages extends Phaser.Scene {
         this.stages = []
     }
 
+    init(data) {
+        this.character = data.character
+    }
+
     create() {
         const stages = 6
 
@@ -15,15 +19,18 @@ class MenuStages extends Phaser.Scene {
             this.stages.push(
                 this.add
                     .text(0, 0, `Stage ${i + 1}`, {
-                        fontFamily: '"Roboto Condensed"'
+                        fontFamily: 'Superscript',
+                        fontSize: 18,
+                        resolution: 8
                     })
-                    .setFontSize(20)
                     .setInteractive()
                     .on('pointerup', () => {
-                        this.scene.start(CST.SCENES.MENU.CHARACTER, {
-                            stage: i + 1
+                        this.scene.start(CST.SCENES.STAGES.LOAD, {
+                            stage: i + 1,
+                            character: this.character
                         })
                     })
+                    .setOrigin(0)
             )
         }
 
@@ -31,7 +38,7 @@ class MenuStages extends Phaser.Scene {
             .setX(this.sys.game.config.width / 3 / 2)
             .setY(this.sys.game.config.height / 3)
         this.stages[1]
-            .setX(this.sys.game.config.width / 2 - 80)
+            .setX(this.sys.game.config.width / 2 - 40)
             .setY(this.sys.game.config.height / 3)
         this.stages[2]
             .setX((this.sys.game.config.width / 3) * 2)
@@ -40,7 +47,7 @@ class MenuStages extends Phaser.Scene {
             .setX(this.sys.game.config.width / 3 / 2)
             .setY((this.sys.game.config.height / 3) * 2)
         this.stages[4]
-            .setX(this.sys.game.config.width / 2 - 80)
+            .setX(this.sys.game.config.width / 2 - 40)
             .setY((this.sys.game.config.height / 3) * 2)
         this.stages[5]
             .setX((this.sys.game.config.width / 3) * 2)

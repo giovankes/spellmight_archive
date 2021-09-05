@@ -7,7 +7,7 @@ class StageField extends Stage {
             KEY: CST.SCENES.STAGES.FIELD,
             BackgroundElements: [
                 {
-                    IMG: CST.IMAGE.STAGES.FIELD.BG
+                    IMG: CST.IMAGE.STAGES.FIELD.BG,
                 }
             ],
             MiddlegroundElements: [
@@ -25,16 +25,16 @@ class StageField extends Stage {
             ],
             CollisionAreas: [
                 {
-                    x: 1920/2,
-                    y: 980,
-                    width: 1920,
-                    height: 160
+                    x: 480/2,
+                    y: 245,
+                    width: 480,
+                    height: 40
                 },
                 {
-                    x: 835,
-                    y: 655,
-                    width: 610,
-                    height: 50
+                    x: 209,
+                    y: 164,
+                    width: 152.5,
+                    height: 12.5
                 }
             ],
             Players: [

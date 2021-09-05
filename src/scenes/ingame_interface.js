@@ -16,14 +16,17 @@ class HUD extends Phaser.Scene {
     }
 
     create() {
-        console.log('test')
         // Add UI
         this.UI = this.add.group(null, {
             name: 'UI Elements'
         })
 
-        const timerUI = this.add.image(960 / 2, 20, CST.IMAGE.UI.INGAME.TIMER).setScale(0.5)
-        const characterInfoUI = this.add.image(230, 460, CST.IMAGE.UI.INGAME.CHARACTER_INFO).setScale(0.6)
+        const timerUI = this.add.image(
+            this.game.renderer.width / 2,
+            20,
+            CST.IMAGE.UI.INGAME.TIMER
+        ).setScale(0.3)
+        const characterInfoUI = this.add.image(200.50,880, CST.IMAGE.UI.INGAME.CHARACTER_INFO).setScale(0.7)
 
         this.timerText = new TimerText({
             Scene: this,
