@@ -123,8 +123,9 @@ class Stage extends Phaser.Scene {
             )
         }
 
-        // Add hitbox group
+        // Add hitbox & projectiles group
         this.hitBoxes = this.add.group()
+        this.projectiles = this.add.group()
 
         // Set up the camera
         this.cameras.main.setBounds(0, 0, this.game.renderer.width, this.game.renderer.height)
@@ -249,16 +250,10 @@ class Stage extends Phaser.Scene {
             }
             Player.attackManager('attack heavy', variant)
         }
-        if(Phaser.Input.Keyboard.JustDown(this.fightingButtons.Q)){
-            Player.attackManager('ability one')
-        }
-        if(Phaser.Input.Keyboard.JustDown(this.fightingButtons.E)){
-            Player.attackManager('ability two')
-        }
+        if (Phaser.Input.Keyboard.JustDown(this.fightingButtons.Q)) Player.attackManager('ability one')
+        if(Phaser.Input.Keyboard.JustDown(this.fightingButtons.E)) Player.attackManager('ability two')
         
-        if(Phaser.Input.Keyboard.JustDown(this.fightingButtons.R)){
-            Player.attackManager('ultimate')
-        }
+        if(Phaser.Input.Keyboard.JustDown(this.fightingButtons.R)) Player.attackManager('ultimate')
         Player.physicsBody.data.touchingGround = false
     }
 }

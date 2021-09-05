@@ -1,7 +1,10 @@
 export const CST = {
     ABILITIES:{
         MAGE:{
-            FIREBALL:'ABI_MAGE_FIREBALL'
+            FIREBALL: {
+                TEXTURE_KEY: 'ABILITY_MAGE_FIREBALL',
+                ANIMATION_KEY: 'ABILITY_MAGE_FIREBALL_ANIMS'
+            }
         },
     },
     SCENES: {

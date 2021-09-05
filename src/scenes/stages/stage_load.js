@@ -3,6 +3,7 @@ import { CST } from '../../CST'
 
 // Character Elements
 import MageSpr from '../../assets/images/characters/mage_temp.png'
+import Fireball from '../../assets/images/abilities/fireball.png'
 
 // Stage Elements
 import FieldBG from '../../assets/stages/THE_FIELD/BG/BG.png'
@@ -37,6 +38,10 @@ class StageLoad extends Phaser.Scene {
         switch (this.data.character) {
             case 1:
                 this.load.image(CST.SPRITESHEET.CHARACTERS.MAGE, MageSpr)
+                this.load.spritesheet(CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY, Fireball, {
+                    frameWidth: 64,
+                    frameHeight: 64
+                })
                 break
 
             default:
@@ -49,6 +54,19 @@ class StageLoad extends Phaser.Scene {
     }
 
     create() {
+        this.anims.create({
+            key: CST.ABILITIES.MAGE.FIREBALL.ANIMATION_KEY,
+            frames: this.anims.generateFrameNumbers(
+                CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY,
+                {
+                    start: 0,
+                    end: 7
+                },
+            ),
+            frameRate: 10,
+            repeat: -1
+        })
+
         if (this.data.stage === 1) {
             this.scene.start(CST.SCENES.STAGES.FIELD)
         }

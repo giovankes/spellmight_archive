@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import UUIDv4 from 'uuid/v4'
 
-import Hitbox from '../sprites/hitbox-old'
+import StaticHitbox from '../attacks-abilities/static'
 
 class Character extends Phaser.GameObjects.Sprite {
     constructor(config) {
@@ -172,28 +172,17 @@ class Character extends Phaser.GameObjects.Sprite {
     }
 
     attackManager(attack, variant) {
-        let hitbox = null
-        let variable = 0
+        let attackReturn = null
         switch (attack) {
             case 'attack light':
-                this.facingRight ? variable = 20 : variable = 0
-                hitbox = new Hitbox({
-                    scene: this.CharacterConfig.Scene,
-                    x: this.physicsBody.body.x + variable,
-                    y: this.physicsBody.body.y + 20
-                })
+                attackReturn = this.CharacterConfig.attacks.attackLight.neutral.exec(this.facingRight)
                 break;
 
             case 'attack heavy':
-                this.facingRight ? variable = 20 : variable = -5
-                hitbox = new Hitbox({
-                    scene:this.CharacterConfig.Scene,
-                    x:this.physicsBody.body.x + variable,
-                    y: this.physicsBody.body.y + 20
-                })
+                // this.CharacterConfig
                 break;
             case 'ability one':
-                console.log(attack + ' fired off!')
+                this.CharacterConfig.attacks.abilityOne.exec(this.facingRight)
                 break;
             case 'ability two':
                 console.log(attack + ' fired off!')
@@ -205,19 +194,15 @@ class Character extends Phaser.GameObjects.Sprite {
                 break;
         }
 
-        if (!hitbox) return
+        if (!attackReturn || !attackReturn.hitbox) return
         const players = this.CharacterConfig.Scene.Players.getChildren()
-        const hitboxBounds = hitbox.getBounds()
 
         players.forEach(character => {
             if (character.id === this.id) return
             const playerBounds = character.physicsBody.getBounds()
-            const output = Phaser.Geom.Rectangle.Overlaps(hitboxBounds, playerBounds)
+            const output = Phaser.Geom.Rectangle.Overlaps(attackReturn.hitbox, playerBounds)
             if (output === true) {
-                character.handleAttack(
-                    attack,
-                    variable > 0 ? false : true
-                )
+                character.handleAttack(attackReturn, this.facingRight)
             }
         })
 
@@ -225,67 +210,19 @@ class Character extends Phaser.GameObjects.Sprite {
         cpus.forEach(character => {
             if (character.id === this.id) return
             const playerBounds = character.physicsBody.getBounds()
-            const output = Phaser.Geom.Rectangle.Overlaps(hitboxBounds, playerBounds)
+            const output = Phaser.Geom.Rectangle.Overlaps(attackReturn.hitbox, playerBounds)
             if (output === true) {
-                character.handleAttack(
-                    attack,
-                    variable > 0 ? false : true
-                )
+                character.handleAttack(attackReturn, this.facingRight)
             }
         })
     }
 
-    handleAttack(attack, directionIsLeft) {
+    handleAttack(attack, direction) {
         this.physicsBody.setMaxVelocity(9000)
         this.physicsBody.setDrag(10)
-        switch (attack) {
-            case 'attack neutral':
-                if(directionIsLeft){
-                    this.physicsBody.setVelocity(-100 * this.hitMultiplier, -100 * this.hitMultiplier)
-                }else{
-                    this.physicsBody.setVelocity(100 * this.hitMultiplier, -100 * this.hitMultiplier)
-                }
-                this.hitMultiplier += 0.1
-                break;
-
-            case 'attack fast neutral':
-                if (directionIsLeft) {
-                    this.physicsBody.setVelocity(-150 * this.hitMultiplier, -150 * this.hitMultiplier)
-                } else {
-                    this.physicsBody.setVelocity(150 * this.hitMultiplier, -150 * this.hitMultiplier)
-                }
-                this.hitMultiplier += 0.1
-                break; 
-
-            case 'ability one':
-                if(directionIsLeft){
-                    this.physicsBody.setVelocity(-300 * this.hitMultiplier, -300 * this.hitMultiplier)
-                }else{
-                this.physicsBody.setVelocity(300 * this.hitMultiplier, -300 * this.hitMultiplier)
-                }
-                this.hitMultiplier += 0.3
-                break;
-            case 'ability two':
-                if(directionIsLeft){
-                    this.physicsBody.setVelocity(-300 * this.hitMultiplier, -300 * this.hitMultiplier)
-                }else{
-                    this.physicsBody.setVelocity(300 * this.hitMultiplier, -300 * this.hitMultiplier)
-                }
-                this.hitMultiplier += 0.3
-                break;
-
-            case 'ultimate':
-                if(directionIsLeft){
-                    this.physicsBody.setVelocity(-500 * this.hitMultiplier, -500 * this.hitMultiplier)
-                }else { 
-                    this.physicsBody.setVelocity(500 * this.hitMultiplier, -500 * this.hitMultiplier)
-                }
-                this.hitMultiplier += 0.5
-                break;  
-            
-            default:
-                break;
-        }
+        this.hitMultiplier += attack.data.hitMultiplier
+        direction ? this.physicsBody.setVelocityX(attack.data.velocityX * this.hitMultiplier) : this.physicsBody.setVelocity((attack.data.velocityX * -1) * this.hitMultiplier)
+        this.physicsBody.setVelocityY(attack.data.velocityY * this.hitMultiplier)
     }
 }
 

@@ -9,7 +9,7 @@ import MenuBar from '../../assets/images/ui/menu/menu-bar.png'
 import MenuSelected from '../../assets/images/ui/menu/menu-selected.png'
 import MenuItem from '../../assets/images/ui/menu/menu-item.png'
 import CharacterPortraitMage from '../../assets/images/characters/mage_temp_portrait.png'
-import Fireball from '../../assets/images/abilities/fireball2.png'
+
 class MenuLoad extends Phaser.Scene {
     constructor() {
         super({ key: CST.SCENES.MENU.LOAD })
@@ -20,7 +20,6 @@ class MenuLoad extends Phaser.Scene {
         this.load.image(CST.IMAGE.MENU.MAIN_BG, BackgroundMain)
         this.load.image(CST.IMAGE.UI.MENU.BUTTON_BIG, ButtonBig)
         this.load.image(CST.IMAGE.UI.MENU.BUTTON_OPTIONS, ButtonOptions)
-        this.load.spritesheet(CST.ABILITIES.MAGE.FIREBALL, Fireball,{frameWidth:32,frameHeight:32})
         this.load.image(CST.IMAGE.UI.MENU.MENU_BAR, MenuBar)
         this.load.image(CST.IMAGE.UI.MENU.MENU_SELECTED, MenuSelected)
         this.load.image(CST.IMAGE.UI.MENU.MENU_ITEM, MenuItem)

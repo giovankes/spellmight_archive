@@ -1,16 +1,39 @@
+import Phaser from 'phaser'
 import { CST } from '../../CST'
 import Character from './character'
 
+import StaticHitbox from '../attacks-abilities/static'
+import Projectile from '../attacks-abilities/projectile'
+
 class MageCharacter extends Character {
-    constructor(config) {
+    constructor({ Scene, x, y, isPlayer}) {
         // Write attacks here, pass them in to the super()
         const attacks = {
             attackLight: {
                 neutral: {
                     maxCombo: 3,
                     currentCombo: 0,
-                    exec: () => {
+                    exec: (direction) => {
+                        let x = 0
+                        direction ? x = 13 : x = -5
+                        const hitbox = new StaticHitbox({
+                            Scene,
+                            x: this.physicsBody.x + x,
+                            y: this.physicsBody.y - 5,
+                            height: 8,
+                            width: 8,
+                            depth: 2,
+                            life: 50
+                        }).getBounds()
 
+                        return {
+                            hitbox,
+                            data: {
+                                hitMultiplier: 0.1,
+                                velocityX: 100,
+                                velocityY: -100
+                            }
+                        }
                     }
                 },
                 forward: {
@@ -66,9 +89,35 @@ class MageCharacter extends Character {
                 }
             },
             abilityOne: {
-                cooldown: 4000,
-                exec: () => {
+                cooldown: {
+                    amount: 2000,
+                    canFire: true,
+                    timer: null
+                },
+                exec: (facingRight) => {
+                    if (!this.CharacterConfig.attacks.abilityOne.cooldown.canFire) {
+                        console.log('Fireball on cooldown!')
+                        return
+                    }
+                    this.CharacterConfig.attacks.abilityOne.cooldown.canFire = false
 
+                    new Projectile({
+                        Scene,
+                        x: this.physicsBody.x,
+                        y: this.physicsBody.y,
+                        textureKey: CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY,
+                        animationKey: CST.ABILITIES.MAGE.FIREBALL.ANIMATION_KEY,
+                        velocityX: 150,
+                        velocityY: 0,
+                        facingRight
+                    })
+
+                    this.CharacterConfig.attacks.abilityOne.cooldown.timer = Scene.time.delayedCall(
+                        this.CharacterConfig.attacks.abilityOne.cooldown.amount,
+                        () => {
+                            this.CharacterConfig.attacks.abilityOne.cooldown.canFire = true
+                        },
+                    )
                 }
             },
             abilityTwo: {
@@ -103,25 +152,12 @@ class MageCharacter extends Character {
             scale: 0.25,
 
             // Do not touch
-            Scene: config.Scene,
-            x: config.x,
-            y: config.y,
+            Scene: Scene,
+            x: x,
+            y: y,
             sprite: CST.SPRITESHEET.CHARACTERS.MAGE,
-            isPlayer: config.isPlayer,
-            anims: [
-                {  
-                    key:'fireball',
-                    frames: {
-                        key: CST.ABILITIES.MAGE.FIREBALL,
-                        frames:{
-                            key: CST.SPRITESHEET.CHARACTERS.MAGE,
-                            startEnd: {start:1, end:32}
-                        },
-                        frameRate: 10,
-                        repeat:-1
-                    }
-                }
-            ],
+            isPlayer: isPlayer,
+            anims: [],
             attacks
         })
     }
