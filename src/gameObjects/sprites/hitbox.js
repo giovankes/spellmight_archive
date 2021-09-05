@@ -1,28 +1,27 @@
-import Phaser from 'phaser'
-import { CST } from '../../CST'
+import Phaser from "phaser";
+import { CST } from "../../CST";
 
 class Hitbox extends Phaser.GameObjects.Sprite {
-    constructor(config) {
-        super(config.scene, config.x, config.y, CST.SPRITESHEET.CHARACTERS.TEST)
+  constructor(config) {
+    super(config.scene, config.x, config.y, CST.SPRITESHEET.CHARACTERS.TEST);
 
-        config.scene.add.existing(this)
-        config.scene.physics.world.enableBody(this)
+    config.scene.add.existing(this);
+    config.scene.physics.world.enableBody(this);
 
-        config.scene.hitBoxes.add(this)
+    config.scene.hitBoxes.add(this);
 
-        this.setAlpha(0.5)
-        this.setScale(1.5)
+    this.setAlpha(0.5);
+    this.setScale(1.5);
 
+    // console.log(this.body)
 
-        // console.log(this.body)
-
-        const destroy = config.scene.time.addEvent({
-            delay: 200,
-            callback: () => {
-                this.destroy()
-            }
-        })
-    }
+    const destroy = config.scene.time.addEvent({
+      delay: 200,
+      callback: () => {
+        this.destroy();
+      },
+    });
+  }
 }
 
-export default Hitbox
+export default Hitbox;
