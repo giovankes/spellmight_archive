@@ -12,9 +12,14 @@ class Stage extends Phaser.Scene {
     }
 
     create() {
+        this.physics.world.setBounds(0, 0, this.game.renderer.width, this.game.renderer.height, true, true, true, true)
         // Create background elements
         this.Background = this.add.group(null, {
             name: 'Background'
+        })
+
+        this.physics.world.on('worldbounds', (body) => {
+            if (body.gameObject.execWorldBounds) body.gameObject.execWorldBounds()
         })
         this.StageConfig.BackgroundElements.forEach((Element, index)=> {
             this.Background.add(
@@ -61,6 +66,10 @@ class Stage extends Phaser.Scene {
             )
         })
 
+        // Add hitbox & projectiles group
+        this.hitBoxes = this.add.group()
+        this.projectiles = this.add.group()
+
         // Add players and their characters
         if (this.StageConfig.Players) {
             this.Players = this.add.group(null, {
@@ -72,8 +81,8 @@ class Stage extends Phaser.Scene {
                         this.Players.add(
                             new MageCharacter({
                                 Scene: this,
-                                x: 1080 / 2,
-                                y: 150,
+                                x: 100,
+                                y: 40,
                                 isPlayer: true
                             })
                         )
@@ -104,8 +113,8 @@ class Stage extends Phaser.Scene {
                     default:
                         const newCPU = new MageCharacter({
                             Scene: this,
-                            x: 1080 / 1.5,
-                            y: 150
+                            x: this.game.renderer.width - 100,
+                            y: 40
                         })
                         newCPU.physicsBody.setDepth(2)
                         this.CPUs.add(newCPU)
@@ -122,10 +131,6 @@ class Stage extends Phaser.Scene {
                 this
             )
         }
-
-        // Add hitbox & projectiles group
-        this.hitBoxes = this.add.group()
-        this.projectiles = this.add.group()
 
         // Set up the camera
         this.cameras.main.setBounds(0, 0, this.game.renderer.width, this.game.renderer.height)
@@ -162,10 +167,6 @@ class Stage extends Phaser.Scene {
         )
 
         // this.scene.start(CST.SCENES.INTERFACE)
-
-        // console.log(this.scene.manager.getScenes(false, false))
-
-        // console.log(Phaser.Scenes.)
     }
 
     //TODO: Find a more performant way to do this
@@ -183,22 +184,15 @@ class Stage extends Phaser.Scene {
 
     touchingGround(character, ground) {
         // Check if touching the top of the ground
-
         character.data.touchingGround = true
         character.setDrag(2500, 0)
+        character.setBounce(0)
 
         if (
             !character.body.touching.down ||
             !ground.body.touching.up ||
             !character.data
         ) return
-    
-
-        // const Player = this.getPlayerClass(character)
-        // if (Player) {
-        //     Player.physicsBody.setDrag(2500, 0)
-            
-        // }
     }
 
     handleDeath(character) {
@@ -215,6 +209,29 @@ class Stage extends Phaser.Scene {
     update() {
         //! TEMPORARY APPROACH SINCE THERE IS ONLY 1 LOCALLY PLAYABLE CHARACTER AT A TIME
         const Player = this.Players.getChildren()[0]
+
+        // Check projectile overlap
+        const projectiles = this.projectiles.getChildren()
+        if (projectiles.length) {
+            projectiles.forEach(projectile => {
+                const projectileBounds = projectile.getBounds()
+                const players = this.Players.getChildren()
+                const cpus = this.CPUs.getChildren()
+                cpus.forEach(character => {
+                    const playerBounds = character.physicsBody.getBounds()
+                    if (Phaser.Geom.Rectangle.Overlaps(projectileBounds, playerBounds)) {
+                        if (character.id === projectile.id) return
+                        const offset = playerBounds.centerX - projectileBounds.centerX
+                        character.handleAttack(
+                            projectile.hitDetails,
+                            offset > 0 ? true : false
+                        )
+                        projectile.destroy()
+                        return
+                    }
+                })
+            })
+        }
 
         // Reset acceleration
         Player.physicsBody.setAcceleration(0, 0)
@@ -252,8 +269,8 @@ class Stage extends Phaser.Scene {
         }
         if (Phaser.Input.Keyboard.JustDown(this.fightingButtons.Q)) Player.attackManager('ability one')
         if(Phaser.Input.Keyboard.JustDown(this.fightingButtons.E)) Player.attackManager('ability two')
-        
         if(Phaser.Input.Keyboard.JustDown(this.fightingButtons.R)) Player.attackManager('ultimate')
+        
         Player.physicsBody.data.touchingGround = false
     }
 }

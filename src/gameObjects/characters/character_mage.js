@@ -15,7 +15,7 @@ class MageCharacter extends Character {
                     currentCombo: 0,
                     exec: (direction) => {
                         let x = 0
-                        direction ? x = 13 : x = -5
+                        direction ? x = 13 : x = -15
                         const hitbox = new StaticHitbox({
                             Scene,
                             x: this.physicsBody.x + x,
@@ -90,7 +90,7 @@ class MageCharacter extends Character {
             },
             abilityOne: {
                 cooldown: {
-                    amount: 2000,
+                    amount: 200,
                     canFire: true,
                     timer: null
                 },
@@ -104,12 +104,25 @@ class MageCharacter extends Character {
                     new Projectile({
                         Scene,
                         x: this.physicsBody.x,
-                        y: this.physicsBody.y,
+                        y: this.physicsBody.y - 5,
                         textureKey: CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY,
                         animationKey: CST.ABILITIES.MAGE.FIREBALL.ANIMATION_KEY,
-                        velocityX: 150,
-                        velocityY: 0,
-                        facingRight
+                        maxVelocity: {
+                            x: 600,
+                            y: 0
+                        },
+                        acceleration: {
+                            x: 700,
+                            y: 0
+                        },
+                        scale: 0.4,
+                        facingRight,
+                        id: this.id,
+                        hitDetails: {
+                            hitMultiplier: 0.3,
+                            velocityX: 200,
+                            velocityY: -200
+                        }
                     })
 
                     this.CharacterConfig.attacks.abilityOne.cooldown.timer = Scene.time.delayedCall(

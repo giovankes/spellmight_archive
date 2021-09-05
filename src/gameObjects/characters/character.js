@@ -106,6 +106,12 @@ class Character extends Phaser.GameObjects.Sprite {
 
         switch (direction) {
             case 'pressed left':
+                if (!this.physicsBody.flipX) {
+                    this.physicsBody.setFlipX(true)
+                    this.physicsBody.body.setOffset(0, this.CharacterConfig.collisionBodySize.offsetY)
+                    this.physicsBody.setX(this.physicsBody.x + (this.CharacterConfig.collisionBodySize.offsetX / 4))
+                }
+                this.physicsBody.setOffset(0, 0)
                 if (this.sprintSettings.left.doubleTap) {
                     this.sprintSettings.value = true,
                     this.sprintSettings.direction = 'left'
@@ -130,6 +136,11 @@ class Character extends Phaser.GameObjects.Sprite {
                 break;
 
             case 'pressed right':
+                if (this.physicsBody.flipX) {
+                    this.physicsBody.setFlipX(false)
+                    this.physicsBody.body.setOffset(this.CharacterConfig.collisionBodySize.offsetX, this.CharacterConfig.collisionBodySize.offsetY)
+                    this.physicsBody.setX(this.physicsBody.x - (this.CharacterConfig.collisionBodySize.offsetX / 4))
+                }
                 if (this.sprintSettings.right.doubleTap) {
                     this.sprintSettings.value = true
                     this.sprintSettings.direction = 'right'
@@ -212,7 +223,7 @@ class Character extends Phaser.GameObjects.Sprite {
             const playerBounds = character.physicsBody.getBounds()
             const output = Phaser.Geom.Rectangle.Overlaps(attackReturn.hitbox, playerBounds)
             if (output === true) {
-                character.handleAttack(attackReturn, this.facingRight)
+                character.handleAttack(attackReturn.data, this.facingRight)
             }
         })
     }
@@ -220,9 +231,10 @@ class Character extends Phaser.GameObjects.Sprite {
     handleAttack(attack, direction) {
         this.physicsBody.setMaxVelocity(9000)
         this.physicsBody.setDrag(10)
-        this.hitMultiplier += attack.data.hitMultiplier
-        direction ? this.physicsBody.setVelocityX(attack.data.velocityX * this.hitMultiplier) : this.physicsBody.setVelocity((attack.data.velocityX * -1) * this.hitMultiplier)
-        this.physicsBody.setVelocityY(attack.data.velocityY * this.hitMultiplier)
+        this.physicsBody.setBounce(0.4)
+        this.hitMultiplier += attack.hitMultiplier
+        direction ? this.physicsBody.setVelocityX(attack.velocityX * this.hitMultiplier) : this.physicsBody.setVelocityX((attack.velocityX * -1) * this.hitMultiplier)
+        this.physicsBody.setVelocityY(attack.velocityY * this.hitMultiplier)
     }
 }
 
