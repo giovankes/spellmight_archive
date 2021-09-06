@@ -34,8 +34,8 @@ class InputScene extends Phaser.Scene {
     // Key bindings
     //Keyboard
     // Movement
+    //
   }
-
   //XBOX CONTROLLER
   setGamepadBindings(index) {
     const pad = this.input.gamepad.getPad(index)
@@ -45,7 +45,6 @@ class InputScene extends Phaser.Scene {
     ) {
       const playerIndex = PLAYERS.indexOf(index)
       pad.addListener('down', (buttonIndex, value, button) => {
-        console.log(buttonIndex)
         if (this.currentScene && this.currentScene.getControls) {
           switch (buttonIndex) {
             case 7:
