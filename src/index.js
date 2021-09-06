@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import ShakePositionPlugin from 'phaser3-rex-plugins/plugins/shakeposition-plugin.js'
 
 import LOADER from './scenes/menus/LOADER.js'
 import MenuEntry from './scenes/menus/menu_entry.js'
@@ -13,8 +14,6 @@ import Input from './scenes/input'
 import HUD from './scenes/ingame_interface'
 
 const config = {
-  // type: Phaser.AUTO,
-  // parent: 'phaser-example',
   type: Phaser.WEBGL,
   width: 480,
   height: 270,
@@ -35,6 +34,8 @@ const config = {
     Input,
     HUD,
   ],
+  title: 'Spell Might',
+  autoFocus: true,
   input: {
     keyboard: true,
     mouse: true,
@@ -46,6 +47,15 @@ const config = {
     arcade: {
       debug: true,
     },
+  },
+  plugins: {
+    global: [
+      {
+        key: 'rexShakePosition',
+        plugin: ShakePositionPlugin,
+        start: true,
+      },
+    ],
   },
 }
 

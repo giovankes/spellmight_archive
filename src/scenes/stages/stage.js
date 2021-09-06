@@ -2,7 +2,10 @@ import Phaser from 'phaser'
 import { CST } from '../../CST'
 
 import MageCharacter from '../../gameObjects/characters/character_mage'
+import WitchCharacter from '../../gameObjects/characters/character_witch'
+import ButcherCharacter from '../../gameObjects/characters/character_butcher'
 
+import EffectSpritesheet from '../../gameObjects/misc/effect-spritesheet'
 class Stage extends Phaser.Scene {
   constructor(config) {
     super({
@@ -98,7 +101,7 @@ class Stage extends Phaser.Scene {
     })
 
     // Add hitbox & projectiles group
-    this.hitBoxes = this.add.group()
+    this.hitBoxes = this.physics.add.group()
     this.projectiles = this.add.group()
 
     this.Characters = this.add.group()
@@ -126,26 +129,45 @@ class Stage extends Phaser.Scene {
       }
       // Add players and their characters
       if (character.type === 'player') {
+        let newPlayer
         switch (character.character) {
           case 1:
-            const newPlayer = new MageCharacter({
+            newPlayer = new MageCharacter({
               Scene: this,
               x,
               y,
               isPlayer: true,
               index,
             })
-            newPlayer.setDepth(2)
-            this.Characters.add(newPlayer)
             break
+          case 2:
+            newPlayer = new WitchCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
+            break
+          case 3:
+            newPlayer = new ButcherCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
           default:
             break
         }
+        newPlayer.setDepth(2)
+        this.Characters.add(newPlayer)
         // Add CPU's and their characters
       } else if (character.type === 'cpu') {
+        let newCPU
         switch (character.character) {
           case 1:
-            const newCPU = new MageCharacter({
+            newCPU = new MageCharacter({
               Scene: this,
               x,
               y,
@@ -154,22 +176,77 @@ class Stage extends Phaser.Scene {
             newCPU.setDepth(2)
             this.Characters.add(newCPU)
             break
+          case 2:
+            newCPU = new WitchCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
+            break
+          case 3:
+            newCPU = new ButcherCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
           default:
             break
         }
+        newCPU.setDepth(2)
+        this.Characters.add(newCPU)
       }
     })
 
     // Add character collision
-    this.Characters.getChildren().forEach((character) => {
-      this.physics.add.collider(
-        character,
-        this.CollisionAreas,
-        this.touchingGround,
-        null,
-        this
-      )
-    })
+    this.physics.add.collider(
+      this.Characters,
+      this.CollisionAreas,
+      this.touchingGround,
+      null,
+      this
+    )
+    this.physics.add.overlap(
+      this.Characters,
+      this.projectiles,
+      (character, projectile) => {
+        if (projectile.ownerID === character.id) return
+        character.handleAttack(projectile.hitDetails, projectile.sprite.flipX)
+        projectile.destroy()
+      },
+      null,
+      this
+    )
+
+    this.physics.add.collider(
+      this.CollisionAreas,
+      this.projectiles,
+      (collisionArea, projectile) => {
+        projectile.explode()
+        projectile.destroy()
+      },
+      null,
+      this
+    )
+
+    this.physics.add.collider(
+      this.hitBoxes,
+      this.Characters,
+      (character, hitbox) => {
+        if (
+          hitbox.id === character.id ||
+          hitbox.hitCharacters.includes(character.id)
+        )
+          return
+        character.handleAttack(hitbox.attack, hitbox.direction)
+        hitbox.hitCharacters.push(character.id)
+      },
+      null,
+      this
+    )
 
     // Set up the camera
     this.debugRectangle = this.add.rectangle(0, 0, 20, 20, 0xffffff)
@@ -210,7 +287,6 @@ class Stage extends Phaser.Scene {
     this.spacebar = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
     )
-    this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
 
     this.scene.get(CST.SCENES.INPUT).getCurrentScene(this.StageConfig.KEY)
   }
@@ -221,6 +297,9 @@ class Stage extends Phaser.Scene {
     if (!character) return
     body.gameObject.setY(-100)
     body.gameObject.setX(480 / 2)
+    this.scene
+      .get(CST.SCENES.INTERFACE)
+      .updatePlayerPercent(character.CharacterConfig.index, 1)
     this.tweens.add({
       targets: body.gameObject,
       y: { from: -100, to: 30 },
@@ -236,8 +315,17 @@ class Stage extends Phaser.Scene {
             character.hitMultiplier = 1
             body.setEnable(true)
           },
+          callbackScope: this,
         })
       },
+    })
+
+    // Remove out of bounds arrow
+    this.outOfBoundsArrows.getChildren().forEach((arrow) => {
+      if (arrow.data.list.ownerID === body.gameObject.id) {
+        this.outOfBoundsArrows.killAndHide(arrow)
+        arrow.destroy()
+      }
     })
   }
 
@@ -248,6 +336,21 @@ class Stage extends Phaser.Scene {
   touchingGround(character, ground) {
     // Check if touching the top of the ground
     if (!character.body.touching.down || !ground.body.touching.up) return
+    if (!character.touchingGround) {
+      const dust = new EffectSpritesheet({
+        Scene: this,
+        x: character.body.center.x,
+        y: character.body.bottom - 5,
+        spritesheetKey: CST.SPRITESHEET.CHARACTERS.DUST.JUMP.IMG,
+        scale: 0.7,
+        flipX: false,
+      })
+        .setOrigin(0.5)
+        .play(CST.SPRITESHEET.CHARACTERS.DUST.JUMP.ANIMS.LAND)
+        .once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+          dust.destroy()
+        })
+    }
     character.touchingGround = true
     character.body.setDrag(2500, 0)
     character.body.setBounce(0)
@@ -263,8 +366,35 @@ class Stage extends Phaser.Scene {
 
     // If person pressing buttons on a controller that's not in the game, return
     if (playerIndex + 1 > players) return
+    // If the scene is paused, return
+    if (this.scene.isPaused(this)) {
+      if (status === 'down') {
+        if (key === 'X') {
+          this.scene.start(CST.SCENES.MENU.MAIN)
+          this.scene.get(CST.SCENES.INPUT).getCurrentScene(null)
+          this.scene.stop(CST.SCENES.INTERFACE)
+          // this.scene.get(CST.SCENES.INTERFACE).scene.stop()
+        } else if (key === 'ENTER/START') {
+          if (this.scene.isPaused(this)) {
+            this.scene.resume(this)
+            this.scene.get(CST.SCENES.INTERFACE).resume()
+          } else {
+            this.Characters.getChildren().forEach((character) => {
+              this.unpressEverything(character)
+            })
+            this.scene.pause(this)
+            this.scene.get(CST.SCENES.INTERFACE).pause()
+          }
+        }
+      }
+      return
+    }
 
     const Character = this.Characters.getChildren()[playerIndex]
+    if (Character.rooted) {
+      this.unpressEverything(Character)
+      return
+    }
     if (status === 'down') {
       let variant = null
       if (Character.pressing.LEFT || Character.pressing.RIGHT)
@@ -273,6 +403,18 @@ class Stage extends Phaser.Scene {
       else if (Character.pressing.DOWN) variant = 'down'
 
       switch (key) {
+        case 'ENTER/START':
+          if (this.scene.isPaused(this)) {
+            this.scene.get(CST.SCENES.INTERFACE).resume()
+            this.scene.resume(this)
+          } else {
+            this.Characters.getChildren().forEach((character) => {
+              this.unpressEverything(character)
+            })
+            this.scene.pause(this)
+            this.scene.get(CST.SCENES.INTERFACE).pause()
+          }
+          break
         case 'JUMP':
           Character.movementManager('pressed up')
           Character.pressing.UP = true
@@ -305,6 +447,14 @@ class Stage extends Phaser.Scene {
           Character.attackManager('ability two')
           Character.pressing.Y = true
           break
+        case 'LB':
+          Character.pressing.LB = true
+          Character.attackManager('ultimate')
+          break
+        case 'LT':
+          Character.pressing.LT = true
+          Character.movementManager('pressed shield')
+          break
         default:
           break
       }
@@ -321,10 +471,13 @@ class Stage extends Phaser.Scene {
         case 'LEFT':
           Character.movementManager('unpressed left')
           Character.pressing.LEFT = false
+          if (Character.pressing.RIGHT)
+            Character.movementManager('pressed right')
           break
         case 'RIGHT':
           Character.movementManager('unpressed right')
           Character.pressing.RIGHT = false
+          if (Character.pressing.LEFT) Character.movementManager('pressed left')
           break
         case 'A':
           Character.pressing.A = false
@@ -338,10 +491,33 @@ class Stage extends Phaser.Scene {
         case 'Y':
           Character.pressing.Y = false
           break
+        case 'LB':
+          Character.pressing.LB = false
+          break
+        case 'LT':
+          Character.pressing.LT = false
+          Character.movementManager('unpressed shield')
+          break
         default:
           break
       }
     }
+  }
+
+  unpressEverything(Character) {
+    Character.movementManager('unpressed up')
+    Character.pressing.UP = false
+    Character.movementManager('unpressed down')
+    Character.pressing.DOWN = false
+    Character.movementManager('unpressed left')
+    Character.pressing.LEFT = false
+    Character.movementManager('unpressed right')
+    Character.pressing.RIGHT = false
+
+    Character.pressing.A = false
+    Character.pressing.B = false
+    Character.pressing.X = false
+    Character.pressing.Y = false
   }
 
   update() {
@@ -351,17 +527,15 @@ class Stage extends Phaser.Scene {
 
     // Make camera follow and zoom players
     //! ONLY WORKS WITH 2 PLAYERS
-    const playerBounds = Player.getBounds()
-    const cpuBounds = CPU.getBounds()
     const boundsMedian = {
-      x: (playerBounds.centerX + cpuBounds.centerX) / 2,
-      y: (playerBounds.centerY + cpuBounds.centerY) / 2,
+      x: (Player.body.center.x + CPU.body.center.x) / 2,
+      y: (Player.body.center.y + CPU.body.center.y) / 2,
     }
     this.playerDistance = Phaser.Math.Distance.Between(
-      playerBounds.centerX,
-      playerBounds.centerY,
-      cpuBounds.centerX,
-      cpuBounds.centerY
+      Player.body.center.x,
+      Player.body.center.y,
+      CPU.body.center.x,
+      CPU.body.center.y
     )
     const zoomAmount = 3 / (this.playerDistance / 100)
     if (zoomAmount < 1) this.cameras.main.zoomTo(1, 200)
@@ -370,146 +544,77 @@ class Stage extends Phaser.Scene {
     this.debugRectangle.setX(boundsMedian.x)
     this.debugRectangle.setY(boundsMedian.y)
 
-    // Check if players & cpus are out of bounds
-    if (
-      playerBounds.centerX > 480 ||
-      playerBounds.centerX < 0 ||
-      playerBounds.centerY > 270 ||
-      playerBounds.centerY < 0
-    ) {
-      let foundArrow = null
-      this.outOfBoundsArrows.getChildren().forEach((arrow) => {
-        const arrowData = arrow.data.list
-        if (arrowData && arrowData.ownerID === Player.id) foundArrow = arrow
-      })
-      if (!foundArrow) {
-        this.outOfBoundsArrows.add(
-          this.add
-            .image(-100, -100, CST.IMAGE.UI.INGAME.ARROW_RIGHT)
-            .setData({
-              ownerID: Player.id,
-            })
-            .setScale(0.1)
-            .setOrigin(0)
-        )
-      } else {
-        let x
-        let y
-        if (playerBounds.centerX > 0 && playerBounds.centerX < 480)
-          x = playerBounds.centerX
-        else if (playerBounds.centerX < 0) {
-          foundArrow.setFlipX(true)
-          x = 20
-        } else if (playerBounds.centerX > 480) {
-          foundArrow.setFlipX(false)
-          x = 430
-        }
-        if (playerBounds.centerY > 0 && playerBounds.centerY < 270)
-          y = playerBounds.centerY - 20
-        else if (playerBounds.centerY < 0) {
-          y = 20
-          foundArrow.setFlipX(true)
-          foundArrow.setRotation(1.57)
-        } else if (playerBounds.centerY > 270) {
-          y = 250
-          foundArrow.setFlipX(true)
-          foundArrow.setRotation(1.57)
-        }
-        foundArrow.setX(x).setY(y)
+    // Set character drag higher
+    this.Characters.getChildren().forEach((character) => {
+      if (!character.touchingGround) {
+        character.body.setDrag(250, 0)
       }
-    } else if (
-      cpuBounds.centerX > 480 ||
-      cpuBounds.centerX < 0 ||
-      cpuBounds.centerY > 270 ||
-      cpuBounds.centerY < 0
-    ) {
-      let foundArrow = null
-      this.outOfBoundsArrows.getChildren().forEach((arrow) => {
-        const arrowData = arrow.data.list
-        if (arrowData && arrowData.ownerID === CPU.id) foundArrow = arrow
-      })
-      if (!foundArrow) {
-        this.outOfBoundsArrows.add(
-          this.add
-            .image(-100, -100, CST.IMAGE.UI.INGAME.ARROW_RIGHT)
-            .setData({
-              ownerID: CPU.id,
-            })
-            .setScale(0.1)
-            .setOrigin(0)
-        )
-      } else {
-        let x
-        let y
-        if (cpuBounds.centerX > 0 && cpuBounds.centerX < 480)
-          x = cpuBounds.centerX
-        else if (cpuBounds.centerX < 0) {
-          foundArrow.setFlipX(true)
-          x = 20
-        } else if (cpuBounds.centerX > 480) {
-          foundArrow.setFlipX(false)
-          x = 430
-        }
-        if (cpuBounds.centerY > 0 && cpuBounds.centerY < 270)
-          y = cpuBounds.centerY - 20
-        else if (cpuBounds.centerY < 0) {
-          y = 20
-          foundArrow.setFlipX(true)
-          foundArrow.setRotation(1.57)
-        } else if (cpuBounds.centerY > 270) {
-          y = 250
-          foundArrow.setFlipX(true)
-          foundArrow.setRotation(1.57)
-        }
-        foundArrow.setX(x).setY(y)
-      }
-    } else {
-      let foundArrow = null
-      this.outOfBoundsArrows.getChildren().forEach((arrow) => {
-        const arrowData = arrow.data.list
-        if (
-          (arrowData && arrowData.ownerID === Player.id) ||
-          arrowData.ownerID === CPU.id
-        )
-          foundArrow = arrow
-      })
-      if (foundArrow) {
-        foundArrow.destroy()
-      }
-    }
+    })
 
-    // Check projectile overlap
-    const projectiles = this.projectiles.getChildren()
-    if (projectiles.length) {
-      projectiles.forEach((projectile) => {
-        const projectileBounds = projectile.getBounds()
+    // Check if characters are out of bounds
+    for (let index = 0; index < this.Characters.getChildren().length; index++) {
+      const Character = this.Characters.getChildren()[index]
 
-        let hit = false
-
-        this.Characters.getChildren().forEach((character) => {
-          const characterBounds = character.getBounds()
-          if (
-            Phaser.Geom.Rectangle.Overlaps(projectileBounds, characterBounds)
-          ) {
-            if (character.id === projectile.ownerID) return
-            const offset = characterBounds.centerX - projectileBounds.centerX
-            character.handleAttack(
-              projectile.hitDetails,
-              offset > 0 ? true : false
-            )
-            hit = true
-          }
+      if (!Character.body.enable) break
+      if (
+        Character.body.center.x > 480 ||
+        Character.body.center.x < 0 ||
+        Character.body.center.y > 270 ||
+        Character.body.center.y < 0
+      ) {
+        let foundArrow = null
+        this.outOfBoundsArrows.getChildren().forEach((arrow) => {
+          const arrowData = arrow.data.list
+          if (arrowData && arrowData.ownerID === Character.id)
+            foundArrow = arrow
         })
-        if (hit === true) projectile.destroy()
-      })
+        if (!foundArrow) {
+          this.outOfBoundsArrows.add(
+            this.add
+              .image(-100, -100, CST.IMAGE.UI.INGAME.ARROW_RIGHT)
+              .setData({
+                ownerID: Character.id,
+              })
+              .setScale(0.1)
+              .setOrigin(0)
+          )
+        } else {
+          let x
+          let y
+          if (Character.body.center.x > 0 && Character.body.center.x < 480)
+            x = Character.body.center.x
+          else if (Character.body.center.x < 0) {
+            foundArrow.setFlipX(true)
+            x = 20
+          } else if (Character.body.center.x > 480) {
+            foundArrow.setFlipX(false)
+            x = 430
+          }
+          if (Character.body.center.y > 0 && Character.body.center.y < 270)
+            y = Character.body.center.y - 20
+          else if (Character.body.center.y < 0) {
+            y = 20
+            foundArrow.setFlipX(true)
+            foundArrow.setRotation(1.57)
+          } else if (Character.body.center.y > 270) {
+            y = 250
+            foundArrow.setFlipX(true)
+            foundArrow.setRotation(1.57)
+          }
+          foundArrow.setX(x).setY(y)
+        }
+      } else {
+        let foundArrow = null
+        this.outOfBoundsArrows.getChildren().forEach((arrow) => {
+          const arrowData = arrow.data.list
+          if (arrowData && arrowData.ownerID === Character.id)
+            foundArrow = arrow
+        })
+        if (foundArrow) {
+          foundArrow.destroy()
+        }
+      }
     }
-
-    // Reset acceleration
-    // Player.body.setAcceleration(0, 0)
-
-    // Pause Menu
-    if (Phaser.Input.Keyboard.JustDown(this.esc))
-      this.scene.start(CST.SCENES.MENU)
   }
 }
 
