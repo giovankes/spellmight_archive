@@ -8,6 +8,7 @@ class Character extends Phaser.GameObjects.Container {
   constructor(config) {
     super(config.Scene, config.x, config.y)
 
+    
     // Add object to scene
     config.Scene.add.existing(this)
 
@@ -70,7 +71,6 @@ class Character extends Phaser.GameObjects.Container {
         repeat,
       })
     })
-
     // Class variables for functions
     this.CharacterConfig = config
     this.sprintTimeoutTime = 300
@@ -84,7 +84,7 @@ class Character extends Phaser.GameObjects.Container {
       X: false,
       Y: false,
     }
-
+    console.log(this.CharacterConfig)
     // Set correct body config
     this.body.setGravityY(1500)
     this.body.collideWorldBounds = true
