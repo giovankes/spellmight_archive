@@ -120,14 +120,16 @@ class WitchCharacter extends Character {
                 Scene,
                 x: this.x + x,
                 y: this.y + 10,
-                textureKey: CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY,
-                animationKey: CST.ABILITIES.MAGE.FIREBALL.ANIMATION_KEY,
+                textureKey:
+                  CST.SPRITESHEET.CHARACTERS.WITCH.ABILITIES.AERIAL_BURST.IMG,
+                animationKey:
+                  CST.SPRITESHEET.CHARACTERS.WITCH.ABILITIES.AERIAL_BURST.ANIM,
                 maxVelocity: {
                   x: 600,
                   y: 0,
                 },
                 acceleration: {
-                  x: 700,
+                  x: 0,
                   y: 0,
                 },
                 scale: 0.4,
@@ -231,6 +233,11 @@ class WitchCharacter extends Character {
       ],
       attacks,
       movementAnimations,
+      abilityKeys: [
+        CST.ABILITIES.WITCH.HEX_BLAST.ICON,
+        CST.ABILITIES.WITCH.NEEDLES.ICON,
+        CST.ABILITIES.WITCH.METEOR_RAIN.ICON,
+      ],
     })
   }
 }

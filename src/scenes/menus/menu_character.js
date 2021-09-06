@@ -81,7 +81,6 @@ class MenuCharacter extends Phaser.Scene {
           characterID: 2,
           imageKey: CST.IMAGE.CHARACTER.WITCH.PORTRAIT,
         })
-
         const characterPortraitThree = new CharacterSelectPortrait({
           x: 20,
           y: 85,
@@ -90,10 +89,19 @@ class MenuCharacter extends Phaser.Scene {
           characterID: 3,
           imageKey: CST.IMAGE.CHARACTER.BUTCHER.PORTRAIT,
         })
+        const randomCharacter = new CharacterSelectPortrait({
+          x: 60,
+          y: 85,
+          scene,
+          parent: this,
+          characterID: 'RANDOM',
+          imageKey: CST.IMAGE.MENU.DICE,
+        })
         this.characterPortraits = new Phaser.GameObjects.Group(scene, [
           characterPortraitOne,
           characterPotraitTwo,
           characterPortraitThree,
+          randomCharacter,
         ])
         this.title = new Phaser.GameObjects.Text(scene, 30, 0, 'INACTIVE', {
           fontSize: 16,
@@ -116,6 +124,7 @@ class MenuCharacter extends Phaser.Scene {
           characterPortraitOne,
           characterPotraitTwo,
           characterPortraitThree,
+          randomCharacter,
         ])
 
         scene.add.existing(this)
@@ -149,15 +158,20 @@ class MenuCharacter extends Phaser.Scene {
           })
           this.characterSelected = 0
         } else {
+          let parsedCharacterID
+          if (characterID === 'RANDOM') {
+            parsedCharacterID = Math.floor(Math.random() * 3 + 1)
+          } else parsedCharacterID = characterID
+
           this.characterPortraits.getChildren().forEach((characterPortrait) => {
             characterPortrait.setVisible(false)
           })
           let characterTexture
           let scale
           let title
-          switch (characterID) {
+          switch (parsedCharacterID) {
             case 1:
-              characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE
+              characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE.IMG
               scale = 2
               title = 'Mage'
               break
@@ -206,7 +220,7 @@ class MenuCharacter extends Phaser.Scene {
             this.selectedBackText,
             this.selectedNameText,
           ])
-          this.characterSelected = characterID
+          this.characterSelected = parsedCharacterID
         }
       }
 
@@ -258,40 +272,40 @@ class MenuCharacter extends Phaser.Scene {
       constructor({ scene, playerIndex }) {
         let x = 80
         let y = 100
-        let fillColor = 0xa14545
+        let spriteKey = CST.IMAGE.MENU.P1_CURSOR
         switch (playerIndex) {
           case 0:
             x = 80
             y = 100
-            fillColor = 0xa14545
+            spriteKey = CST.IMAGE.MENU.P1_CURSOR
             break
           case 1:
             x = 170
             y = 100
-            fillColor = 0x56a145
+            spriteKey = CST.IMAGE.MENU.P2_CURSOR
             break
           case 2:
             x = 40
             y = scene.game.renderer.height - 40
-            fillColor = 0x458ca1
+            spriteKey = CST.IMAGE.MENU.P3_CURSOR
             break
           case 3:
             x = scene.game.renderer.width - 40
             y = scene.game.renderer.height - 40
-            fillColor = 0x7645a1
+            spriteKey = CST.IMAGE.MENU.P4_CURSOR
             break
           default:
             break
         }
 
         super(scene, x, y, [
-          new Phaser.GameObjects.Rectangle(scene, 0, 0, 10, 10, fillColor),
+          new Phaser.GameObjects.Sprite(scene, 0, 0, spriteKey).setOrigin(0, 0),
         ])
 
         scene.physics.add.existing(this, false)
         this.body.setCollideWorldBounds(true)
-        this.body.setOffset(-5, -5)
-        this.body.setSize(10, 10)
+        this.body.setOffset(0, 0)
+        this.body.setSize(1, 1)
 
         this.setDepth(2)
 

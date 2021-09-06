@@ -4,12 +4,58 @@ export const CST = {
       FIREBALL: {
         TEXTURE_KEY: 'ABILITY_MAGE_FIREBALL',
         ANIMATION_KEY: 'ABILITY_MAGE_FIREBALL_ANIMS',
+        ICON: 'ABILITY_MAGE_FIREBALL_ICON',
+      },
+      BLINK: {
+        ICON: 'ABILITY_MAGE_BLINK_ICON',
+        TEXTURE_KEY: 'ABILITY_MAGE_BLINK',
+        ANIMATION_KEY_START: 'ABILITY_MAGE_BLINK_ANIMS_START',
+        ANIMATION_KEY_END: 'ABILITY_MAGE_BLINK_ANIMS_END',
+      },
+      BEAM: {
+        ICON: 'ABILITY_MAGE_BEAM_ICON',
+      },
+    },
+    WITCH: {
+      HEX_BLAST: {
+        ICON: 'ABILITY_WITCH_HEX_BLAST_ICON',
+      },
+      NEEDLES: {
+        ICON: 'ABILITY_WITCH_NEEDLES_ICON',
+      },
+      METEOR_RAIN: {
+        ICON: 'ABILITY_WITCH_METEOR_RAIN_ICON',
       },
     },
     BUTCHER: {
       CLEAVER: {
         TEXTURE_KEY: 'ABILITY_BUTCHER_CLEAVER',
         ANIMATION_KEY: 'ABILITY_BUTCHER_CLEAVER_ANIMS',
+        ICON: 'ABILITY_BUTCHER_CLEAVER_ICON',
+      },
+      HOOK: {
+        ICON: 'ABILITY_BUTCHER_HOOK_ICON',
+      },
+      RAGE: {
+        ICON: 'ABILITY_BUTCHER_RAGE_ICON',
+      },
+    },
+    FRAMES: {
+      P1: {
+        READY: 'ABILITY_FRAME_P1_READY',
+        COOLDOWN: 'ABILITY_FRAME_P1_COOLDOWN',
+      },
+      P2: {
+        READY: 'ABILITY_FRAME_P2_READY',
+        COOLDOWN: 'ABILITY_FRAME_P2_COOLDOWN',
+      },
+      P3: {
+        READY: 'ABILITY_FRAME_P3_READY',
+        COOLDOWN: 'ABILITY_FRAME_P3_COOLDOWN',
+      },
+      P4: {
+        READY: 'ABILITY_FRAME_P4_READY',
+        COOLDOWN: 'ABILITY_FRAME_P4_COOLDOWN',
       },
     },
   },
@@ -21,7 +67,6 @@ export const CST = {
       CHARACTER: 'MENU_CHARACTER',
       STAGES: 'MENU_STAGES',
       MAP: 'MAP',
-      MAP_SCUFFED: 'MAP_SCUFFED',
     },
     STAGES: {
       LOAD: 'STAGE_LOAD',
@@ -41,6 +86,11 @@ export const CST = {
       BTN_OPTIONS: 'IMG_MENU_BUTTON_OPTIONS',
       PLAYERS_CONTROLLER: 'IMG_MENU_PLAYERS_CONTROLLER',
       PLAYERS_KEYBOARD: 'IMG_MENU_PLAYERS_KEYBOARD',
+      DICE: 'IMG_MENU_DICE',
+      P1_CURSOR: 'IMG_MENU_P1_CURSOR',
+      P2_CURSOR: 'IMG_MENU_P2_CURSOR',
+      P3_CURSOR: 'IMG_MENU_P3_CURSOR',
+      P4_CURSOR: 'IMG_MENU_P4_CURSOR',
     },
     STAGES: {
       TEST: {
@@ -99,13 +149,34 @@ export const CST = {
   SPRITESHEET: {
     CHARACTERS: {
       TEST: 'SPR_CHARACTER_TEST',
-      MAGE: 'SPR_CHARACTER_MAGE',
+      MAGE: {
+        IMG: 'SPR_CHARACTER_MAGE',
+        ABILITIES: {
+          FIREBALL: {
+            EXPLOSION: {
+              IMG: 'SPR_CHARACTER_MAGE_ABILITY_FIREBALL_EXPLOSION_IMG',
+              ANIM: 'SPR_CHARACTER_MAGE_ABILITY_FIREBALL_EXPLOSION_ANIM',
+            },
+            PARTICLE: 'SPR_CHARACTER_MAGE_ABILITY_FIREBALL_PARTICLE',
+          },
+        },
+        CASTING: {
+          IMG: 'SPR_CHARACTER_MAGE_CASTING_IMG',
+          ANIM: 'SPR_CHARACTER_MAGE_CASTING_ANIM',
+        },
+      },
       WITCH: {
         SPR: 'SPR_CHARACTER_WITCH',
         ANIMS: {
           IDLE: 'SPR_CHARACTER_WITCH_IDLE',
           RUN: 'SPR_CHARACTER_WITCH_RUN',
           JUMP: 'SPR_CHARACTER_WITCH_JUMP',
+        },
+        ABILITIES: {
+          AERIAL_BURST: {
+            IMG: 'SPR_CHARACTER_WITCH_ABILITY_AERIAL_BURST_IMG',
+            ANIM: 'SPR_CHARACTER_WITCH_ABILITY_AERIAL_BURST_ANIM',
+          },
         },
       },
       BUTCHER: {
@@ -114,6 +185,31 @@ export const CST = {
           IDLE: 'SPR_CHARACTER_BUTCHER_IDLE',
           RUN: 'SPR_CHARACTER_BUTCHER_RUN',
         },
+      },
+      DUST: {
+        SPRINT: {
+          IMG: 'SPR_CHARACTER_DUST_SPRINT',
+          ANIM: 'SPR_CHARACTER_DUST_SPRINT_ANIM',
+        },
+        DODGE: {
+          IMG: 'SPR_CHARACTER_DUST_DODGE',
+          ANIM: 'SPR_CHARACTER_DUST_DODGE_ANIM',
+        },
+        JUMP: {
+          IMG: 'SPR_CHARACTER_DUST_JUMP',
+          ANIMS: {
+            LAND: 'SPR_CHARACTER_DUST_JUMP_LAND_ANIM',
+            JUMP: 'SPR_CHARACTER_DUST_JUMP_JUMP_ANIM',
+          },
+        },
+      },
+      SHIELD: {
+        IMG: 'SPR_CHARACTER_SHIELD_IMG',
+        ANIM: 'SPR_CHARACTER_SHIELD_ANIM',
+      },
+      HIT: {
+        IMG: 'SPR_CHARACTER_HIT_IMG',
+        ANIM: 'SPR_CHARACTER_HIT_ANIM',
       },
     },
   },

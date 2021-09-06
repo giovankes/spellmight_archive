@@ -184,10 +184,10 @@ class ButcherCharacter extends Character {
       normalVelocity: 120,
       sprintVelocity: 220,
       collisionBodySize: {
-        width: 25,
-        height: 45,
-        offsetX: 5,
-        offsetY: 5,
+        width: 20,
+        height: 38,
+        offsetX: 3.5,
+        offsetY: 1,
       },
       scale: 0.8,
 
@@ -214,11 +214,16 @@ class ButcherCharacter extends Character {
             startEnd: { start: 10, end: 18 },
           },
           frameRate: 10,
-          repeat: 0,
+          repeat: -1,
         },
       ],
       attacks,
       movementAnimations,
+      abilityKeys: [
+        CST.ABILITIES.BUTCHER.CLEAVER.ICON,
+        CST.ABILITIES.BUTCHER.HOOK.ICON,
+        CST.ABILITIES.BUTCHER.RAGE.ICON,
+      ],
     })
   }
 }
