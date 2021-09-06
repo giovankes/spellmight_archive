@@ -42,11 +42,9 @@ class InputScene extends Phaser.Scene {
     if (pad.id.includes('Microsoft Controller')) {
       const playerIndex = PLAYERS.indexOf(index)
       pad.addListener('down', (buttonIndex, value, button) => {
+        console.log(button)
         if (this.currentScene && this.currentScene.getControls) {
           switch (buttonIndex) {
-            case 7:
-              this.currentScene.getControls('JUMP', playerIndex, 'down')
-              break
             case 12:
               this.currentScene.getControls('UP', playerIndex, 'down')
               break
@@ -79,6 +77,12 @@ class InputScene extends Phaser.Scene {
               break
             case 6:
               this.currentScene.getControls('LT', playerIndex, 'down')
+              break
+            case 5:
+              this.currentScene.getControls('RB', playerIndex, 'down')
+              break
+            case 7:
+              this.currentScene.getControls('RT', playerIndex, 'down')
               break
             default:
               break
@@ -121,8 +125,19 @@ class InputScene extends Phaser.Scene {
             case 4:
               this.currentScene.getControls('LB', playerIndex, 'up')
               break
+            case 4:
+              this.currentScene.getControls('LB', playerIndex, 'up')
+              break
             case 6:
               this.currentScene.getControls('LT', playerIndex, 'up')
+              break
+            case 5:
+              this.currentScene.getControls('RB', playerIndex, 'up')
+              break
+            case 7:
+              this.currentScene.getControls('RT', playerIndex, 'up')
+              break
+            default:
               break
           }
         }

@@ -401,7 +401,7 @@ class Stage extends Phaser.Scene {
         variant = 'forward'
       else if (Character.pressing.UP) variant = 'up'
       else if (Character.pressing.DOWN) variant = 'down'
-
+      console.log(key)
       switch (key) {
         case 'ENTER/START':
           if (this.scene.isPaused(this)) {
@@ -414,10 +414,6 @@ class Stage extends Phaser.Scene {
             this.scene.pause(this)
             this.scene.get(CST.SCENES.INTERFACE).pause()
           }
-          break
-        case 'JUMP':
-          Character.movementManager('pressed up')
-          Character.pressing.UP = true
           break
         case 'DOWN':
           Character.movementManager('pressed down')
@@ -432,13 +428,13 @@ class Stage extends Phaser.Scene {
           Character.pressing.RIGHT = true
           break
         case 'A':
-          Character.attackManager('attack light', variant)
+          Character.movementManager('pressed up')
           Character.pressing.A = true
           break
-        case 'B':
-          Character.attackManager('attack heavy', variant)
-          Character.pressing.B = true
-          break
+        //case 'B':
+        //  Character.attackManager('attack heavy', variant)
+        //  Character.pressing.B = true
+        //  break
         case 'X':
           Character.attackManager('ability one')
           Character.pressing.X = true
@@ -449,21 +445,20 @@ class Stage extends Phaser.Scene {
           break
         case 'LB':
           Character.pressing.LB = true
-          Character.attackManager('ultimate')
-          break
-        case 'LT':
-          Character.pressing.LT = true
           Character.movementManager('pressed shield')
           break
+        case 'LT':
+          Character.attackManager('attack light', variant)
+          Character.pressing.LT = true
+          break
+        case 'RT':
+          Character.attackManager('attack heavy', variant)
+          Character.pressing.RT = true
         default:
           break
       }
     } else if (status === 'up') {
       switch (key) {
-        case 'JUMP':
-          Character.movementManager('unpressed up')
-          Character.pressing.UP = false
-          break
         case 'DOWN':
           Character.movementManager('unpressed down')
           Character.pressing.DOWN = false
@@ -480,7 +475,8 @@ class Stage extends Phaser.Scene {
           if (Character.pressing.LEFT) Character.movementManager('pressed left')
           break
         case 'A':
-          Character.pressing.A = false
+          Character.movementManager('unpressed up')
+          Character.pressing.UP = false
           break
         case 'B':
           Character.pressing.B = false
@@ -491,12 +487,18 @@ class Stage extends Phaser.Scene {
         case 'Y':
           Character.pressing.Y = false
           break
-        case 'LB':
+        case 'LT':
           Character.pressing.LB = false
           break
-        case 'LT':
-          Character.pressing.LT = false
+        case 'LB':
+          Character.pressing.LB = false
           Character.movementManager('unpressed shield')
+          break
+        case 'RT':
+          Character.pressing.RT = false
+          break
+        case 'RB':
+          Character.pressing.RB = false
           break
         default:
           break
