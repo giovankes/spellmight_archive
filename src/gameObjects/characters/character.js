@@ -22,6 +22,8 @@ class Character extends Phaser.GameObjects.Container {
       Y: false,
       LB: false,
       LT: false,
+      RB: false,
+      RT: false,
     }
 
     // Add object to scene
@@ -561,6 +563,7 @@ class Character extends Phaser.GameObjects.Container {
   }
 
   attackManager(attack, variant) {
+    console.log(attack)
     if (this.casting) return
     let attackReturn = null
     switch (attack) {
@@ -571,7 +574,7 @@ class Character extends Phaser.GameObjects.Container {
         break
 
       case 'attack heavy':
-        attackReturn = this.CharacterConfig.attacks.attackHeavy.neutral.exec()
+        this.CharacterConfig.attacks.attackHeavy.neutral.exec()
         break
       case 'ability one':
         this.CharacterConfig.attacks.abilityOne.exec()
