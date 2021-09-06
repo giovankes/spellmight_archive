@@ -73,8 +73,27 @@ class MenuCharacter extends Phaser.Scene {
           characterID: 1,
           imageKey: CST.IMAGE.CHARACTER.MAGE.PORTRAIT,
         })
+        const characterPotraitTwo = new CharacterSelectPortrait({
+          x: 60,
+          y: 50,
+          scene,
+          parent: this,
+          characterID: 2,
+          imageKey: CST.IMAGE.CHARACTER.WITCH.PORTRAIT,
+        })
+
+        const characterPortraitThree = new CharacterSelectPortrait({
+          x: 20,
+          y: 85,
+          scene,
+          parent: this,
+          characterID: 3,
+          imageKey: CST.IMAGE.CHARACTER.BUTCHER.PORTRAIT,
+        })
         this.characterPortraits = new Phaser.GameObjects.Group(scene, [
           characterPortraitOne,
+          characterPotraitTwo,
+          characterPortraitThree,
         ])
         this.title = new Phaser.GameObjects.Text(scene, 30, 0, 'INACTIVE', {
           fontSize: 16,
@@ -95,6 +114,8 @@ class MenuCharacter extends Phaser.Scene {
             .setStrokeStyle(4, 0xffffff)
             .setOrigin(0),
           characterPortraitOne,
+          characterPotraitTwo,
+          characterPortraitThree,
         ])
 
         scene.add.existing(this)
@@ -114,9 +135,14 @@ class MenuCharacter extends Phaser.Scene {
 
       setSelected(boolean, characterID) {
         if (!boolean) {
-          if (this.selectedCharacter && this.selectedBackText) {
+          if (
+            this.selectedCharacter &&
+            this.selectedBackText &&
+            this.selectedNameText
+          ) {
             this.selectedCharacter.destroy()
             this.selectedBackText.destroy()
+            this.selectedNameText.destroy()
           }
           this.characterPortraits.getChildren().forEach((characterPortrait) => {
             characterPortrait.setVisible(true)
@@ -126,22 +152,35 @@ class MenuCharacter extends Phaser.Scene {
           this.characterPortraits.getChildren().forEach((characterPortrait) => {
             characterPortrait.setVisible(false)
           })
-          let characterTexture = null
+          let characterTexture
+          let scale
+          let title
           switch (characterID) {
             case 1:
               characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE
+              scale = 2
+              title = 'Mage'
+              break
+            case 2:
+              characterTexture = CST.SPRITESHEET.CHARACTERS.WITCH.SPR
+              scale = 1.6
+              title = 'Witch'
+              break
+            case 3:
+              characterTexture = CST.SPRITESHEET.CHARACTERS.BUTCHER.SPR
+              scale = 1.4
+              title = 'Butcher'
               break
             default:
-              characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE
               break
           }
 
           this.selectedCharacter = new Phaser.GameObjects.Image(
             this.scene,
-            35,
+            45,
             100,
             characterTexture
-          ).setScale(0.6)
+          ).setScale(scale)
           this.selectedBackText = new Phaser.GameObjects.Text(
             this.scene,
             35,
@@ -152,7 +191,21 @@ class MenuCharacter extends Phaser.Scene {
               color: '#FFFFFF',
             }
           )
-          this.add([this.selectedCharacter, this.selectedBackText])
+          this.selectedNameText = new Phaser.GameObjects.Text(
+            this.scene,
+            40,
+            145,
+            title,
+            {
+              fontFamily: 'Superscript',
+              color: '#FFFFFF',
+            }
+          ).setOrigin(0.5, 0)
+          this.add([
+            this.selectedCharacter,
+            this.selectedBackText,
+            this.selectedNameText,
+          ])
           this.characterSelected = characterID
         }
       }
@@ -236,6 +289,7 @@ class MenuCharacter extends Phaser.Scene {
         ])
 
         scene.physics.add.existing(this, false)
+        this.body.setCollideWorldBounds(true)
         this.body.setOffset(-5, -5)
         this.body.setSize(10, 10)
 
@@ -375,6 +429,7 @@ class MenuCharacter extends Phaser.Scene {
                     )
                   ) {
                     player.setSelected(false)
+                    return
                   }
                 }
 
@@ -389,26 +444,29 @@ class MenuCharacter extends Phaser.Scene {
                       )
                     ) {
                       player.setSelected(true, portrait.ID)
+                      return
                     }
                   }
                 })
               }
             } else if (player.type === 'cpu') {
-              player.characterPortraits.getChildren().forEach((portrait) => {
-                if (player.selectedBackText) {
-                  const selectedBackTextBounds =
-                    player.selectedBackText.getBounds()
-                  if (
-                    Phaser.Geom.Rectangle.ContainsPoint(
-                      selectedBackTextBounds,
-                      pointerCenter
-                    )
-                  ) {
-                    player.setSelected(false)
-                  }
+              // Back text
+              if (player.selectedBackText) {
+                const selectedBackTextBounds =
+                  player.selectedBackText.getBounds()
+                if (
+                  Phaser.Geom.Rectangle.ContainsPoint(
+                    selectedBackTextBounds,
+                    pointerCenter
+                  )
+                ) {
+                  player.setSelected(false)
+                  return
                 }
+              }
 
-                // Character Portrait
+              // Character Portrait
+              player.characterPortraits.getChildren().forEach((portrait) => {
                 if (portrait.visible) {
                   const portraitBounds = portrait.border.getBounds()
                   if (
@@ -418,6 +476,7 @@ class MenuCharacter extends Phaser.Scene {
                     )
                   ) {
                     player.setSelected(true, portrait.ID)
+                    return
                   }
                 }
               })
@@ -474,7 +533,7 @@ class MenuCharacter extends Phaser.Scene {
           this.playerPointers[playerIndex].body.setVelocityY(0)
           break
         case 'DOWN':
-          if (this.playerPointers[playerIndex].body.velocity.x < 0) return
+          if (this.playerPointers[playerIndex].body.velocity.y < 0) return
           this.playerPointers[playerIndex].body.setVelocityY(0)
           break
       }
@@ -508,9 +567,9 @@ class MenuCharacter extends Phaser.Scene {
               pointerCenter[player.index]
             )
           ) {
-            player.setHovered(true, portrait.ID)
+            portrait.setHovered(true)
           } else {
-            player.setHovered(false)
+            portrait.setHovered(false)
           }
         })
       } else if (player.type === 'cpu') {
@@ -519,9 +578,9 @@ class MenuCharacter extends Phaser.Scene {
             const portraitBounds = portrait.border.getBounds()
             if (!portraitBounds) return
             if (Phaser.Geom.Rectangle.ContainsPoint(portraitBounds, center)) {
-              player.setHovered(true, portrait.ID)
+              portrait.setHovered(true)
             } else {
-              player.setHovered(false)
+              portrait.setHovered(false)
             }
           })
         })

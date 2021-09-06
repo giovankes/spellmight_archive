@@ -2,8 +2,8 @@ import Phaser from 'phaser'
 import { CST } from '../../CST'
 
 // Character Elements
-import MageSpr from '../../assets/images/characters/mage_temp.png'
-import Fireball from '../../assets/images/abilities/fireball.png'
+import MageSpr from '../../assets/images/characters/mage/mage_temp.png'
+import Fireball from '../../assets/images/abilities/mage/fireball.png'
 
 // Stage Elements
 import FieldBG from '../../assets/stages/THE_FIELD/BG/BG.png'
@@ -49,13 +49,13 @@ class StageLoad extends Phaser.Scene {
     }
 
     // Load selected character assets
-    const charactersToLoad = []
+    this.charactersToLoad = []
     this.data.characters.forEach((character) => {
-      if (!charactersToLoad.includes(character.character)) {
-        charactersToLoad.push(character.character)
+      if (!this.charactersToLoad.includes(character.character)) {
+        this.charactersToLoad.push(character.character)
       }
     })
-    if (charactersToLoad.includes(1)) {
+    if (this.charactersToLoad.includes(1)) {
       this.load.image(CST.SPRITESHEET.CHARACTERS.MAGE, MageSpr)
       this.load.spritesheet(CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY, Fireball, {
         frameWidth: 64,
@@ -70,18 +70,20 @@ class StageLoad extends Phaser.Scene {
   }
 
   create() {
-    this.anims.create({
-      key: CST.ABILITIES.MAGE.FIREBALL.ANIMATION_KEY,
-      frames: this.anims.generateFrameNumbers(
-        CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY,
-        {
-          start: 0,
-          end: 7,
-        }
-      ),
-      frameRate: 10,
-      repeat: -1,
-    })
+    if (this.charactersToLoad.includes(1)) {
+      this.anims.create({
+        key: CST.ABILITIES.MAGE.FIREBALL.ANIMATION_KEY,
+        frames: this.anims.generateFrameNumbers(
+          CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY,
+          {
+            start: 0,
+            end: 7,
+          }
+        ),
+        frameRate: 10,
+        repeat: -1,
+      })
+    }
 
     if (this.data.stage === 0)
       this.changeScene(CST.SCENES.STAGES.FIELD, this.data)

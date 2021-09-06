@@ -5,7 +5,7 @@ import Character from './character'
 import StaticHitbox from '../attacks-abilities/static'
 import Projectile from '../attacks-abilities/projectile'
 
-class MageCharacter extends Character {
+class WitchCharacter extends Character {
   constructor({ Scene, x, y, isPlayer, index }) {
     // Write attacks here, pass them in to the super()
     const attacks = {
@@ -162,6 +162,20 @@ class MageCharacter extends Character {
       },
     }
 
+    const movementAnimations = {
+      idle: () => {
+        this.sprite.play(CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.IDLE)
+      },
+      run: () => {
+        this.sprite.play(CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.RUN)
+      },
+      jump: () => {
+        this.sprite.play(CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.JUMP)
+      },
+    }
+
+    const spr = CST.SPRITESHEET.CHARACTERS.WITCH.SPR
+
     super({
       // Edittable values
       maxJumps: 2,
@@ -174,22 +188,51 @@ class MageCharacter extends Character {
       sprintVelocity: 250,
       collisionBodySize: {
         width: 18,
-        height: 32,
-        offsetX: 14,
+        height: 41,
+        offsetX: 15,
         offsetY: 8,
       },
-      scale: 1.2,
+      scale: 1,
 
       // Do not touch
       Scene: Scene,
       x: x,
       y: y,
-      sprite: CST.SPRITESHEET.CHARACTERS.MAGE,
+      sprite: spr,
       isPlayer: isPlayer,
-      anims: [],
+      anims: [
+        {
+          key: CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.IDLE,
+          frames: {
+            key: spr,
+            startEnd: { start: 0, end: 0 },
+          },
+          frameRate: 10,
+          repeat: 0,
+        },
+        {
+          key: CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.RUN,
+          frames: {
+            key: spr,
+            startEnd: { start: 1, end: 4 },
+          },
+          frameRate: 10,
+          repeat: -1,
+        },
+        {
+          key: CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.JUMP,
+          frames: {
+            key: spr,
+            startEnd: { start: 5, end: 6 },
+          },
+          frameRate: 10,
+          repeat: -1,
+        },
+      ],
       attacks,
+      movementAnimations,
     })
   }
 }
 
-export default MageCharacter
+export default WitchCharacter

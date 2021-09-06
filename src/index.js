@@ -35,6 +35,8 @@ const config = {
     Input,
     HUD,
   ],
+  title: 'Spell Might',
+  autoFocus: true,
   input: {
     keyboard: true,
     mouse: true,

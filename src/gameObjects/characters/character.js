@@ -23,14 +23,21 @@ class Character extends Phaser.GameObjects.Container {
     ).setOrigin(0)
 
     // Create player label
-    this.label = new Phaser.GameObjects.Text(config.Scene, 20, -50, 'P1', {
-      fontSize: 50,
-      fontFamily: 'Adventurer',
-    }).setOrigin(0)
+    this.label = new Phaser.GameObjects.Text(
+      config.Scene,
+      5,
+      -15,
+      'P' + (config.index + 1),
+      {
+        fontSize: 10,
+        fontFamily: 'Adventurer',
+      }
+    ).setOrigin(0)
 
     // Add game objects to container
     this.add([this.sprite, this.label])
 
+    this.casting = false
     this.touchingGround = false
     this.hitMultiplier = 1
     this.currentJumps = 0
@@ -88,10 +95,11 @@ class Character extends Phaser.GameObjects.Container {
       config.collisionBodySize.width,
       config.collisionBodySize.height
     )
-    this.body.setOffset(
+    this.sprite.setDisplayOrigin(
       config.collisionBodySize.offsetX,
       config.collisionBodySize.offsetY
     )
+    // this.body.setOffset(config.collisionBodySize.offsetX, config.collisionBodySize.offsetY)
     this.setScale(config.scale)
     this.body.data = {
       touchingGround: false,
@@ -111,11 +119,11 @@ class Character extends Phaser.GameObjects.Container {
     switch (direction) {
       case 'pressed left':
         this.facingRight = false
-
         if (!this.sprite.flipX) {
           this.sprite.setFlipX(true)
-          this.body.setOffset(0, this.CharacterConfig.collisionBodySize.offsetY)
-          this.setX(this.x + this.CharacterConfig.collisionBodySize.offsetX / 4)
+          // this.sprite.setDisplayOrigin(config.collisionBodySize.offsetX, config.collisionBodySize.offsetY)
+          this.body.setOffset(this.CharacterConfig.collisionBodySize.offsetX, 0)
+          // this.setX(this.x + (this.CharacterConfig.collisionBodySize.offsetX / 4))
         }
         this.body.setOffset(0, 0)
         if (this.sprintSettings.left.doubleTap) {
@@ -134,11 +142,13 @@ class Character extends Phaser.GameObjects.Container {
 
         this.body.setMaxVelocity(this.CharacterConfig.normalVelocity, 2500)
         this.body.setAccelerationX(-this.CharacterConfig.accelerationX)
+        this.CharacterConfig.movementAnimations.run()
         break
 
       case 'unpressed left':
-        if (this.body.velocity.x < 0) {
+        if (!this.pressing.RIGHT) {
           this.body.setAccelerationX(0)
+          this.CharacterConfig.movementAnimations.idle()
         }
         if (this.sprintSettings.value) {
           this.sprintSettings.left.doubleTap = true
@@ -155,11 +165,8 @@ class Character extends Phaser.GameObjects.Container {
 
         if (this.sprite.flipX) {
           this.sprite.setFlipX(false)
-          this.body.setOffset(
-            this.CharacterConfig.collisionBodySize.offsetX,
-            this.CharacterConfig.collisionBodySize.offsetY
-          )
-          this.setX(this.x - this.CharacterConfig.collisionBodySize.offsetX / 4)
+          // this.sprite.setDisplayOrigin(config.collisionBodySize.offsetX, config.collisionBodySize.offsetY)
+          // this.setX(this.x - (this.CharacterConfig.collisionBodySize.offsetX / 4))
         }
         if (this.sprintSettings.right.doubleTap) {
           this.sprintSettings.value = true
@@ -177,11 +184,13 @@ class Character extends Phaser.GameObjects.Container {
 
         this.body.setMaxVelocity(this.CharacterConfig.normalVelocity, 2500)
         this.body.setAccelerationX(this.CharacterConfig.accelerationX)
+        this.CharacterConfig.movementAnimations.run()
         break
 
       case 'unpressed right':
-        if (this.body.velocity.x > 0) {
+        if (!this.pressing.LEFT) {
           this.body.setAccelerationX(0)
+          this.CharacterConfig.movementAnimations.idle()
         }
         if (this.sprintSettings.value) {
           this.sprintSettings.right.doubleTap = true
@@ -205,6 +214,8 @@ class Character extends Phaser.GameObjects.Container {
 
         this.body.setVelocityY(-this.CharacterConfig.jumpHeight)
         this.touchingGround = false
+
+        this.CharacterConfig.movementAnimations.jump()
         break
 
       case 'pressed down':

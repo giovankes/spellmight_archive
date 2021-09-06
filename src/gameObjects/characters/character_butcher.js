@@ -5,7 +5,7 @@ import Character from './character'
 import StaticHitbox from '../attacks-abilities/static'
 import Projectile from '../attacks-abilities/projectile'
 
-class MageCharacter extends Character {
+class ButcherCharacter extends Character {
   constructor({ Scene, x, y, isPlayer, index }) {
     // Write attacks here, pass them in to the super()
     const attacks = {
@@ -162,6 +162,17 @@ class MageCharacter extends Character {
       },
     }
 
+    const movementAnimations = {
+      idle: () => {
+        this.sprite.play(CST.SPRITESHEET.CHARACTERS.BUTCHER.ANIMS.IDLE)
+      },
+      run: () => {
+        this.sprite.play(CST.SPRITESHEET.CHARACTERS.BUTCHER.ANIMS.RUN)
+      },
+    }
+
+    const spr = CST.SPRITESHEET.CHARACTERS.BUTCHER.SPR
+
     super({
       // Edittable values
       maxJumps: 2,
@@ -170,26 +181,46 @@ class MageCharacter extends Character {
       accelerationX: 1500,
       accelerationDown: 3000,
       drag: 1500,
-      normalVelocity: 150,
-      sprintVelocity: 250,
+      normalVelocity: 120,
+      sprintVelocity: 220,
       collisionBodySize: {
-        width: 18,
-        height: 32,
-        offsetX: 14,
-        offsetY: 8,
+        width: 25,
+        height: 45,
+        offsetX: 5,
+        offsetY: 5,
       },
-      scale: 1.2,
+      scale: 0.8,
 
       // Do not touch
       Scene: Scene,
       x: x,
       y: y,
-      sprite: CST.SPRITESHEET.CHARACTERS.MAGE,
+      sprite: spr,
       isPlayer: isPlayer,
-      anims: [],
+      anims: [
+        {
+          key: CST.SPRITESHEET.CHARACTERS.BUTCHER.ANIMS.IDLE,
+          frames: {
+            key: spr,
+            startEnd: { start: 0, end: 0 },
+          },
+          frameRate: 10,
+          repeat: 0,
+        },
+        {
+          key: CST.SPRITESHEET.CHARACTERS.BUTCHER.ANIMS.RUN,
+          frames: {
+            key: spr,
+            startEnd: { start: 10, end: 18 },
+          },
+          frameRate: 10,
+          repeat: 0,
+        },
+      ],
       attacks,
+      movementAnimations,
     })
   }
 }
 
-export default MageCharacter
+export default ButcherCharacter

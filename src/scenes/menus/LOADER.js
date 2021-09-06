@@ -8,15 +8,20 @@ import ButtonOptions from '../../assets/images/ui/menu/button-options.png'
 import MenuBar from '../../assets/images/ui/menu/menu-bar.png'
 import MenuSelected from '../../assets/images/ui/menu/menu-selected.png'
 import MenuItem from '../../assets/images/ui/menu/menu-item.png'
-import CharacterPortraitMage from '../../assets/images/characters/mage_temp_portrait.png'
-import CharacterMage from '../../assets/images/characters/mage_temp.png'
+import Cleaver from '../../assets/images/abilities/butcher/cleaver.png'
+import CharacterPortraitMage from '../../assets/images/characters/mage/mage_temp_portrait.png'
+import CharacterMage from '../../assets/images/characters/mage/mage_temp.png'
+import CharacterWitch from '../../assets/images/characters/witch/witch-spritesheet-temp.png'
+import CharacterPortraitWitch from '../../assets/images/characters/witch/witch-temp-portrait.png'
+import CharacterButcher from '../../assets/images/characters/butcher/butcher-sprite.png'
 import Back from '../../assets/images/ui/menu/back.png'
 import Ready from '../../assets/images/ui/menu/ready.png'
 import mapGame from '../../assets/images/ui/map/map.svg'
 import mapScuffed from '../../assets/images/ui/map/region1.png'
-
+import CharacterPortraitbutcher from '../../assets/images/characters/butcher/butcher_portrait.png'
 import playersController from '../../assets/images/ui/menu/controller.png'
 import playersKeyboard from '../../assets/images/ui/menu/keyboard.png'
+import CharacterButcherRun from '../../assets/images/characters/butcher/butcher-run.png'
 class MenuLoad extends Phaser.Scene {
   constructor() {
     super({ key: CST.SCENES.MENU.LOAD })
@@ -27,17 +32,42 @@ class MenuLoad extends Phaser.Scene {
     this.load.image(CST.IMAGE.MENU.MAIN_BG, BackgroundMain)
     this.load.image(CST.IMAGE.UI.MENU.BUTTON_BIG, ButtonBig)
     this.load.image(CST.IMAGE.UI.MENU.BUTTON_OPTIONS, ButtonOptions)
-    this.load.image(CST.SPRITESHEET.CHARACTERS.MAGE, CharacterMage)
     this.load.image(CST.IMAGE.UI.MENU.MENU_BAR, MenuBar)
     this.load.image(CST.IMAGE.UI.MENU.MENU_SELECTED, MenuSelected)
     this.load.image(CST.IMAGE.UI.MENU.MENU_ITEM, MenuItem)
     this.load.image(CST.IMAGE.UI.MENU.BACK, Back)
-    this.load.image(CST.IMAGE.CHARACTER.MAGE.PORTRAIT, CharacterPortraitMage)
     this.load.image(CST.IMAGE.UI.MENU.READY, Ready)
     this.load.svg(CST.SCENES.MENU.MAP, mapGame)
     this.load.image(CST.SCENES.MENU.MAP_SCUFFED, mapScuffed)
     this.load.image(CST.IMAGE.MENU.PLAYERS_CONTROLLER, playersController)
     this.load.image(CST.IMAGE.MENU.PLAYERS_KEYBOARD, playersKeyboard)
+    this.load.image(
+      CST.IMAGE.CHARACTER.BUTCHER.PORTRAIT,
+      CharacterPortraitbutcher
+    )
+    this.load.image(CST.SPRITESHEET.CHARACTERS.MAGE, CharacterMage)
+    this.load.image(CST.IMAGE.CHARACTER.MAGE.PORTRAIT, CharacterPortraitMage)
+    this.load.image(CST.IMAGE.CHARACTER.WITCH.PORTRAIT, CharacterPortraitWitch)
+    this.load.spritesheet(
+      CST.SPRITESHEET.CHARACTERS.WITCH.SPR,
+      CharacterWitch,
+      {
+        frameWidth: 48,
+        frameHeight: 48,
+        startFrame: 0,
+      }
+    )
+
+    this.load.spritesheet(
+      CST.SPRITESHEET.CHARACTERS.BUTCHER.SPR,
+      CharacterButcher,
+      {
+        frameWidth: 32,
+        frameHeight: 48,
+        startFrame: 0,
+      }
+    )
+
     let loadingBar = this.add.graphics({
       fillStyle: {
         color: 0xffffff,

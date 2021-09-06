@@ -6,6 +6,12 @@ export const CST = {
         ANIMATION_KEY: 'ABILITY_MAGE_FIREBALL_ANIMS',
       },
     },
+    BUTCHER: {
+      CLEAVER: {
+        TEXTURE_KEY: 'ABILITY_BUTCHER_CLEAVER',
+        ANIMATION_KEY: 'ABILITY_BUTCHER_CLEAVER_ANIMS',
+      },
+    },
   },
   SCENES: {
     MENU: {
@@ -75,6 +81,12 @@ export const CST = {
       MAGE: {
         PORTRAIT: 'IMG_CHARACTER_PORTAIT_MAGE',
       },
+      WITCH: {
+        PORTRAIT: 'IMG_CHARACTER_PORTRAIT_WITCH',
+      },
+      BUTCHER: {
+        PORTRAIT: 'IMG_CHARACTER_PORTRAIT_BUTCHER',
+      },
     },
   },
   TEXT: {
@@ -88,6 +100,21 @@ export const CST = {
     CHARACTERS: {
       TEST: 'SPR_CHARACTER_TEST',
       MAGE: 'SPR_CHARACTER_MAGE',
+      WITCH: {
+        SPR: 'SPR_CHARACTER_WITCH',
+        ANIMS: {
+          IDLE: 'SPR_CHARACTER_WITCH_IDLE',
+          RUN: 'SPR_CHARACTER_WITCH_RUN',
+          JUMP: 'SPR_CHARACTER_WITCH_JUMP',
+        },
+      },
+      BUTCHER: {
+        SPR: 'SPR_CHARACTER_BUTCHER',
+        ANIMS: {
+          IDLE: 'SPR_CHARACTER_BUTCHER_IDLE',
+          RUN: 'SPR_CHARACTER_BUTCHER_RUN',
+        },
+      },
     },
   },
 }

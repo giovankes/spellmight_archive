@@ -2,7 +2,8 @@ import Phaser from 'phaser'
 import { CST } from '../../CST'
 
 import MageCharacter from '../../gameObjects/characters/character_mage'
-
+import WitchCharacter from '../../gameObjects/characters/character_witch'
+import ButcherCharacter from '../../gameObjects/characters/character_butcher'
 class Stage extends Phaser.Scene {
   constructor(config) {
     super({
@@ -126,26 +127,45 @@ class Stage extends Phaser.Scene {
       }
       // Add players and their characters
       if (character.type === 'player') {
+        let newPlayer
         switch (character.character) {
           case 1:
-            const newPlayer = new MageCharacter({
+            newPlayer = new MageCharacter({
               Scene: this,
               x,
               y,
               isPlayer: true,
               index,
             })
-            newPlayer.setDepth(2)
-            this.Characters.add(newPlayer)
             break
+          case 2:
+            newPlayer = new WitchCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
+            break
+          case 3:
+            newPlayer = new ButcherCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
           default:
             break
         }
+        newPlayer.setDepth(2)
+        this.Characters.add(newPlayer)
         // Add CPU's and their characters
       } else if (character.type === 'cpu') {
+        let newCPU
         switch (character.character) {
           case 1:
-            const newCPU = new MageCharacter({
+            newCPU = new MageCharacter({
               Scene: this,
               x,
               y,
@@ -154,9 +174,28 @@ class Stage extends Phaser.Scene {
             newCPU.setDepth(2)
             this.Characters.add(newCPU)
             break
+          case 2:
+            newCPU = new WitchCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
+            break
+          case 3:
+            newCPU = new ButcherCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
           default:
             break
         }
+        newCPU.setDepth(2)
+        this.Characters.add(newCPU)
       }
     })
 
@@ -265,6 +304,10 @@ class Stage extends Phaser.Scene {
     if (playerIndex + 1 > players) return
 
     const Character = this.Characters.getChildren()[playerIndex]
+    if (Character.casting) {
+      this.unpressEverything(Character)
+      return
+    }
     if (status === 'down') {
       let variant = null
       if (Character.pressing.LEFT || Character.pressing.RIGHT)
@@ -342,6 +385,22 @@ class Stage extends Phaser.Scene {
           break
       }
     }
+  }
+
+  unpressEverything(Character) {
+    Character.movementManager('unpressed up')
+    Character.pressing.UP = false
+    Character.movementManager('unpressed down')
+    Character.pressing.DOWN = false
+    Character.movementManager('unpressed left')
+    Character.pressing.LEFT = false
+    Character.movementManager('unpressed right')
+    Character.pressing.RIGHT = false
+
+    Character.pressing.A = false
+    Character.pressing.B = false
+    Character.pressing.X = false
+    Character.pressing.Y = false
   }
 
   update() {
