@@ -2,12 +2,11 @@ import Phaser from 'phaser'
 import { CST } from '../../CST'
 
 import MenuRectangle from '../../gameObjects/menu/menu-rectangle'
+import PlayerController, { PLAYERS } from '../../playerControllers'
 
 class MenuCharacter extends Phaser.Scene {
   constructor() {
     super({ key: CST.SCENES.MENU.CHARACTER })
-
-    this.characters = []
   }
 
   init(data) {
@@ -21,43 +20,297 @@ class MenuCharacter extends Phaser.Scene {
       Scene: this,
       currentMenuText: this.currentMenuText || 'Character Select',
     })
-    const mageTextY = 200
-    const playerTitleY = 60
-    const playerTitleStyle = {
-      fontSize: 16,
-      fontFamily: 'Superscript',
-      color: '#FFFFFF',
-      resolution: 6,
-    }
 
-    const nameStyle = {
-      fontSize: 10,
-      fontFamily: 'Superscript',
-      color: '#FFFFFF',
-      resolution: 6,
-    }
-
-    const readyStyle = {
-      fontSize: 8,
-      fontFamily: 'Superscript',
-      color: '#FFFFFF',
-      resolution: 6,
-    }
-
-    const playerOutlineY = 80
     const playerOutlineWidth = 80
     const playerOutlineHeight = 140
 
-    //Portrait
-    const portraitOutlineY = 85
-    const portraitOutlineWidth = 35
-    const portraitOutlineHeight = 35
+    class CharacterSelectPortrait extends Phaser.GameObjects.Container {
+      constructor({ x, y, scene, characterID, imageKey, parent }) {
+        super(scene, x, y)
+
+        this.scene = scene
+        this.ID = characterID
+        this.border = new Phaser.GameObjects.Rectangle(
+          scene,
+          0,
+          0,
+          30,
+          30,
+          0x00000,
+          0
+        )
+          .setStrokeStyle(2, 0xffffff, 1)
+          .setVisible(false)
+
+        this.add([
+          new Phaser.GameObjects.Image(scene, 0, 0, imageKey).setDisplaySize(
+            30,
+            30
+          ),
+          this.border,
+        ])
+      }
+
+      setHovered(boolean) {
+        this.border.setVisible(boolean)
+      }
+    }
+    class CharacterSelectContainer extends Phaser.GameObjects.Container {
+      constructor({ x, y, scene, index }) {
+        super(scene, x, y)
+
+        this.characterSelected = 0
+        this.type = null
+        this.selectedCharacter = null
+        this.scene = scene
+        this.index = index
+
+        const characterPortraitOne = new CharacterSelectPortrait({
+          x: 20,
+          y: 50,
+          scene,
+          parent: this,
+          characterID: 1,
+          imageKey: CST.IMAGE.CHARACTER.MAGE.PORTRAIT,
+        })
+        this.characterPortraits = new Phaser.GameObjects.Group(scene, [
+          characterPortraitOne,
+        ])
+        this.title = new Phaser.GameObjects.Text(scene, 30, 0, 'INACTIVE', {
+          fontSize: 16,
+          fontFamily: 'Superscript',
+          color: '#FFFFFF',
+          resolution: 6,
+        })
+        this.add([
+          this.title,
+          new Phaser.GameObjects.Rectangle(
+            scene,
+            0,
+            30,
+            playerOutlineWidth,
+            playerOutlineHeight,
+            0
+          )
+            .setStrokeStyle(4, 0xffffff)
+            .setOrigin(0),
+          characterPortraitOne,
+        ])
+
+        scene.add.existing(this)
+      }
+
+      setHovered(boolean, characterID) {
+        const portraits = this.characterPortraits.getChildren()
+        portraits.forEach((portrait) => {
+          if (!boolean) portrait.setHovered(false)
+          if (characterID === portrait.ID) {
+            portrait.setHovered(true)
+          } else {
+            portrait.setHovered(false)
+          }
+        })
+      }
+
+      setSelected(boolean, characterID) {
+        if (!boolean) {
+          if (this.selectedCharacter && this.selectedBackText) {
+            this.selectedCharacter.destroy()
+            this.selectedBackText.destroy()
+          }
+          this.characterPortraits.getChildren().forEach((characterPortrait) => {
+            characterPortrait.setVisible(true)
+          })
+          this.characterSelected = 0
+        } else {
+          this.characterPortraits.getChildren().forEach((characterPortrait) => {
+            characterPortrait.setVisible(false)
+          })
+          let characterTexture = null
+          switch (characterID) {
+            case 1:
+              characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE
+              break
+            default:
+              characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE
+              break
+          }
+
+          this.selectedCharacter = new Phaser.GameObjects.Image(
+            this.scene,
+            35,
+            100,
+            characterTexture
+          ).setScale(0.6)
+          this.selectedBackText = new Phaser.GameObjects.Text(
+            this.scene,
+            35,
+            35,
+            'BACK',
+            {
+              fontFamily: 'Adventurer',
+              color: '#FFFFFF',
+            }
+          )
+          this.add([this.selectedCharacter, this.selectedBackText])
+          this.characterSelected = characterID
+        }
+      }
+
+      setStatus(type) {
+        switch (type) {
+          case 'player':
+            this.title.setText(`P (${this.index + 1})`)
+            this.title.setTint(0xffffff)
+            this.title.setX(22)
+            this.setSelected(false)
+            this.characterPortraits
+              .getChildren()
+              .forEach((characterPortrait) => {
+                characterPortrait.setVisible(true)
+              })
+            this.type = 'player'
+            break
+
+          case 'cpu':
+            this.title.setText(`CPU (${this.index + 1})`)
+            this.title.setX(15)
+            this.title.setTint(0x5848ea)
+            this.setSelected(false)
+            this.characterPortraits
+              .getChildren()
+              .forEach((characterPortrait) => {
+                characterPortrait.setVisible(true)
+              })
+            this.type = 'cpu'
+            break
+          case 'inactive':
+            this.title.setText('INACTIVE')
+            this.title.setTint(0x990000)
+            this.title.setX(5)
+            this.setSelected(false)
+            this.characterPortraits
+              .getChildren()
+              .forEach((characterPortrait) => {
+                characterPortrait.setVisible(false)
+              })
+            this.type = 'inactive'
+            break
+        }
+      }
+    }
+    this.CustomPointerClass = class CustomPointer extends (
+      Phaser.GameObjects.Container
+    ) {
+      constructor({ scene, playerIndex }) {
+        let x = 80
+        let y = 100
+        let fillColor = 0xa14545
+        switch (playerIndex) {
+          case 0:
+            x = 80
+            y = 100
+            fillColor = 0xa14545
+            break
+          case 1:
+            x = 170
+            y = 100
+            fillColor = 0x56a145
+            break
+          case 2:
+            x = 40
+            y = scene.game.renderer.height - 40
+            fillColor = 0x458ca1
+            break
+          case 3:
+            x = scene.game.renderer.width - 40
+            y = scene.game.renderer.height - 40
+            fillColor = 0x7645a1
+            break
+          default:
+            break
+        }
+
+        super(scene, x, y, [
+          new Phaser.GameObjects.Rectangle(scene, 0, 0, 10, 10, fillColor),
+        ])
+
+        scene.physics.add.existing(this, false)
+        this.body.setOffset(-5, -5)
+        this.body.setSize(10, 10)
+
+        this.setDepth(2)
+
+        scene.add.existing(this)
+      }
+    }
+
+    const playerOne = new CharacterSelectContainer({
+      x: 60,
+      y: 50,
+      scene: this,
+      index: 0,
+    })
+
+    const playerTwo = new CharacterSelectContainer({
+      x: 150,
+      y: 50,
+      scene: this,
+      index: 1,
+    })
+
+    const playerThree = new CharacterSelectContainer({
+      x: 240,
+      y: 50,
+      scene: this,
+      index: 2,
+    })
+
+    const playerFour = new CharacterSelectContainer({
+      x: 330,
+      y: 50,
+      scene: this,
+      index: 3,
+    })
+
+    this.players = this.add.group([
+      playerOne,
+      playerTwo,
+      playerThree,
+      playerFour,
+    ])
+
+    this.players.getChildren()[0].setStatus('player')
+    this.players.getChildren()[1].setStatus('cpu')
+    this.players.getChildren()[2].setStatus('inactive')
+    this.players.getChildren()[3].setStatus('inactive')
+
+    this.playerPointers = []
+
+    PLAYERS.forEach((player, index) => {
+      this.players.getChildren()[index].setStatus('player')
+      this.playerPointers.push(
+        new this.CustomPointerClass({
+          scene: this,
+          playerIndex: index,
+        })
+      )
+    })
+
+    // Add player controller
+    this.PlayerController = new PlayerController({
+      Scene: this,
+    })
+
+    if (PLAYERS.length) {
+      this.PlayerController.updatePlayers()
+    }
 
     this.bottomTitle = this.add
       .text(
         this.game.renderer.width / 2,
         this.game.renderer.height - 25,
-        'Select Treasure Hunter',
+        'READY?',
         {
           fontSize: 20,
           fontFamily: 'Superscript',
@@ -66,166 +319,216 @@ class MenuCharacter extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
+    this.scene.get(CST.SCENES.INPUT).getCurrentScene(CST.SCENES.MENU.CHARACTER)
+  }
 
-    const portraitOutline = this.add
-      .rectangle(
-        65,
-        portraitOutlineY,
-        portraitOutlineHeight,
-        portraitOutlineWidth,
-        0,
-        0
-      )
-      .setStrokeStyle(4, 0xffffff)
-      .setOrigin(0)
-      .setVisible(false)
-    const playerOneTitle = this.add
-      .text(105, playerTitleY, 'P1', playerTitleStyle)
-      .setOrigin(0.5)
-    const playerOneOutline = this.add
-      .rectangle(
-        60,
-        playerOutlineY,
-        playerOutlineWidth,
-        playerOutlineHeight,
-        0,
-        0
-      )
-      .setStrokeStyle(4, 0xffffff)
-      .setOrigin(0)
-    const charText = this.add
-      .text(70, mageTextY, 'Dark mage', nameStyle)
-      .setVisible(false)
+  changeScene(to, config) {
+    this.scene.start(to, config || null)
+    this.scene.get(CST.SCENES.INPUT).getCurrentScene(null)
+  }
 
-    const treasureHunter = this.add
-      .image(60, playerOutlineY + 20, CST.SPRITESHEET.CHARACTERS.MAGE)
-      .setScale(0.7)
-      .setOrigin(0)
-      .setInteractive()
-      .setVisible(false)
-
-    const Back = this.add
-      .image(60, playerOutlineY, CST.IMAGE.UI.MENU.BACK)
-      .setScale(0.06)
-      .setOrigin(0)
-      .setInteractive()
-      .setVisible(false)
-      .on('pointerup', () => {
-        treasureHunter.setVisible(false)
-        magePortraitTemp.setVisible(true)
-        Back.setVisible(false)
-        charReady.setVisible(false)
-        readyUp.setVisible(false)
-      })
-
-    const charReady = this.add
-      .text(90, mageTextY / 2 - 15, 'Dark mage', readyStyle)
-      .setVisible(false)
-
-    const readyUp = this.add
-      .image(64, mageTextY - 15, CST.IMAGE.UI.MENU.READY)
-      .setScale(0.15)
-      .setOrigin(0)
-      .setInteractive()
-      .setVisible(false)
-      .on('pointerup', () => {
-        this.scene.start(CST.SCENES.STAGES.LOAD, {
-          character: 1,
-          stage: 1,
+  getControls(key, playerIndex, status) {
+    const playerOne = this.players.getChildren()[0]
+    const playerTwo = this.players.getChildren()[1]
+    const playerThree = this.players.getChildren()[2]
+    const playerFour = this.players.getChildren()[3]
+    if (this.players.getChildren()[playerIndex].type !== 'player') {
+      this.players.getChildren()[playerIndex].setStatus('player')
+      this.playerPointers.push(
+        new this.CustomPointerClass({
+          scene: this,
+          playerIndex: playerIndex,
         })
-      })
-
-    const magePortraitTemp = this.add
-      .image(65, playerOutlineY + 5, CST.IMAGE.CHARACTER.MAGE.PORTRAIT)
-      .setScale(0.2)
-      .setOrigin(0)
-      .setInteractive()
-      .setVisible(true)
-      .on('pointerover', () => {
-        charText.setVisible(true)
-        portraitOutline.setVisible(true)
-      })
-      .on('pointerout', () => {
-        charText.setVisible(false)
-        portraitOutline.setVisible(false)
-      })
-      .on('pointerup', () => {
-        treasureHunter.setVisible(true)
-        magePortraitTemp.setVisible(false)
-        charReady.setVisible(true)
-        Back.setVisible(true)
-        readyUp.setVisible(true)
-      })
-    this.playerOne = this.add.group([playerOneTitle, playerOneOutline])
-
-    const playerTwoTitle = this.add
-      .text(195, playerTitleY, 'P2', playerTitleStyle)
-      .setOrigin(0.5)
-    const playerTwoOutline = this.add
-      .rectangle(
-        150,
-        playerOutlineY,
-        playerOutlineWidth,
-        playerOutlineHeight,
-        0,
-        0
       )
-      .setStrokeStyle(4, 0xffffff)
-      .setOrigin(0)
-    this.playerTwo = this.add.group([playerTwoTitle, playerTwoOutline])
+    }
 
-    const playerThreeTitle = this.add
-      .text(285, playerTitleY, 'P3', playerTitleStyle)
-      .setOrigin(0.5)
-    const playerThreeOutline = this.add
-      .rectangle(
-        240,
-        playerOutlineY,
-        playerOutlineWidth,
-        playerOutlineHeight,
-        0,
-        0
-      )
-      .setStrokeStyle(4, 0xffffff)
-      .setOrigin(0)
-    this.playerThree = this.add.group([playerThreeTitle, playerThreeOutline])
+    if (key === 'B' || key === 'ESC') {
+      this.changeScene(CST.SCENES.MENU.MAIN)
+    }
+    if (status === 'down') {
+      switch (key) {
+        case 'LEFT':
+          this.playerPointers[playerIndex].body.setVelocityX(-200)
+          break
+        case 'RIGHT':
+          this.playerPointers[playerIndex].body.setVelocityX(200)
+          break
+        case 'UP':
+          this.playerPointers[playerIndex].body.setVelocityY(-200)
+          break
+        case 'DOWN':
+          this.playerPointers[playerIndex].body.setVelocityY(200)
+          break
+        case 'A':
+          const pointerCenter = this.playerPointers[playerIndex].body.center
+          this.players.getChildren().forEach((player) => {
+            if (player.type === 'player') {
+              if (player.index === playerIndex) {
+                // Back text
+                if (player.selectedBackText) {
+                  const selectedBackTextBounds =
+                    player.selectedBackText.getBounds()
+                  if (
+                    Phaser.Geom.Rectangle.ContainsPoint(
+                      selectedBackTextBounds,
+                      pointerCenter
+                    )
+                  ) {
+                    player.setSelected(false)
+                  }
+                }
 
-    const playerFourTitle = this.add
-      .text(375, playerTitleY, 'P4', playerTitleStyle)
-      .setOrigin(0.5)
-    const playerFourOutline = this.add
-      .rectangle(
-        330,
-        playerOutlineY,
-        playerOutlineWidth,
-        playerOutlineHeight,
-        0,
-        0
-      )
-      .setStrokeStyle(4, 0xffffff)
-      .setOrigin(0)
-    this.playerFour = this.add.group([playerFourTitle, playerFourOutline])
+                // Character Portrait
+                player.characterPortraits.getChildren().forEach((portrait) => {
+                  if (portrait.visible) {
+                    const portraitBounds = portrait.border.getBounds()
+                    if (
+                      Phaser.Geom.Rectangle.ContainsPoint(
+                        portraitBounds,
+                        pointerCenter
+                      )
+                    ) {
+                      player.setSelected(true, portrait.ID)
+                    }
+                  }
+                })
+              }
+            } else if (player.type === 'cpu') {
+              player.characterPortraits.getChildren().forEach((portrait) => {
+                if (player.selectedBackText) {
+                  const selectedBackTextBounds =
+                    player.selectedBackText.getBounds()
+                  if (
+                    Phaser.Geom.Rectangle.ContainsPoint(
+                      selectedBackTextBounds,
+                      pointerCenter
+                    )
+                  ) {
+                    player.setSelected(false)
+                  }
+                }
 
-    this.enter = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.ENTER
-    )
-  }
-
-  startScene() {
-    this.scene.start(CST.SCENES.MENU.STAGES)
-  }
-
-  enterGame() {
-    this.scene.start(CST.SCENES.STAGES.LOAD, {
-      character: 1,
-      stage: 1,
-    })
+                // Character Portrait
+                if (portrait.visible) {
+                  const portraitBounds = portrait.border.getBounds()
+                  if (
+                    Phaser.Geom.Rectangle.ContainsPoint(
+                      portraitBounds,
+                      pointerCenter
+                    )
+                  ) {
+                    player.setSelected(true, portrait.ID)
+                  }
+                }
+              })
+            }
+          })
+          if (this.bottomTitle.visible) {
+            const startTitleBounds = this.bottomTitle.getBounds()
+            if (
+              Phaser.Geom.Rectangle.ContainsPoint(
+                startTitleBounds,
+                pointerCenter
+              )
+            ) {
+              const characters = []
+              this.players.getChildren().forEach((character) => {
+                if (character.type !== 'inactive') {
+                  characters.push({
+                    type: character.type,
+                    character: character.characterSelected,
+                  })
+                }
+              })
+              this.changeScene(CST.SCENES.MENU.STAGES, characters)
+            }
+          }
+          break
+        case 'ENTER/START':
+          if (this.bottomTitle.visible) {
+            const characters = []
+            this.players.getChildren().forEach((character) => {
+              if (character.type !== 'inactive') {
+                characters.push({
+                  type: character.type,
+                  character: character.characterSelected,
+                })
+              }
+            })
+            this.changeScene(CST.SCENES.MENU.STAGES, characters)
+          }
+      }
+    }
+    if (status === 'up') {
+      switch (key) {
+        case 'LEFT':
+          if (this.playerPointers[playerIndex].body.velocity.x > 0) return
+          this.playerPointers[playerIndex].body.setVelocityX(0)
+          break
+        case 'RIGHT':
+          if (this.playerPointers[playerIndex].body.velocity.x < 0) return
+          this.playerPointers[playerIndex].body.setVelocityX(0)
+          break
+        case 'UP':
+          if (this.playerPointers[playerIndex].body.velocity.y > 0) return
+          this.playerPointers[playerIndex].body.setVelocityY(0)
+          break
+        case 'DOWN':
+          if (this.playerPointers[playerIndex].body.velocity.x < 0) return
+          this.playerPointers[playerIndex].body.setVelocityY(0)
+          break
+      }
+    }
   }
 
   update() {
-    if (Phaser.Input.Keyboard.JustDown(this.enter)) {
-      this.enterGame()
-    }
+    const players = this.players.getChildren()
+    let playersReady = true
+    let playerAmount = 0
+
+    const pointerCenter = []
+    this.playerPointers.forEach((pointer) => {
+      pointerCenter.push(pointer.body.center)
+    })
+    players.forEach((player) => {
+      if (player.type === 'cpu' || player.type === 'player') {
+        playerAmount += 1
+        if (player.characterSelected === 0) {
+          playersReady = false
+        }
+      }
+
+      if (player.type === 'player') {
+        player.characterPortraits.getChildren().forEach((portrait) => {
+          const portraitBounds = portrait.border.getBounds()
+          if (!pointerCenter[player.index] || !portraitBounds) return
+          if (
+            Phaser.Geom.Rectangle.ContainsPoint(
+              portraitBounds,
+              pointerCenter[player.index]
+            )
+          ) {
+            player.setHovered(true, portrait.ID)
+          } else {
+            player.setHovered(false)
+          }
+        })
+      } else if (player.type === 'cpu') {
+        pointerCenter.forEach((center) => {
+          player.characterPortraits.getChildren().forEach((portrait) => {
+            const portraitBounds = portrait.border.getBounds()
+            if (!portraitBounds) return
+            if (Phaser.Geom.Rectangle.ContainsPoint(portraitBounds, center)) {
+              player.setHovered(true, portrait.ID)
+            } else {
+              player.setHovered(false)
+            }
+          })
+        })
+      }
+    })
+    if (playersReady && playerAmount > 1) this.bottomTitle.setVisible(true)
+    else this.bottomTitle.setVisible(false)
   }
 }
 

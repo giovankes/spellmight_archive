@@ -13,6 +13,10 @@ import CharacterMage from '../../assets/images/characters/mage_temp.png'
 import Back from '../../assets/images/ui/menu/back.png'
 import Ready from '../../assets/images/ui/menu/ready.png'
 import mapGame from '../../assets/images/ui/map/map.svg'
+import mapScuffed from '../../assets/images/ui/map/region1.png'
+
+import playersController from '../../assets/images/ui/menu/controller.png'
+import playersKeyboard from '../../assets/images/ui/menu/keyboard.png'
 class MenuLoad extends Phaser.Scene {
   constructor() {
     super({ key: CST.SCENES.MENU.LOAD })
@@ -31,6 +35,9 @@ class MenuLoad extends Phaser.Scene {
     this.load.image(CST.IMAGE.CHARACTER.MAGE.PORTRAIT, CharacterPortraitMage)
     this.load.image(CST.IMAGE.UI.MENU.READY, Ready)
     this.load.svg(CST.SCENES.MENU.MAP, mapGame)
+    this.load.image(CST.SCENES.MENU.MAP_SCUFFED, mapScuffed)
+    this.load.image(CST.IMAGE.MENU.PLAYERS_CONTROLLER, playersController)
+    this.load.image(CST.IMAGE.MENU.PLAYERS_KEYBOARD, playersKeyboard)
     let loadingBar = this.add.graphics({
       fillStyle: {
         color: 0xffffff,
@@ -44,20 +51,21 @@ class MenuLoad extends Phaser.Scene {
         this.game.renderer.width * percent,
         50
       )
-      console.log(percent)
-    })
-
-    this.load.on('complete', () => {
-      console.log('done')
     })
   }
 
   create() {
-    // this.scene.start(CST.SCENES.STAGES.LOAD, {
-    //     character: 1,
-    //     stage: 1
-    // })
+    this.scene.start(CST.SCENES.INPUT)
     this.scene.start(CST.SCENES.MENU.ENTRY)
+
+    // this.scene.start(CST.SCENES.STAGES.LOAD, {
+    //     stage: 0,
+    //     characters: [
+    //         {
+    //             character: 0
+    //         }
+    //     ]
+    // })
   }
 }
 

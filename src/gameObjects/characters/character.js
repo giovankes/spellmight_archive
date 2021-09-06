@@ -1,17 +1,35 @@
 import Phaser from 'phaser'
 import UUIDv4 from 'uuid/v4'
+import { CST } from '../../CST'
 
 import StaticHitbox from '../attacks-abilities/static'
 
-class Character extends Phaser.GameObjects.Sprite {
+class Character extends Phaser.GameObjects.Container {
   constructor(config) {
     super(config.Scene, config.x, config.y)
 
-    this.physicsBody = config.Scene.physics.add.sprite(
-      config.x,
-      config.y,
+    // Add object to scene
+    config.Scene.add.existing(this)
+
+    // Add Physics Body
+    config.Scene.physics.add.existing(this, false)
+
+    // Create Sprite
+    this.sprite = new Phaser.GameObjects.Sprite(
+      config.Scene,
+      0,
+      0,
       config.sprite
-    )
+    ).setOrigin(0)
+
+    // Create player label
+    this.label = new Phaser.GameObjects.Text(config.Scene, 20, -50, 'P1', {
+      fontSize: 50,
+      fontFamily: 'Adventurer',
+    }).setOrigin(0)
+
+    // Add game objects to container
+    this.add([this.sprite, this.label])
 
     this.touchingGround = false
     this.hitMultiplier = 1
@@ -44,106 +62,68 @@ class Character extends Phaser.GameObjects.Sprite {
         frameRate,
         repeat,
       })
-      console.log(config.Scene.anims)
     })
 
     // Class variables for functions
     this.CharacterConfig = config
     this.sprintTimeoutTime = 300
+    this.pressing = {
+      UP: false,
+      DOWN: false,
+      LEFT: false,
+      RIGHT: false,
+      A: false,
+      B: false,
+      X: false,
+      Y: false,
+    }
 
-    // Set correct physicsBody config
-    this.physicsBody.setGravityY(1500)
-    this.physicsBody.body.collideWorldBounds = true
-    this.physicsBody.setDrag(config.drag, 0)
-    this.physicsBody.body.onWorldBounds = true
-    // this.physicsBody.body.setBoundsRectangle(config.collisionBox)
-    this.physicsBody.body.setSize(
+    // Set correct body config
+    this.body.setGravityY(1500)
+    this.body.collideWorldBounds = true
+    this.body.setDrag(config.drag, 0)
+    this.body.onWorldBounds = true
+    // this.body.body.setBoundsRectangle(config.collisionBox)
+    this.body.setSize(
       config.collisionBodySize.width,
       config.collisionBodySize.height
     )
-    this.physicsBody.body.setOffset(
+    this.body.setOffset(
       config.collisionBodySize.offsetX,
       config.collisionBodySize.offsetY
     )
-    this.physicsBody.setScale(config.scale)
-    this.physicsBody.data = {
+    this.setScale(config.scale)
+    this.body.data = {
       touchingGround: false,
-      player: config.isPlayer,
+      player: config.isPlayer || false,
       id: this.id,
     }
+
+    this.isPlayer = config.isPlayer
   }
 
   movementManager(direction) {
     switch (direction) {
-      case 'holding left':
-        this.facingRight = false
-        if (
-          this.sprintSettings.direction === 'left' &&
-          this.sprintSettings.value
-        ) {
-          this.physicsBody.setMaxVelocity(
-            this.CharacterConfig.sprintVelocity,
-            2500
-          )
-          this.physicsBody.setAccelerationX(
-            -this.CharacterConfig.accelerationX * 1.25
-          )
-        } else {
-          this.physicsBody.setMaxVelocity(
-            this.CharacterConfig.normalVelocity,
-            2500
-          )
-          this.physicsBody.setAccelerationX(-this.CharacterConfig.accelerationX)
-        }
-        break
-
-      case 'holding right':
-        this.facingRight = true
-        if (
-          this.sprintSettings.direction === 'right' &&
-          this.sprintSettings.value
-        ) {
-          this.physicsBody.setMaxVelocity(
-            this.CharacterConfig.sprintVelocity,
-            2500
-          )
-          this.physicsBody.setAccelerationX(
-            this.CharacterConfig.accelerationX * 1.25
-          )
-        } else {
-          this.physicsBody.setMaxVelocity(
-            this.CharacterConfig.normalVelocity,
-            2500
-          )
-          this.physicsBody.setAccelerationX(this.CharacterConfig.accelerationX)
-        }
-        break
-
-      case 'pressed down':
-        this.physicsBody.setAccelerationY(this.CharacterConfig.accelerationDown)
-        break
-
       default:
         break
     }
 
     switch (direction) {
       case 'pressed left':
-        if (!this.physicsBody.flipX) {
-          this.physicsBody.setFlipX(true)
-          this.physicsBody.body.setOffset(
-            0,
-            this.CharacterConfig.collisionBodySize.offsetY
-          )
-          this.physicsBody.setX(
-            this.physicsBody.x +
-              this.CharacterConfig.collisionBodySize.offsetX / 4
-          )
+        this.facingRight = false
+
+        if (!this.sprite.flipX) {
+          this.sprite.setFlipX(true)
+          this.body.setOffset(0, this.CharacterConfig.collisionBodySize.offsetY)
+          this.setX(this.x + this.CharacterConfig.collisionBodySize.offsetX / 4)
         }
-        this.physicsBody.setOffset(0, 0)
+        this.body.setOffset(0, 0)
         if (this.sprintSettings.left.doubleTap) {
           ;(this.sprintSettings.value = true),
             (this.sprintSettings.direction = 'left')
+
+          this.body.setMaxVelocity(this.CharacterConfig.sprintVelocity, 2500)
+          this.body.setAccelerationX(-this.CharacterConfig.accelerationX * 1.25)
           return
         }
 
@@ -151,9 +131,15 @@ class Character extends Phaser.GameObjects.Sprite {
         this.sprintSettings.left.timeOut = setTimeout(() => {
           this.sprintSettings.left.doubleTap = false
         }, this.sprintTimeoutTime)
+
+        this.body.setMaxVelocity(this.CharacterConfig.normalVelocity, 2500)
+        this.body.setAccelerationX(-this.CharacterConfig.accelerationX)
         break
 
       case 'unpressed left':
+        if (this.body.velocity.x < 0) {
+          this.body.setAccelerationX(0)
+        }
         if (this.sprintSettings.value) {
           this.sprintSettings.left.doubleTap = true
           this.sprintSettings.left.timeOut = setTimeout(() => {
@@ -165,20 +151,22 @@ class Character extends Phaser.GameObjects.Sprite {
         break
 
       case 'pressed right':
-        if (this.physicsBody.flipX) {
-          this.physicsBody.setFlipX(false)
-          this.physicsBody.body.setOffset(
+        this.facingRight = true
+
+        if (this.sprite.flipX) {
+          this.sprite.setFlipX(false)
+          this.body.setOffset(
             this.CharacterConfig.collisionBodySize.offsetX,
             this.CharacterConfig.collisionBodySize.offsetY
           )
-          this.physicsBody.setX(
-            this.physicsBody.x -
-              this.CharacterConfig.collisionBodySize.offsetX / 4
-          )
+          this.setX(this.x - this.CharacterConfig.collisionBodySize.offsetX / 4)
         }
         if (this.sprintSettings.right.doubleTap) {
           this.sprintSettings.value = true
           this.sprintSettings.direction = 'right'
+
+          this.body.setMaxVelocity(this.CharacterConfig.sprintVelocity, 2500)
+          this.body.setAccelerationX(this.CharacterConfig.accelerationX * 1.25)
           return
         }
 
@@ -186,9 +174,15 @@ class Character extends Phaser.GameObjects.Sprite {
         this.sprintSettings.right.timeOut = setTimeout(() => {
           this.sprintSettings.right.doubleTap = false
         }, this.sprintTimeoutTime)
+
+        this.body.setMaxVelocity(this.CharacterConfig.normalVelocity, 2500)
+        this.body.setAccelerationX(this.CharacterConfig.accelerationX)
         break
 
       case 'unpressed right':
+        if (this.body.velocity.x > 0) {
+          this.body.setAccelerationX(0)
+        }
         if (this.sprintSettings.value) {
           this.sprintSettings.right.doubleTap = true
           this.sprintSettings.right.timeOut = setTimeout(() => {
@@ -201,7 +195,7 @@ class Character extends Phaser.GameObjects.Sprite {
         break
 
       case 'pressed up':
-        if (this.physicsBody.data.touchingGround) {
+        if (this.touchingGround) {
           this.currentJumps = 1
         } else if (this.currentJumps < this.CharacterConfig.maxJumps) {
           this.currentJumps += 1
@@ -209,7 +203,16 @@ class Character extends Phaser.GameObjects.Sprite {
           return
         }
 
-        this.physicsBody.setVelocityY(-this.CharacterConfig.jumpHeight)
+        this.body.setVelocityY(-this.CharacterConfig.jumpHeight)
+        this.touchingGround = false
+        break
+
+      case 'pressed down':
+        this.body.setAccelerationY(this.CharacterConfig.accelerationDown)
+        break
+
+      case 'unpressed down':
+        this.body.setAccelerationY(0)
         break
 
       default:
@@ -245,24 +248,11 @@ class Character extends Phaser.GameObjects.Sprite {
     }
 
     if (!attackReturn || !attackReturn.hitbox) return
-    const players = this.CharacterConfig.Scene.Players.getChildren()
+    const characters = this.CharacterConfig.Scene.Characters.getChildren()
 
-    players.forEach((character) => {
+    characters.forEach((character) => {
       if (character.id === this.id) return
-      const playerBounds = character.physicsBody.getBounds()
-      const output = Phaser.Geom.Rectangle.Overlaps(
-        attackReturn.hitbox,
-        playerBounds
-      )
-      if (output === true) {
-        character.handleAttack(attackReturn, this.facingRight)
-      }
-    })
-
-    const cpus = this.CharacterConfig.Scene.CPUs.getChildren()
-    cpus.forEach((character) => {
-      if (character.id === this.id) return
-      const playerBounds = character.physicsBody.getBounds()
+      const playerBounds = character.getBounds()
       const output = Phaser.Geom.Rectangle.Overlaps(
         attackReturn.hitbox,
         playerBounds
@@ -274,16 +264,15 @@ class Character extends Phaser.GameObjects.Sprite {
   }
 
   handleAttack(attack, direction) {
-    this.physicsBody.setMaxVelocity(9000)
-    this.physicsBody.setDrag(10)
-    this.physicsBody.setBounce(0.4)
+    this.body.setMaxVelocity(9000)
+    this.body.setDrag(10)
+    this.body.setBounce(0.4)
     this.hitMultiplier += attack.hitMultiplier
+    if (attack.shake) this.CharacterConfig.Scene.cameraShake(attack.shake)
     direction
-      ? this.physicsBody.setVelocityX(attack.velocityX * this.hitMultiplier)
-      : this.physicsBody.setVelocityX(
-          attack.velocityX * -1 * this.hitMultiplier
-        )
-    this.physicsBody.setVelocityY(attack.velocityY * this.hitMultiplier)
+      ? this.body.setVelocityX(attack.velocityX * this.hitMultiplier)
+      : this.body.setVelocityX(attack.velocityX * -1 * this.hitMultiplier)
+    this.body.setVelocityY(attack.velocityY * this.hitMultiplier)
   }
 }
 

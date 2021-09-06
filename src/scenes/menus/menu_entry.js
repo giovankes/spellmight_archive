@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { CST } from '../../CST'
+import PlayerController, { PLAYERS } from '../../playerControllers'
 
 import ButtonOptions from '../../gameObjects/menu/options'
 
@@ -13,7 +14,6 @@ class MenuEntry extends Phaser.Scene {
       .setOrigin(0)
       .setAlpha(0.3)
       .setScale(0.3)
-
     this.logo = this.add
       .text(
         this.game.renderer.width / 2, // Centered
@@ -26,25 +26,25 @@ class MenuEntry extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
-
     this.playText = this.add
       .text(
         this.game.renderer.width / 2, // Centered
         this.game.renderer.height / 2 + 40,
-        'PRESS ENTER',
+        'PRESS ENTER /START',
         {
           fontFamily: 'Superscript',
-          fontSize: 20,
+          fontSize: 15,
           resolution: 14,
         }
       )
       .setOrigin(0.5)
-      .setInteractive()
-      .on('pointerup', () => {
-        this.enterGame()
-      })
 
     this.buttonOptions = new ButtonOptions({ Scene: this })
+
+    // Add player controllers
+    this.PlayerController = new PlayerController({
+      Scene: this,
+    })
 
     this.playTextInterval = 50
 
@@ -62,6 +62,14 @@ class MenuEntry extends Phaser.Scene {
       )
       .setAlpha(0)
       .setOrigin(0)
+    this.scene.get(CST.SCENES.INPUT).getCurrentScene(CST.SCENES.MENU.ENTRY)
+  }
+
+  getControls(key, playerIndex, status) {
+    if (playerIndex !== 0) return
+    if (status === 'down') {
+      if (key === 'ENTER/START') this.enterGame()
+    }
   }
 
   enterGame() {
@@ -91,6 +99,7 @@ class MenuEntry extends Phaser.Scene {
       duration: 200,
       onComplete: () => {
         this.scene.start(CST.SCENES.MENU.MAIN)
+        this.scene.get(CST.SCENES.INPUT).getCurrentScene(null)
       },
     })
   }
@@ -104,10 +113,6 @@ class MenuEntry extends Phaser.Scene {
       } else {
         this.playText.setAlpha(1)
       }
-    }
-
-    if (Phaser.Input.Keyboard.JustDown(this.enter)) {
-      this.enterGame()
     }
   }
 }

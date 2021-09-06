@@ -15,13 +15,16 @@ export const CST = {
       CHARACTER: 'MENU_CHARACTER',
       STAGES: 'MENU_STAGES',
       MAP: 'MAP',
+      MAP_SCUFFED: 'MAP_SCUFFED',
     },
     STAGES: {
       LOAD: 'STAGE_LOAD',
       TEST: 'STAGE_TEST',
       FIELD: 'STAGE_FIELD',
+      STONEHENGE: 'STAGE_STONEHENGE',
     },
     INTERFACE: 'INTERFACE',
+    INPUT: 'INPUT_SCENE',
   },
   IMAGE: {
     MENU: {
@@ -30,6 +33,8 @@ export const CST = {
       LOGO: 'IMG_MENU_LOGO',
       BTN_PLAY: 'IMG_MENU_BUTTON_PLAY',
       BTN_OPTIONS: 'IMG_MENU_BUTTON_OPTIONS',
+      PLAYERS_CONTROLLER: 'IMG_MENU_PLAYERS_CONTROLLER',
+      PLAYERS_KEYBOARD: 'IMG_MENU_PLAYERS_KEYBOARD',
     },
     STAGES: {
       TEST: {
@@ -42,11 +47,19 @@ export const CST = {
         COLL_GRASS: 'IMG_STAGE_FIELD_COLL_GRASS',
         COLL_PLANE: 'IMG_STAGE_FIELD_COLL_PLANE',
       },
+      STONEHENGE: {
+        FG: 'IMG_STAGE_STONEHENGE_FG',
+        BG1: 'IMG_STAGE_STONEHENGE_BG1',
+        BG2: 'IMG_STAGE_STONEHENGE_BG2',
+        BG3: 'IMG_STAGE_STONEHENGE_BG3',
+        RAIN: 'IMG_STAGE_STONEHENGE_RAIN',
+      },
     },
     UI: {
       INGAME: {
         TIMER: 'IMG_UI_TIMER',
         CHARACTER_INFO: 'IMG_UI_CHARACTER_INFO',
+        ARROW_RIGHT: 'IMG_UI_ARROW_RIGHT',
       },
       MENU: {
         BUTTON_BIG: 'IMG_UI_BUTTON_BIG',

@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { CST } from '../../CST'
+
 import MageCharacter from '../../gameObjects/characters/character_mage'
 
 class Stage extends Phaser.Scene {
@@ -11,12 +12,16 @@ class Stage extends Phaser.Scene {
     this.StageConfig = config
   }
 
+  init(data) {
+    this.charactersToSpawn = data.characters
+  }
+
   create() {
     this.physics.world.setBounds(
-      0,
-      0,
-      this.game.renderer.width,
-      this.game.renderer.height,
+      -100,
+      -50,
+      this.game.renderer.width + 200,
+      this.game.renderer.height + 100,
       true,
       true,
       true,
@@ -56,6 +61,18 @@ class Stage extends Phaser.Scene {
       )
     })
 
+    // Add particles
+    if (this.StageConfig.Particles) {
+      this.Particles = this.add.group(null, {
+        name: 'Particles',
+      })
+      this.StageConfig.Particles.forEach((particle, index) => {
+        this.Particles.add(
+          this.add.particles(particle.IMG, null, particle.CONFIG)
+        )
+      })
+    }
+
     // Add collision areas
     this.CollisionAreas = this.add.group(null, {
       name: 'Collision Areas',
@@ -69,86 +86,109 @@ class Stage extends Phaser.Scene {
       )
     })
 
+    this.physics.world.on('worldbounds', (body) => {
+      if (body.gameObject.id) {
+        this.respawn(body)
+      }
+    })
+
+    // Create out of bounds arrow group
+    this.outOfBoundsArrows = this.add.group(null, {
+      name: 'Out of bounds arrows',
+    })
+
     // Add hitbox & projectiles group
     this.hitBoxes = this.add.group()
     this.projectiles = this.add.group()
 
-    // Add players and their characters
-    if (this.StageConfig.Players) {
-      this.Players = this.add.group(null, {
-        name: 'Players',
-      })
-      this.StageConfig.Players.forEach((player, index) => {
-        switch (player.character) {
+    this.Characters = this.add.group()
+    this.charactersToSpawn.forEach((character, index) => {
+      let x = 40
+      let y = 40
+      if (this.charactersToSpawn.length === 2) {
+        if (index === 1) {
+          x = this.game.renderer.width - 100
+        }
+      } else if (this.charactersToSpawn.length === 3) {
+        if (index === 1) {
+          x = this.game.renderer.width / 2
+        } else if (index === 2) {
+          x = this.game.renderer.width - 100
+        }
+      } else if (this.charactersToSpawn.length === 3) {
+        if (index === 1) {
+          x = this.game.renderer.width / 2 - 40
+        } else if (index === 2) {
+          x = this.game.renderer.width / 2 + 40
+        } else if (index === 3) {
+          x = this.game.renderer.width - 100
+        }
+      }
+      // Add players and their characters
+      if (character.type === 'player') {
+        switch (character.character) {
+          case 1:
+            const newPlayer = new MageCharacter({
+              Scene: this,
+              x,
+              y,
+              isPlayer: true,
+              index,
+            })
+            newPlayer.setDepth(2)
+            this.Characters.add(newPlayer)
+            break
           default:
-            this.Players.add(
-              new MageCharacter({
-                Scene: this,
-                x: 100,
-                y: 40,
-                isPlayer: true,
-              })
-            )
             break
         }
-
-        const Player = this.Players.getChildren()[index]
-        Player.physicsBody.setDepth(2)
-      })
-
-      // Add player collision
-      this.physics.add.collider(
-        this.Players.getChildren()[0].physicsBody,
-        this.CollisionAreas,
-        this.touchingGround,
-        null,
-        this
-      )
-    }
-
-    // Add CPU's and their characters
-    if (this.StageConfig.CPUs) {
-      this.CPUs = this.add.group(null, {
-        name: 'CPUs',
-      })
-      this.StageConfig.CPUs.forEach((cpu, index) => {
-        switch (cpu.character) {
-          default:
+        // Add CPU's and their characters
+      } else if (character.type === 'cpu') {
+        switch (character.character) {
+          case 1:
             const newCPU = new MageCharacter({
               Scene: this,
-              x: this.game.renderer.width - 100,
-              y: 40,
+              x,
+              y,
+              index,
             })
-            newCPU.physicsBody.setDepth(2)
-            this.CPUs.add(newCPU)
+            newCPU.setDepth(2)
+            this.Characters.add(newCPU)
+            break
+          default:
             break
         }
-      })
+      }
+    })
 
-      // Add CPU collision
+    // Add character collision
+    this.Characters.getChildren().forEach((character) => {
       this.physics.add.collider(
-        this.CPUs.getChildren()[0].physicsBody,
+        character,
         this.CollisionAreas,
         this.touchingGround,
         null,
         this
       )
-    }
+    })
 
     // Set up the camera
+    this.debugRectangle = this.add.rectangle(0, 0, 20, 20, 0xffffff)
     this.cameras.main.setBounds(
       0,
       0,
       this.game.renderer.width,
       this.game.renderer.height
     )
-    this.cameras.main.setZoom(1)
-    // this.scale.autoRound = true
-    if (this.Players) {
-      this.cameras.main.startFollow(
-        // For now follow the first player
-        this.Players.getChildren()[0].physicsBody
-      )
+    this.cameras.main.setZoom(1.1)
+    this.cameras.main.setOrigin(0.5)
+    this.cameras.main.setRoundPixels(true)
+    this.cameras.main.startFollow(this.debugRectangle, true, 0.1, 0.1)
+    this.cameras.main.ignore(this.debugRectangle)
+
+    // Create respawn data object
+    this.respawnData = {
+      respawning: false,
+      cameraChangingModes: false,
     }
 
     // Set up the hotkeys
@@ -172,78 +212,287 @@ class Stage extends Phaser.Scene {
     )
     this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
 
-    // this.scene.start(CST.SCENES.INTERFACE)
+    this.scene.get(CST.SCENES.INPUT).getCurrentScene(this.StageConfig.KEY)
   }
 
-  //TODO: Find a more performant way to do this
-  getPlayerClass(character) {
-    const characterID = character.data.id
-    let foundPlayer = null
-    this.Players.getChildren().forEach((Player) => {
-      if (Player.id !== characterID) {
-      } else {
-        foundPlayer = Player
-      }
+  respawn(body) {
+    body.setEnable(false)
+    let character = body.gameObject
+    if (!character) return
+    body.gameObject.setY(-100)
+    body.gameObject.setX(480 / 2)
+    this.tweens.add({
+      targets: body.gameObject,
+      y: { from: -100, to: 30 },
+      ease: 'Power1',
+      duration: 1000,
+      onComplete: () => {
+        this.time.addEvent({
+          delay: 500,
+          callback: () => {
+            body.setVelocity(0, 0)
+            body.setAcceleration(0)
+            body.setBounce(0)
+            character.hitMultiplier = 1
+            body.setEnable(true)
+          },
+        })
+      },
     })
-    return foundPlayer
+  }
+
+  cameraShake(intensity) {
+    this.cameras.main.shake(150, intensity, true)
   }
 
   touchingGround(character, ground) {
     // Check if touching the top of the ground
-    if (
-      !character.body.touching.down ||
-      !ground.body.touching.up ||
-      !character.data
-    )
-      return
-    character.data.touchingGround = true
-    character.setDrag(2500, 0)
-    character.setBounce(0)
+    if (!character.body.touching.down || !ground.body.touching.up) return
+    character.touchingGround = true
+    character.body.setDrag(2500, 0)
+    character.body.setBounce(0)
   }
 
-  handleDeath(character) {
-    character.gameObject.setX(540)
-    character.gameObject.setY(150)
+  getControls(key, playerIndex, status) {
+    let players = 0
+    this.Characters.getChildren().forEach((character) => {
+      if (character.isPlayer) {
+        players += 1
+      }
+    })
 
-    const Player = this.getPlayerClass(character)
-    if (Player) {
-      Player.hitMultiplier = 1
-      //TODO Implement lifes mechanic
+    // If person pressing buttons on a controller that's not in the game, return
+    if (playerIndex + 1 > players) return
+
+    const Character = this.Characters.getChildren()[playerIndex]
+    if (status === 'down') {
+      let variant = null
+      if (Character.pressing.LEFT || Character.pressing.RIGHT)
+        variant = 'forward'
+      else if (Character.pressing.UP) variant = 'up'
+      else if (Character.pressing.DOWN) variant = 'down'
+
+      switch (key) {
+        case 'JUMP':
+          Character.movementManager('pressed up')
+          Character.pressing.UP = true
+          break
+        case 'DOWN':
+          Character.movementManager('pressed down')
+          Character.pressing.DOWN = true
+          break
+        case 'LEFT':
+          Character.movementManager('pressed left')
+          Character.pressing.LEFT = true
+          break
+        case 'RIGHT':
+          Character.movementManager('pressed right')
+          Character.pressing.RIGHT = true
+          break
+        case 'A':
+          Character.attackManager('attack light', variant)
+          Character.pressing.A = true
+          break
+        case 'B':
+          Character.attackManager('attack heavy', variant)
+          Character.pressing.B = true
+          break
+        case 'X':
+          Character.attackManager('ability one')
+          Character.pressing.X = true
+          break
+        case 'Y':
+          Character.attackManager('ability two')
+          Character.pressing.Y = true
+          break
+        default:
+          break
+      }
+    } else if (status === 'up') {
+      switch (key) {
+        case 'JUMP':
+          Character.movementManager('unpressed up')
+          Character.pressing.UP = false
+          break
+        case 'DOWN':
+          Character.movementManager('unpressed down')
+          Character.pressing.DOWN = false
+          break
+        case 'LEFT':
+          Character.movementManager('unpressed left')
+          Character.pressing.LEFT = false
+          break
+        case 'RIGHT':
+          Character.movementManager('unpressed right')
+          Character.pressing.RIGHT = false
+          break
+        case 'A':
+          Character.pressing.A = false
+          break
+        case 'B':
+          Character.pressing.B = false
+          break
+        case 'X':
+          Character.pressing.X = false
+          break
+        case 'Y':
+          Character.pressing.Y = false
+          break
+        default:
+          break
+      }
     }
   }
 
   update() {
     //! TEMPORARY APPROACH SINCE THERE IS ONLY 1 LOCALLY PLAYABLE CHARACTER AT A TIME
-    const Player = this.Players.getChildren()[0]
+    const Player = this.Characters.getChildren()[0]
+    const CPU = this.Characters.getChildren()[1]
+
+    // Make camera follow and zoom players
+    //! ONLY WORKS WITH 2 PLAYERS
+    const playerBounds = Player.getBounds()
+    const cpuBounds = CPU.getBounds()
+    const boundsMedian = {
+      x: (playerBounds.centerX + cpuBounds.centerX) / 2,
+      y: (playerBounds.centerY + cpuBounds.centerY) / 2,
+    }
+    this.playerDistance = Phaser.Math.Distance.Between(
+      playerBounds.centerX,
+      playerBounds.centerY,
+      cpuBounds.centerX,
+      cpuBounds.centerY
+    )
+    const zoomAmount = 3 / (this.playerDistance / 100)
+    if (zoomAmount < 1) this.cameras.main.zoomTo(1, 200)
+    else if (zoomAmount > 1.5) this.cameras.main.zoomTo(1.5, 200)
+    else this.cameras.main.zoomTo(zoomAmount, 200)
+    this.debugRectangle.setX(boundsMedian.x)
+    this.debugRectangle.setY(boundsMedian.y)
+
+    // Check if players & cpus are out of bounds
+    if (
+      playerBounds.centerX > 480 ||
+      playerBounds.centerX < 0 ||
+      playerBounds.centerY > 270 ||
+      playerBounds.centerY < 0
+    ) {
+      let foundArrow = null
+      this.outOfBoundsArrows.getChildren().forEach((arrow) => {
+        const arrowData = arrow.data.list
+        if (arrowData && arrowData.ownerID === Player.id) foundArrow = arrow
+      })
+      if (!foundArrow) {
+        this.outOfBoundsArrows.add(
+          this.add
+            .image(-100, -100, CST.IMAGE.UI.INGAME.ARROW_RIGHT)
+            .setData({
+              ownerID: Player.id,
+            })
+            .setScale(0.1)
+            .setOrigin(0)
+        )
+      } else {
+        let x
+        let y
+        if (playerBounds.centerX > 0 && playerBounds.centerX < 480)
+          x = playerBounds.centerX
+        else if (playerBounds.centerX < 0) {
+          foundArrow.setFlipX(true)
+          x = 20
+        } else if (playerBounds.centerX > 480) {
+          foundArrow.setFlipX(false)
+          x = 430
+        }
+        if (playerBounds.centerY > 0 && playerBounds.centerY < 270)
+          y = playerBounds.centerY - 20
+        else if (playerBounds.centerY < 0) {
+          y = 20
+          foundArrow.setFlipX(true)
+          foundArrow.setRotation(1.57)
+        } else if (playerBounds.centerY > 270) {
+          y = 250
+          foundArrow.setFlipX(true)
+          foundArrow.setRotation(1.57)
+        }
+        foundArrow.setX(x).setY(y)
+      }
+    } else if (
+      cpuBounds.centerX > 480 ||
+      cpuBounds.centerX < 0 ||
+      cpuBounds.centerY > 270 ||
+      cpuBounds.centerY < 0
+    ) {
+      let foundArrow = null
+      this.outOfBoundsArrows.getChildren().forEach((arrow) => {
+        const arrowData = arrow.data.list
+        if (arrowData && arrowData.ownerID === CPU.id) foundArrow = arrow
+      })
+      if (!foundArrow) {
+        this.outOfBoundsArrows.add(
+          this.add
+            .image(-100, -100, CST.IMAGE.UI.INGAME.ARROW_RIGHT)
+            .setData({
+              ownerID: CPU.id,
+            })
+            .setScale(0.1)
+            .setOrigin(0)
+        )
+      } else {
+        let x
+        let y
+        if (cpuBounds.centerX > 0 && cpuBounds.centerX < 480)
+          x = cpuBounds.centerX
+        else if (cpuBounds.centerX < 0) {
+          foundArrow.setFlipX(true)
+          x = 20
+        } else if (cpuBounds.centerX > 480) {
+          foundArrow.setFlipX(false)
+          x = 430
+        }
+        if (cpuBounds.centerY > 0 && cpuBounds.centerY < 270)
+          y = cpuBounds.centerY - 20
+        else if (cpuBounds.centerY < 0) {
+          y = 20
+          foundArrow.setFlipX(true)
+          foundArrow.setRotation(1.57)
+        } else if (cpuBounds.centerY > 270) {
+          y = 250
+          foundArrow.setFlipX(true)
+          foundArrow.setRotation(1.57)
+        }
+        foundArrow.setX(x).setY(y)
+      }
+    } else {
+      let foundArrow = null
+      this.outOfBoundsArrows.getChildren().forEach((arrow) => {
+        const arrowData = arrow.data.list
+        if (
+          (arrowData && arrowData.ownerID === Player.id) ||
+          arrowData.ownerID === CPU.id
+        )
+          foundArrow = arrow
+      })
+      if (foundArrow) {
+        foundArrow.destroy()
+      }
+    }
 
     // Check projectile overlap
     const projectiles = this.projectiles.getChildren()
     if (projectiles.length) {
       projectiles.forEach((projectile) => {
         const projectileBounds = projectile.getBounds()
-        const players = this.Players.getChildren()
-        const cpus = this.CPUs.getChildren()
 
         let hit = false
 
-        cpus.forEach((character) => {
-          const playerBounds = character.physicsBody.getBounds()
-          if (Phaser.Geom.Rectangle.Overlaps(projectileBounds, playerBounds)) {
+        this.Characters.getChildren().forEach((character) => {
+          const characterBounds = character.getBounds()
+          if (
+            Phaser.Geom.Rectangle.Overlaps(projectileBounds, characterBounds)
+          ) {
             if (character.id === projectile.ownerID) return
-            const offset = playerBounds.centerX - projectileBounds.centerX
-            character.handleAttack(
-              projectile.hitDetails,
-              offset > 0 ? true : false
-            )
-            hit = true
-          }
-        })
-        players.forEach((character) => {
-          const playerBounds = character.physicsBody.getBounds()
-          if (Phaser.Geom.Rectangle.Overlaps(projectileBounds, playerBounds)) {
-            console.log(character.id === projectile.ownerID)
-            if (character.id === projectile.ownerID) return
-            const offset = playerBounds.centerX - projectileBounds.centerX
+            const offset = characterBounds.centerX - projectileBounds.centerX
             character.handleAttack(
               projectile.hitDetails,
               offset > 0 ? true : false
@@ -256,53 +505,11 @@ class Stage extends Phaser.Scene {
     }
 
     // Reset acceleration
-    Player.physicsBody.setAcceleration(0, 0)
+    // Player.body.setAcceleration(0, 0)
 
     // Pause Menu
     if (Phaser.Input.Keyboard.JustDown(this.esc))
       this.scene.start(CST.SCENES.MENU)
-
-    // Movement
-    if (this.cursors.left.isDown) Player.movementManager('holding left')
-    if (this.cursors.right.isDown) Player.movementManager('holding right')
-    if (this.cursors.down.isDown) Player.movementManager('pressed down')
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.left))
-      Player.movementManager('pressed left')
-    if (Phaser.Input.Keyboard.JustUp(this.cursors.left))
-      Player.movementManager('unpressed left')
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.right))
-      Player.movementManager('pressed right')
-    if (Phaser.Input.Keyboard.JustUp(this.cursors.right))
-      Player.movementManager('unpressed right')
-    if (
-      Phaser.Input.Keyboard.JustDown(this.cursors.up) ||
-      Phaser.Input.Keyboard.JustDown(this.spacebar)
-    )
-      Player.movementManager('pressed up')
-
-    // Attacks & Abilities
-    if (Phaser.Input.Keyboard.JustDown(this.fightingButtons.J)) {
-      let variant = null
-      if (this.cursors.right.isDown || this.cursors.left.isDown) {
-        variant = 'forward'
-      }
-      Player.attackManager('attack light', variant)
-    }
-    if (Phaser.Input.Keyboard.JustDown(this.fightingButtons.K)) {
-      let variant = null
-      if (this.cursors.right.isDown || this.cursors.left.isDown) {
-        variant = 'forward'
-      }
-      Player.attackManager('attack heavy', variant)
-    }
-    if (Phaser.Input.Keyboard.JustDown(this.fightingButtons.Q))
-      Player.attackManager('ability one')
-    if (Phaser.Input.Keyboard.JustDown(this.fightingButtons.E))
-      Player.attackManager('ability two')
-    if (Phaser.Input.Keyboard.JustDown(this.fightingButtons.R))
-      Player.attackManager('ultimate')
-
-    Player.physicsBody.data.touchingGround = false
   }
 }
 

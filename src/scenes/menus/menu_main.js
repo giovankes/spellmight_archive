@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { CST } from '../../CST'
+import PlayerController, { PLAYERS } from '../../playerControllers'
 
 import ButtonOptions from '../../gameObjects/menu/options'
 import MenuRectangle from '../../gameObjects/menu/menu-rectangle'
@@ -17,7 +18,6 @@ class MenuMain extends Phaser.Scene {
       .setOrigin(0)
       .setScale(0.4)
       .setDepth(0)
-
     this.add
       .rectangle(
         0,
@@ -59,13 +59,6 @@ class MenuMain extends Phaser.Scene {
         strokeThickness: 4,
         resolution: 5,
       })
-      .setInteractive()
-      .on('pointerup', () => {
-        this.goTo('versus')
-      })
-      .on('pointerover', () => {
-        this.changeMenuItemSelected(1)
-      })
       .setOrigin(0.5)
       .setDepth(1)
 
@@ -79,9 +72,6 @@ class MenuMain extends Phaser.Scene {
         resolution: 3,
       })
       .setInteractive()
-      .on('pointerover', () => {
-        this.changeMenuItemSelected(2)
-      })
       .setOrigin(0.5)
       .setDepth(1)
 
@@ -94,13 +84,6 @@ class MenuMain extends Phaser.Scene {
         strokeThickness: 0,
         resolution: 3,
       })
-      .setInteractive()
-      .on('pointerup', () => {
-        this.goTo('entry')
-      })
-      .on('pointerover', () => {
-        this.changeMenuItemSelected(3)
-      })
       .setOrigin(0.5)
       .setDepth(1)
 
@@ -111,16 +94,14 @@ class MenuMain extends Phaser.Scene {
       currentMenuText: 'Main Menu',
     })
 
-    this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
-    this.enter = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.ENTER
-    )
-    this.cursors = this.input.keyboard.addKeys({
-      W: Phaser.Input.Keyboard.KeyCodes.W,
-      S: Phaser.Input.Keyboard.KeyCodes.S,
-      up: Phaser.Input.Keyboard.KeyCodes.UP,
-      down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+    // Add player controller
+    this.PlayerController = new PlayerController({
+      Scene: this,
     })
+
+    if (PLAYERS.length) {
+      this.PlayerController.updatePlayers()
+    }
 
     this.blackScreen = this.add
       .rectangle(
@@ -135,6 +116,49 @@ class MenuMain extends Phaser.Scene {
       .setOrigin(0)
 
     this.menuItemSelected = 1
+    this.scene.get(CST.SCENES.INPUT).getCurrentScene(CST.SCENES.MENU.MAIN)
+  }
+
+  getControls(key, playerIndex, status) {
+    if (playerIndex !== 0) return
+    if (status === 'down') {
+      switch (key) {
+        case 'ENTER/START':
+        case 'A':
+          if (this.menuItemSelected === 1) {
+            this.goTo('versus')
+          } else if (this.menuItemSelected === 3) {
+            this.goTo('entry')
+          }
+          break
+
+        case 'DOWN':
+          if (this.menuItemSelected === 3) {
+            this.menuItemSelected = 1
+          } else {
+            this.menuItemSelected += 1
+          }
+          this.changeMenuItemSelected()
+          break
+
+        case 'UP':
+          if (this.menuItemSelected === 1) {
+            this.menuItemSelected = 3
+          } else {
+            this.menuItemSelected -= 1
+          }
+          this.changeMenuItemSelected()
+          break
+
+        case 'ESC':
+        case 'B':
+          this.goTo('entry')
+          break
+
+        default:
+          break
+      }
+    }
   }
 
   changeMenu(to, config) {
@@ -173,6 +197,7 @@ class MenuMain extends Phaser.Scene {
       duration: 200,
       onComplete: () => {
         this.scene.start(to, config || null)
+        this.scene.get(CST.SCENES.INPUT).getCurrentScene(null)
       },
     })
   }
@@ -221,51 +246,6 @@ class MenuMain extends Phaser.Scene {
 
       default:
         break
-    }
-  }
-
-  update() {
-    if (Phaser.Input.Keyboard.JustDown(this.esc)) {
-      this.goTo('entry')
-    }
-
-    let keyPressed = null
-    if (
-      Phaser.Input.Keyboard.JustDown(this.cursors.up) ||
-      Phaser.Input.Keyboard.JustDown(this.cursors.W)
-    ) {
-      keyPressed = 'up'
-    } else if (
-      Phaser.Input.Keyboard.JustDown(this.cursors.down) ||
-      Phaser.Input.Keyboard.JustDown(this.cursors.S)
-    ) {
-      keyPressed = 'down'
-    }
-
-    if (keyPressed === 'up') {
-      if (this.menuItemSelected === 1) {
-        this.menuItemSelected = 3
-      } else {
-        this.menuItemSelected -= 1
-      }
-    } else if (keyPressed === 'down') {
-      if (this.menuItemSelected === 3) {
-        this.menuItemSelected = 1
-      } else {
-        this.menuItemSelected += 1
-      }
-    }
-
-    if (keyPressed) {
-      this.changeMenuItemSelected()
-    }
-
-    if (Phaser.Input.Keyboard.JustDown(this.enter)) {
-      if (this.menuItemSelected === 1) {
-        this.goTo('versus')
-      } else if (this.menuItemSelected === 3) {
-        this.goTo('entry')
-      }
     }
   }
 }

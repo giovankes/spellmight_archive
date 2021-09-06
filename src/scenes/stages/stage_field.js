@@ -27,7 +27,7 @@ class StageField extends Stage {
         {
           x: 480 / 2,
           y: 245,
-          width: 480,
+          width: 480 + 200,
           height: 40,
         },
         {

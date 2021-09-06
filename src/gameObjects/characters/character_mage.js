@@ -6,7 +6,7 @@ import StaticHitbox from '../attacks-abilities/static'
 import Projectile from '../attacks-abilities/projectile'
 
 class MageCharacter extends Character {
-  constructor({ Scene, x, y, isPlayer }) {
+  constructor({ Scene, x, y, isPlayer, index }) {
     // Write attacks here, pass them in to the super()
     const attacks = {
       attackLight: {
@@ -15,11 +15,11 @@ class MageCharacter extends Character {
           currentCombo: 0,
           exec: (direction) => {
             let x = 0
-            direction ? (x = 13) : (x = -15)
+            direction ? (x = 18) : (x = 0)
             const hitbox = new StaticHitbox({
               Scene,
-              x: this.physicsBody.x + x,
-              y: this.physicsBody.y - 5,
+              x: this.body.x + x,
+              y: this.body.y + 10,
               height: 8,
               width: 8,
               depth: 2,
@@ -61,8 +61,8 @@ class MageCharacter extends Character {
             direction ? (x = 20) : (x = -30)
             const hitbox = new StaticHitbox({
               Scene,
-              x: this.physicsBody.x + x,
-              y: this.physicsBody.y - 5,
+              x: this.body.x + x,
+              y: this.body.y + 10,
               height: 8,
               width: 8,
               depth: 2,
@@ -97,21 +97,22 @@ class MageCharacter extends Character {
       },
       abilityOne: {
         cooldown: {
-          amount: 200,
+          amount: 1400,
           canFire: true,
           timer: null,
         },
         exec: (facingRight) => {
           if (!this.CharacterConfig.attacks.abilityOne.cooldown.canFire) {
-            console.log('Fireball on cooldown!')
             return
           }
           this.CharacterConfig.attacks.abilityOne.cooldown.canFire = false
+          let x
+          facingRight ? (x = 40) : (x = -15)
 
           new Projectile({
             Scene,
-            x: this.physicsBody.x,
-            y: this.physicsBody.y - 5,
+            x: this.x + x,
+            y: this.y + 10,
             textureKey: CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY,
             animationKey: CST.ABILITIES.MAGE.FIREBALL.ANIMATION_KEY,
             maxVelocity: {
@@ -129,6 +130,7 @@ class MageCharacter extends Character {
               hitMultiplier: 0.3,
               velocityX: 200,
               velocityY: -200,
+              shake: 0.008,
             },
           })
 
@@ -154,6 +156,7 @@ class MageCharacter extends Character {
     super({
       // Edittable values
       maxJumps: 2,
+      index,
       jumpHeight: 400,
       accelerationX: 1500,
       accelerationDown: 3000,

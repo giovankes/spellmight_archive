@@ -8,11 +8,14 @@ import MenuStages from './scenes/menus/menu_stages.js'
 import StageLoad from './scenes/stages/stage_load.js'
 import StageTest from './scenes/stages/stage_test.js'
 import StageField from './scenes/stages/stage_field.js'
+import StageStonehenge from './scenes/stages/stage_stonehenge'
+import Input from './scenes/input'
 import HUD from './scenes/ingame_interface'
 
 const config = {
   // type: Phaser.AUTO,
   // parent: 'phaser-example',
+  type: Phaser.WEBGL,
   width: 480,
   height: 270,
   scale: {
@@ -28,8 +31,15 @@ const config = {
     StageLoad,
     StageTest,
     StageField,
+    StageStonehenge,
+    Input,
     HUD,
   ],
+  input: {
+    keyboard: true,
+    mouse: true,
+    gamepad: true,
+  },
   pixelArt: true,
   physics: {
     default: 'arcade',
@@ -40,7 +50,3 @@ const config = {
 }
 
 const game = new Phaser.Game(config)
-
-function preload() {
-  console.log('test')
-}
