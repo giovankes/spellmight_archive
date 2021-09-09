@@ -128,25 +128,104 @@ class ButcherCharacter extends Character {
           maxCombo: 3,
           currentCombo: 0,
           exec: (direction) => {
+            const self = this.CharacterConfig.attacks.attackLight.neutral
+            self.currentCombo += 1
             let x = 0
-            direction ? (x = 20) : (x = -30)
-            const hitbox = new StaticHitbox({
-              Scene,
-              x: this.body.x + x,
-              y: this.body.y + 10,
-              height: 8,
-              width: 8,
-              depth: 2,
-              life: 50,
-            }).getBounds()
-
-            return {
-              hitbox,
-              data: {
-                hitMultiplier: 0.2,
-                velocityX: 100,
-                velocityY: -100,
-              },
+            let hitbox
+            switch (self.currentCombo) {
+              case 1:
+                this.facingRight ? (x = 18) : (x = 0)
+                hitbox = new StaticHitbox({
+                  Scene,
+                  x: x,
+                  y: 12,
+                  height: 8,
+                  width: 8,
+                  depth: 2,
+                  life: 100,
+                  id: this.id,
+                  tweenData: {
+                    ease: 'Linear',
+                    duration: 100,
+                    repeat: 0,
+                    yoyo: false,
+                    x: { from: x, to: this.facingRight ? x + 5 : x - 5 },
+                    scaleX: { from: 1, to: 2 },
+                  },
+                  addToScene: false,
+                  direction: this.facingRight,
+                  attack: {
+                    name: 'butcher-k',
+                    hitMultiplier: 0.5,
+                    velocityX: 150,
+                    velocityY: 5,
+                  },
+                })
+                this.add(hitbox)
+                break
+              case 2:
+                this.facingRight ? (x = 18) : (x = 0)
+                hitbox = new StaticHitbox({
+                  Scene,
+                  x: x,
+                  y: 12,
+                  height: 8,
+                  width: 8,
+                  depth: 2,
+                  life: 100,
+                  id: this.id,
+                  tweenData: {
+                    ease: 'Linear',
+                    duration: 100,
+                    repeat: 0,
+                    yoyo: false,
+                    x: { from: x, to: this.facingRight ? x + 5 : x - 5 },
+                    scaleX: { from: 1, to: 2 },
+                  },
+                  addToScene: false,
+                  direction: this.facingRight,
+                  attack: {
+                    name: 'butcher-k',
+                    hitMultiplier: 0.5,
+                    velocityX: 150,
+                    velocityY: 5,
+                  },
+                })
+                this.add(hitbox)
+                break
+              case 3:
+                self.currentCombo = 0
+                this.facingRight ? (x = 18) : (x = 0)
+                hitbox = new StaticHitbox({
+                  Scene,
+                  x: x,
+                  y: 12,
+                  height: 8,
+                  width: 8,
+                  depth: 2,
+                  life: 100,
+                  id: this.id,
+                  tweenData: {
+                    ease: 'Linear',
+                    duration: 100,
+                    repeat: 0,
+                    yoyo: false,
+                    x: { from: x, to: this.facingRight ? x + 5 : x - 5 },
+                    scaleX: { from: 1, to: 2 },
+                  },
+                  addToScene: false,
+                  direction: this.facingRight,
+                  attack: {
+                    name: 'butcher-k',
+                    hitMultiplier: 0.5,
+                    velocityX: 150,
+                    velocityY: 5,
+                  },
+                })
+                this.add(hitbox)
+                break
+              default:
+                break
             }
           },
         },
