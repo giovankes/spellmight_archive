@@ -606,20 +606,23 @@ class Character extends Phaser.GameObjects.Container {
   }
 
   handleAttack(attack, direction) {
-    switch (attack.name) {
-      case 'mage-fireball':
-        const hitAnim = new EffectSpritesheet({
-          Scene: this.CharacterConfig.Scene,
-          x: this.body.center.x,
-          y: this.body.center.y + 10,
-          spritesheetKey:
-            CST.SPRITESHEET.CHARACTERS.MAGE.ABILITIES.FIREBALL.EXPLOSION.IMG,
-        }).play(
-          CST.SPRITESHEET.CHARACTERS.MAGE.ABILITIES.FIREBALL.EXPLOSION.ANIM
-        )
-        break
-      default:
-        break
+    console.log(attack)
+    if (attack && attack.name) {
+      switch (attack.name) {
+        case 'mage-fireball':
+          const hitAnim = new EffectSpritesheet({
+            Scene: this.CharacterConfig.Scene,
+            x: this.body.center.x,
+            y: this.body.center.y + 10,
+            spritesheetKey:
+              CST.SPRITESHEET.CHARACTERS.MAGE.ABILITIES.FIREBALL.EXPLOSION.IMG,
+          }).play(
+            CST.SPRITESHEET.CHARACTERS.MAGE.ABILITIES.FIREBALL.EXPLOSION.ANIM
+          )
+          break
+        default:
+          break
+      }
     }
 
     this.add(
