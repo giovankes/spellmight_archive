@@ -60,6 +60,7 @@ class MenuLoad extends Phaser.Scene {
     this.load.image(CST.SPRITESHEET.CHARACTERS.MAGE.IMG, CharacterMage)
     this.load.image(CST.IMAGE.CHARACTER.MAGE.PORTRAIT, CharacterPortraitMage)
     this.load.image(CST.IMAGE.CHARACTER.WITCH.PORTRAIT, CharacterPortraitWitch)
+
     this.load.spritesheet(
       CST.SPRITESHEET.CHARACTERS.WITCH.SPR,
       CharacterWitch,
