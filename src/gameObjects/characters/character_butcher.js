@@ -122,6 +122,21 @@ class ButcherCharacter extends Character {
             console.log(self.currentCombo)
           },
         },
+        forward: {
+          maxCombo: 1,
+          currentCombo: 0,
+          exec: () => {},
+        },
+        up: {
+          maxCombo: 1,
+          currentCombo: 0,
+          exec: () => {},
+        },
+        down: {
+          maxCombo: 1,
+          currentCombo: 0,
+          exec: () => {},
+        },
       },
       attackHeavy: {
         neutral: {
@@ -350,6 +365,21 @@ class ButcherCharacter extends Character {
                 break
             }
           },
+        },
+        forward: {
+          maxCombo: 1,
+          currentCombo: 0,
+          exec: () => {},
+        },
+        up: {
+          maxCombo: 1,
+          currentCombo: 0,
+          exec: () => {},
+        },
+        down: {
+          maxCombo: 1,
+          currentCombo: 0,
+          exec: () => {},
         },
       },
 
