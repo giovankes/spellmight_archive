@@ -4,6 +4,7 @@ import Character from './character'
 
 import StaticHitbox from '../attacks-abilities/static'
 import Projectile from '../attacks-abilities/projectile'
+import EffectSpritesheet from '../misc/effect-spritesheet'
 
 class ButcherCharacter extends Character {
   constructor({ Scene, x, y, isPlayer, index }) {
@@ -396,20 +397,26 @@ class ButcherCharacter extends Character {
           }
           this.CharacterConfig.attacks.abilityOne.cooldown.canFire = false
           let x
-          facingRight ? (x = 40) : (x = -15)
+          this.facingRight ? (x = 15) : (x = -10)
           this.casting = true
+          this.shakeAbility(1, this.CharacterConfig.attacks.abilityOne.castTime)
 
           Scene.time.delayedCall(
             this.CharacterConfig.attacks.abilityOne.castTime,
             () => {
+              this.showAbilityCooldown(
+                1,
+                this.CharacterConfig.attacks.abilityOne.cooldown.amount
+              )
               this.casting = false
-
-              new Projectile({
+              const hook = new Projectile({
                 Scene,
                 x: this.x + x,
                 y: this.y + 10,
-                textureKey: CST.ABILITIES.MAGE.FIREBALL.TEXTURE_KEY,
-                animationKey: CST.ABILITIES.MAGE.FIREBALL.ANIMATION_KEY,
+                textureKey:
+                  CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.CLEAVER.IMG,
+                animationKey:
+                  CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.CLEAVER.ANIMS,
                 maxVelocity: {
                   x: 600,
                   y: 0,
@@ -418,17 +425,25 @@ class ButcherCharacter extends Character {
                   x: 700,
                   y: 0,
                 },
-                scale: 0.4,
-                facingRight,
+                scale: 0.5,
+                facingRight: this.facingRight,
                 id: this.id,
                 hitDetails: {
                   hitMultiplier: 0.3,
-                  velocityX: 200,
-                  velocityY: -200,
+                  velocityX: 300,
+                  velocityY: 1000,
                   shake: 0.008,
+                  name: 'butcher-cleaver',
+                },
+                bodySize: {
+                  width: 40,
+                  height: 20,
+                },
+                spriteOffset: {
+                  x: this.facingRight ? 18 : 3,
+                  y: 20,
                 },
               })
-
               this.CharacterConfig.attacks.abilityOne.cooldown.timer =
                 Scene.time.delayedCall(
                   this.CharacterConfig.attacks.abilityOne.cooldown.amount,

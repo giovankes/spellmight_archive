@@ -36,6 +36,8 @@ import MageBlink from '../../assets/spritesheets/characters/mage/blink.png'
 
 import WitchAerialBurst from '../../assets/spritesheets/characters/witch/aerial-burst.png'
 
+import ButcherCleaver from '../../assets/images/abilities/butcher/cleaver.png'
+
 // Stage Elements
 import FieldBG from '../../assets/stages/THE_FIELD/BG/BG.png'
 import FieldFG from '../../assets/stages/THE_FIELD/FG/FG_GRASS.png'
@@ -171,6 +173,14 @@ class StageLoad extends Phaser.Scene {
     }
     if (this.charactersToLoad.includes(3)) {
       this.load.image(CST.ABILITIES.BUTCHER.CLEAVER.ICON, ButcherAbilityOneIcon)
+      this.load.spritesheet(
+        CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.CLEAVER.IMG,
+        ButcherCleaver,
+        {
+          frameWidth: 96,
+          frameHeight: 96,
+        }
+      )
       this.load.image(CST.ABILITIES.BUTCHER.HOOK.ICON, ButcherAbilityTwoIcon)
       this.load.image(CST.ABILITIES.BUTCHER.RAGE.ICON, ButcherUltimateIcon)
     }
@@ -284,6 +294,20 @@ class StageLoad extends Phaser.Scene {
         ),
         repeat: -1,
         frameRate: 14,
+      })
+    }
+    if (this.charactersToLoad.includes(3)) {
+      this.anims.create({
+        key: CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.CLEAVER.ANIM,
+        frames: this.anims.generateFrameNames(
+          CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.CLEAVER.IMG,
+          {
+            start: 0,
+            end: 0,
+          }
+        ),
+        frameRate: 1,
+        repeat: -1,
       })
     }
     this.anims.create({

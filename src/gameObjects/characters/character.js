@@ -165,6 +165,7 @@ class Character extends Phaser.GameObjects.Container {
       },
     }
 
+
     // Create animations
     config.anims.forEach(({ key, frames, frameRate, repeat }) => {
       config.Scene.anims.create({
