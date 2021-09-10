@@ -280,7 +280,7 @@ class ButcherCharacter extends Character {
                     name: 'butcher-j',
                     hitMultiplier: 0.05,
                     velocityX: 50,
-                    velocityY: 10000,
+                    velocityY: 1000,
                   },
                 })
                 this.add(hitbox)
@@ -310,7 +310,7 @@ class ButcherCharacter extends Character {
                     name: 'butcher-j',
                     hitMultiplier: 0.05,
                     velocityX: 50,
-                    velocityY: 10000,
+                    velocityY: 1000,
                   },
                 })
                 this.add(hitbox)
@@ -341,7 +341,7 @@ class ButcherCharacter extends Character {
                     name: 'butcher-j',
                     hitMultiplier: 0.05,
                     velocityX: 50,
-                    velocityY: 10000,
+                    velocityY: 1000,
                   },
                 })
                 this.add(hitbox)
