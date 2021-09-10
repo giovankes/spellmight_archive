@@ -20,20 +20,71 @@ class HUD extends Phaser.Scene {
       name: 'UI Elements',
     })
 
-    const timerUI = this.add
-      .image(this.game.renderer.width / 2, 20, CST.IMAGE.UI.INGAME.TIMER)
-      .setScale(0.3)
-    const characterInfoUI = this.add
-      .image(200.5, 880, CST.IMAGE.UI.INGAME.CHARACTER_INFO)
-      .setScale(0.7)
-
-    this.timerText = new TimerText({
-      Scene: this,
-      x: 920 / 2,
-      y: 10,
+    this.timer = this.add.text(480 / 2, 20, '00:00').setOrigin(0.5)
+    this.elapsedTime = [0, 0]
+    this.timerEvent = this.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callback: () => {
+        if (this.elapsedTime[1] >= 59) {
+          this.elapsedTime[1] = 0
+          this.elapsedTime[0] += 1
+        } else {
+          this.elapsedTime[1] += 1
+        }
+        const minutes =
+          this.elapsedTime[0] < 10
+            ? '0' + this.elapsedTime[0]
+            : this.elapsedTime[0]
+        const seconds =
+          this.elapsedTime[1] < 10
+            ? '0' + this.elapsedTime[1]
+            : this.elapsedTime[1]
+        this.timer.setText(`${minutes}:${seconds}`)
+      },
+      callbackScope: this,
     })
 
-    this.UI.addMultiple([timerUI, characterInfoUI, this.timerText])
+    this.playerPercents = this.add.group([
+      this.add.text(30, 240, '0%'),
+      this.add.text(430, 240, '0%'),
+    ])
+  }
+
+  updatePlayerPercent(playerIndex, hitMultiplier) {
+    const textToUpdate = this.playerPercents.getChildren()[playerIndex]
+    if (!textToUpdate) return
+
+    textToUpdate.setText(Math.round((hitMultiplier - 1) * 100) + '%')
+  }
+
+  pause() {
+    // this.timerEvent.destroy()
+    this.timerEvent.paused = true
+
+    this.pausedText = this.add.text(480 / 2, 60, 'PAUSED').setOrigin(0.5)
+  }
+
+  resume() {
+    this.timerEvent.paused = false
+    // this.timerEvent = this.time.addEvent({
+    //     delay: 1000,
+    //     loop: true,
+    //     callback: () => {
+    //         if (this.elapsedTime[1] >= 59) {
+    //             this.elapsedTime[1] = 0
+    //             this.elapsedTime[0] += 1
+    //         } else {
+    //             this.elapsedTime[1] += 1
+    //         }
+    //         const minutes = this.elapsedTime[0] < 10 ? '0' + this.elapsedTime[0] : this.elapsedTime[0]
+    //         const seconds = this.elapsedTime[1] < 10 ? '0' + this.elapsedTime[1] : this.elapsedTime[1]
+    //         this.timer.setText(`${minutes}:${seconds}`)
+    //     },
+    //     callbackScope: this
+    // })
+
+    if (this.pausedText) this.pausedText.destroy()
   }
 }
 

@@ -39,17 +39,11 @@ class InputScene extends Phaser.Scene {
   //XBOX CONTROLLER
   setGamepadBindings(index) {
     const pad = this.input.gamepad.getPad(index)
-    if (
-      pad.id ===
-      'Microsoft Controller (STANDARD GAMEPAD Vendor: 045e Product: 0b12)'
-    ) {
+    if (pad.id.includes('Microsoft Controller')) {
       const playerIndex = PLAYERS.indexOf(index)
       pad.addListener('down', (buttonIndex, value, button) => {
         if (this.currentScene && this.currentScene.getControls) {
           switch (buttonIndex) {
-            case 7:
-              this.currentScene.getControls('JUMP', playerIndex, 'down')
-              break
             case 12:
               this.currentScene.getControls('UP', playerIndex, 'down')
               break
@@ -76,6 +70,20 @@ class InputScene extends Phaser.Scene {
               break
             case 3:
               this.currentScene.getControls('Y', playerIndex, 'down')
+              break
+            case 4:
+              this.currentScene.getControls('LB', playerIndex, 'down')
+              break
+            case 6:
+              this.currentScene.getControls('LT', playerIndex, 'down')
+              break
+            case 5:
+              this.currentScene.getControls('RB', playerIndex, 'down')
+              break
+            case 7:
+              this.currentScene.getControls('RT', playerIndex, 'down')
+              break
+            default:
               break
           }
         }
@@ -112,6 +120,23 @@ class InputScene extends Phaser.Scene {
               break
             case 3:
               this.currentScene.getControls('Y', playerIndex, 'up')
+              break
+            case 4:
+              this.currentScene.getControls('LB', playerIndex, 'up')
+              break
+            case 4:
+              this.currentScene.getControls('LB', playerIndex, 'up')
+              break
+            case 6:
+              this.currentScene.getControls('LT', playerIndex, 'up')
+              break
+            case 5:
+              this.currentScene.getControls('RB', playerIndex, 'up')
+              break
+            case 7:
+              this.currentScene.getControls('RT', playerIndex, 'up')
+              break
+            default:
               break
           }
         }
@@ -156,6 +181,12 @@ class InputScene extends Phaser.Scene {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
         this.currentScene.getControls('ESC', playerIndex, 'down')
+      }
+    })
+    this.input.keyboard.addKey('SPACE').on('down', (e) => {
+      const playerIndex = PLAYERS.indexOf('keyboard')
+      if (this.currentScene && this.currentScene.getControls) {
+        this.currentScene.getControls('LT', playerIndex, 'down')
       }
     })
     // Main
@@ -220,6 +251,12 @@ class InputScene extends Phaser.Scene {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
         this.currentScene.getControls('ESC', playerIndex, 'up')
+      }
+    })
+    this.input.keyboard.addKey('SPACE').on('up', (e) => {
+      const playerIndex = PLAYERS.indexOf('keyboard')
+      if (this.currentScene && this.currentScene.getControls) {
+        this.currentScene.getControls('LT', playerIndex, 'up')
       }
     })
     // Main

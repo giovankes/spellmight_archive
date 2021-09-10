@@ -73,8 +73,35 @@ class MenuCharacter extends Phaser.Scene {
           characterID: 1,
           imageKey: CST.IMAGE.CHARACTER.MAGE.PORTRAIT,
         })
+        const characterPotraitTwo = new CharacterSelectPortrait({
+          x: 60,
+          y: 50,
+          scene,
+          parent: this,
+          characterID: 2,
+          imageKey: CST.IMAGE.CHARACTER.WITCH.PORTRAIT,
+        })
+        const characterPortraitThree = new CharacterSelectPortrait({
+          x: 20,
+          y: 85,
+          scene,
+          parent: this,
+          characterID: 3,
+          imageKey: CST.IMAGE.CHARACTER.BUTCHER.PORTRAIT,
+        })
+        const randomCharacter = new CharacterSelectPortrait({
+          x: 60,
+          y: 85,
+          scene,
+          parent: this,
+          characterID: 'RANDOM',
+          imageKey: CST.IMAGE.MENU.DICE,
+        })
         this.characterPortraits = new Phaser.GameObjects.Group(scene, [
           characterPortraitOne,
+          characterPotraitTwo,
+          characterPortraitThree,
+          randomCharacter,
         ])
         this.title = new Phaser.GameObjects.Text(scene, 30, 0, 'INACTIVE', {
           fontSize: 16,
@@ -95,6 +122,9 @@ class MenuCharacter extends Phaser.Scene {
             .setStrokeStyle(4, 0xffffff)
             .setOrigin(0),
           characterPortraitOne,
+          characterPotraitTwo,
+          characterPortraitThree,
+          randomCharacter,
         ])
 
         scene.add.existing(this)
@@ -114,34 +144,57 @@ class MenuCharacter extends Phaser.Scene {
 
       setSelected(boolean, characterID) {
         if (!boolean) {
-          if (this.selectedCharacter && this.selectedBackText) {
+          if (
+            this.selectedCharacter &&
+            this.selectedBackText &&
+            this.selectedNameText
+          ) {
             this.selectedCharacter.destroy()
             this.selectedBackText.destroy()
+            this.selectedNameText.destroy()
           }
           this.characterPortraits.getChildren().forEach((characterPortrait) => {
             characterPortrait.setVisible(true)
           })
           this.characterSelected = 0
         } else {
+          let parsedCharacterID
+          if (characterID === 'RANDOM') {
+            parsedCharacterID = Math.floor(Math.random() * 3 + 1)
+          } else parsedCharacterID = characterID
+
           this.characterPortraits.getChildren().forEach((characterPortrait) => {
             characterPortrait.setVisible(false)
           })
-          let characterTexture = null
-          switch (characterID) {
+          let characterTexture
+          let scale
+          let title
+          switch (parsedCharacterID) {
             case 1:
-              characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE
+              characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE.IMG
+              scale = 2
+              title = 'Mage'
+              break
+            case 2:
+              characterTexture = CST.SPRITESHEET.CHARACTERS.WITCH.SPR
+              scale = 1.6
+              title = 'Witch'
+              break
+            case 3:
+              characterTexture = CST.SPRITESHEET.CHARACTERS.BUTCHER.SPR
+              scale = 1.4
+              title = 'Butcher'
               break
             default:
-              characterTexture = CST.SPRITESHEET.CHARACTERS.MAGE
               break
           }
 
           this.selectedCharacter = new Phaser.GameObjects.Image(
             this.scene,
-            35,
+            45,
             100,
             characterTexture
-          ).setScale(0.6)
+          ).setScale(scale)
           this.selectedBackText = new Phaser.GameObjects.Text(
             this.scene,
             35,
@@ -152,8 +205,22 @@ class MenuCharacter extends Phaser.Scene {
               color: '#FFFFFF',
             }
           )
-          this.add([this.selectedCharacter, this.selectedBackText])
-          this.characterSelected = characterID
+          this.selectedNameText = new Phaser.GameObjects.Text(
+            this.scene,
+            40,
+            145,
+            title,
+            {
+              fontFamily: 'Superscript',
+              color: '#FFFFFF',
+            }
+          ).setOrigin(0.5, 0)
+          this.add([
+            this.selectedCharacter,
+            this.selectedBackText,
+            this.selectedNameText,
+          ])
+          this.characterSelected = parsedCharacterID
         }
       }
 
@@ -205,39 +272,40 @@ class MenuCharacter extends Phaser.Scene {
       constructor({ scene, playerIndex }) {
         let x = 80
         let y = 100
-        let fillColor = 0xa14545
+        let spriteKey = CST.IMAGE.MENU.P1_CURSOR
         switch (playerIndex) {
           case 0:
             x = 80
             y = 100
-            fillColor = 0xa14545
+            spriteKey = CST.IMAGE.MENU.P1_CURSOR
             break
           case 1:
             x = 170
             y = 100
-            fillColor = 0x56a145
+            spriteKey = CST.IMAGE.MENU.P2_CURSOR
             break
           case 2:
             x = 40
             y = scene.game.renderer.height - 40
-            fillColor = 0x458ca1
+            spriteKey = CST.IMAGE.MENU.P3_CURSOR
             break
           case 3:
             x = scene.game.renderer.width - 40
             y = scene.game.renderer.height - 40
-            fillColor = 0x7645a1
+            spriteKey = CST.IMAGE.MENU.P4_CURSOR
             break
           default:
             break
         }
 
         super(scene, x, y, [
-          new Phaser.GameObjects.Rectangle(scene, 0, 0, 10, 10, fillColor),
+          new Phaser.GameObjects.Sprite(scene, 0, 0, spriteKey).setOrigin(0, 0),
         ])
 
         scene.physics.add.existing(this, false)
-        this.body.setOffset(-5, -5)
-        this.body.setSize(10, 10)
+        this.body.setCollideWorldBounds(true)
+        this.body.setOffset(0, 0)
+        this.body.setSize(1, 1)
 
         this.setDepth(2)
 
@@ -375,6 +443,7 @@ class MenuCharacter extends Phaser.Scene {
                     )
                   ) {
                     player.setSelected(false)
+                    return
                   }
                 }
 
@@ -389,26 +458,29 @@ class MenuCharacter extends Phaser.Scene {
                       )
                     ) {
                       player.setSelected(true, portrait.ID)
+                      return
                     }
                   }
                 })
               }
             } else if (player.type === 'cpu') {
-              player.characterPortraits.getChildren().forEach((portrait) => {
-                if (player.selectedBackText) {
-                  const selectedBackTextBounds =
-                    player.selectedBackText.getBounds()
-                  if (
-                    Phaser.Geom.Rectangle.ContainsPoint(
-                      selectedBackTextBounds,
-                      pointerCenter
-                    )
-                  ) {
-                    player.setSelected(false)
-                  }
+              // Back text
+              if (player.selectedBackText) {
+                const selectedBackTextBounds =
+                  player.selectedBackText.getBounds()
+                if (
+                  Phaser.Geom.Rectangle.ContainsPoint(
+                    selectedBackTextBounds,
+                    pointerCenter
+                  )
+                ) {
+                  player.setSelected(false)
+                  return
                 }
+              }
 
-                // Character Portrait
+              // Character Portrait
+              player.characterPortraits.getChildren().forEach((portrait) => {
                 if (portrait.visible) {
                   const portraitBounds = portrait.border.getBounds()
                   if (
@@ -418,6 +490,7 @@ class MenuCharacter extends Phaser.Scene {
                     )
                   ) {
                     player.setSelected(true, portrait.ID)
+                    return
                   }
                 }
               })
@@ -474,7 +547,7 @@ class MenuCharacter extends Phaser.Scene {
           this.playerPointers[playerIndex].body.setVelocityY(0)
           break
         case 'DOWN':
-          if (this.playerPointers[playerIndex].body.velocity.x < 0) return
+          if (this.playerPointers[playerIndex].body.velocity.y < 0) return
           this.playerPointers[playerIndex].body.setVelocityY(0)
           break
       }
@@ -508,9 +581,9 @@ class MenuCharacter extends Phaser.Scene {
               pointerCenter[player.index]
             )
           ) {
-            player.setHovered(true, portrait.ID)
+            portrait.setHovered(true)
           } else {
-            player.setHovered(false)
+            portrait.setHovered(false)
           }
         })
       } else if (player.type === 'cpu') {
@@ -519,9 +592,9 @@ class MenuCharacter extends Phaser.Scene {
             const portraitBounds = portrait.border.getBounds()
             if (!portraitBounds) return
             if (Phaser.Geom.Rectangle.ContainsPoint(portraitBounds, center)) {
-              player.setHovered(true, portrait.ID)
+              portrait.setHovered(true)
             } else {
-              player.setHovered(false)
+              portrait.setHovered(false)
             }
           })
         })
