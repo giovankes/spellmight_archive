@@ -10,6 +10,7 @@ class Character extends Phaser.GameObjects.Container {
 
     // Class variables for functions
     this.CharacterConfig = config
+    console.log(this.CharacterConfig)
     this.sprintTimeoutTime = 300
     this.pressing = {
       UP: false,
@@ -575,6 +576,9 @@ class Character extends Phaser.GameObjects.Container {
 
       case 'attack heavy':
         this.CharacterConfig.attacks.attackHeavy.neutral.exec()
+        break
+      case 'attack upper':
+        this.CharacterConfig.attacks.upper.neutral.exec()
         break
       case 'ability one':
         this.CharacterConfig.attacks.abilityOne.exec()

@@ -128,7 +128,7 @@ class ButcherCharacter extends Character {
           maxCombo: 3,
           currentCombo: 0,
           exec: (direction) => {
-            const self = this.CharacterConfig.attacks.attackLight.neutral
+            const self = this.CharacterConfig.attacks.attackHeavy.neutral
             self.currentCombo += 1
             let x = 0
             let hitbox
@@ -245,6 +245,114 @@ class ButcherCharacter extends Character {
           exec: () => {},
         },
       },
+      upper: {
+        neutral: {
+          maxCombo: 3,
+          currentCombo: 0,
+          exec: (direction) => {
+            const self = this.CharacterConfig.attacks.upper.neutral
+            self.currentCombo += 1
+            let x = 0
+            let hitbox
+            switch (self.currentCombo) {
+              case 1:
+                this.facingRight ? (x = 18) : (x = 0)
+                hitbox = new StaticHitbox({
+                  Scene,
+                  x: x,
+                  y: 12,
+                  height: 8,
+                  width: 8,
+                  depth: 2,
+                  life: 100,
+                  id: this.id,
+                  tweenData: {
+                    ease: 'Linear',
+                    duration: 100,
+                    repeat: 0,
+                    yoyo: false,
+                    x: { from: x, to: this.facingRight ? x + 5 : x - 5 },
+                    scaleX: { from: 1, to: 2 },
+                  },
+                  addToScene: false,
+                  direction: this.facingRight,
+                  attack: {
+                    name: 'butcher-j',
+                    hitMultiplier: 0.05,
+                    velocityX: 50,
+                    velocityY: 1000,
+                  },
+                })
+                this.add(hitbox)
+                break
+              case 2:
+                this.facingRight ? (x = 18) : (x = 0)
+                hitbox = new StaticHitbox({
+                  Scene,
+                  x: x,
+                  y: 12,
+                  height: 8,
+                  width: 8,
+                  depth: 2,
+                  life: 100,
+                  id: this.id,
+                  tweenData: {
+                    ease: 'Linear',
+                    duration: 100,
+                    repeat: 0,
+                    yoyo: false,
+                    x: { from: x, to: this.facingRight ? x + 5 : x - 5 },
+                    scaleX: { from: 1, to: 2 },
+                  },
+                  addToScene: false,
+                  direction: this.facingRight,
+                  attack: {
+                    name: 'butcher-j',
+                    hitMultiplier: 0.05,
+                    velocityX: 50,
+                    velocityY: 1000,
+                  },
+                })
+                this.add(hitbox)
+                break
+              case 3:
+                self.currentCombo = 0
+                this.facingRight ? (x = 18) : (x = 0)
+                hitbox = new StaticHitbox({
+                  Scene,
+                  x: x,
+                  y: 12,
+                  height: 8,
+                  width: 8,
+                  depth: 2,
+                  life: 100,
+                  id: this.id,
+                  tweenData: {
+                    ease: 'Linear',
+                    duration: 100,
+                    repeat: 0,
+                    yoyo: false,
+                    x: { from: x, to: this.facingRight ? x + 5 : x - 5 },
+                    scaleX: { from: 1, to: 2 },
+                  },
+                  addToScene: false,
+                  direction: this.facingRight,
+                  attack: {
+                    name: 'butcher-j',
+                    hitMultiplier: 0.05,
+                    velocityX: 50,
+                    velocityY: 1000,
+                  },
+                })
+                this.add(hitbox)
+                break
+              default:
+                break
+            }
+          },
+        },
+      },
+
       abilityOne: {
         cooldown: {
           amount: 1400,

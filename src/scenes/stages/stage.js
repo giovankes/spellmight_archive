@@ -454,6 +454,11 @@ class Stage extends Phaser.Scene {
         case 'RT':
           Character.attackManager('attack heavy', variant)
           Character.pressing.RT = true
+          break
+        case 'RB':
+          Character.attackManager('attack upper', variant)
+          Character.pressing.RB = true
+          break
         default:
           break
       }
