@@ -37,7 +37,7 @@ import MageBlink from '../../assets/spritesheets/characters/mage/blink.png'
 import WitchAerialBurst from '../../assets/spritesheets/characters/witch/aerial-burst.png'
 
 import ButcherCleaver from '../../assets/images/abilities/butcher/cleaver.png'
-
+import ButcherHook from '../../assets/images/abilities/butcher/hook-01.png'
 // Stage Elements
 import FieldBG from '../../assets/stages/THE_FIELD/BG/BG.png'
 import FieldFG from '../../assets/stages/THE_FIELD/FG/FG_GRASS.png'
@@ -181,6 +181,14 @@ class StageLoad extends Phaser.Scene {
           frameHeight: 96,
         }
       )
+      this.load.spritesheet(
+        CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.HOOK.IMG,
+        ButcherHook,
+        {
+          frameWidth: 102,
+          frameHeight: 102,
+        }
+      )
       this.load.image(CST.ABILITIES.BUTCHER.HOOK.ICON, ButcherAbilityTwoIcon)
       this.load.image(CST.ABILITIES.BUTCHER.RAGE.ICON, ButcherUltimateIcon)
     }
@@ -298,6 +306,18 @@ class StageLoad extends Phaser.Scene {
     }
     if (this.charactersToLoad.includes(3)) {
       this.anims.create({
+        key: CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.HOOK.ANIM,
+        frames: this.anims.generateFrameNames(
+          CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.HOOK.IMG,
+          {
+            start: 0,
+            end: 0,
+          }
+        ),
+        frameRate: 1,
+        repeat: -1,
+      })
+      this.anims.create({
         key: CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.CLEAVER.ANIM,
         frames: this.anims.generateFrameNames(
           CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.CLEAVER.IMG,
@@ -310,6 +330,7 @@ class StageLoad extends Phaser.Scene {
         repeat: -1,
       })
     }
+
     this.anims.create({
       key: CST.SPRITESHEET.CHARACTERS.DUST.SPRINT.ANIM,
       frames: this.anims.generateFrameNames(
