@@ -456,8 +456,75 @@ class ButcherCharacter extends Character {
         },
       },
       abilityTwo: {
-        cooldown: 4000,
-        exec: () => {},
+        cooldown: {
+          amount: 1400,
+          canFire: true,
+          timer: null,
+        },
+        castTime: 500,
+        exec: (facingRight) => {
+          if (!this.CharacterConfig.attacks.abilityTwo.cooldown.canFire) {
+            return
+          }
+          this.CharacterConfig.attacks.abilityTwo.cooldown.canFire = false
+          let x
+          this.facingRight ? (x = 15) : (x = -10)
+          this.casting = true
+          this.shakeAbility(1, this.CharacterConfig.attacks.abilityTwo.castTime)
+
+          Scene.time.delayedCall(
+            this.CharacterConfig.attacks.abilityTwo.castTime,
+            () => {
+              this.showAbilityCooldown(
+                1,
+                this.CharacterConfig.attacks.abilityTwo.cooldown.amount
+              )
+              this.casting = false
+              const hook = new Projectile({
+                Scene,
+                x: this.x + x,
+                y: this.y + 10,
+                textureKey:
+                  CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.HOOK.IMG,
+                animationKey:
+                  CST.SPRITESHEET.CHARACTERS.BUTCHER.ABILITIES.HOOK.ANIMS,
+                maxVelocity: {
+                  x: 600,
+                  y: 0,
+                },
+                acceleration: {
+                  x: 700,
+                  y: 0,
+                },
+                scale: 0.5,
+                facingRight: this.facingRight,
+                id: this.id,
+                hitDetails: {
+                  hitMultiplier: 0.3,
+                  velocityX: 300,
+                  velocityY: 1000,
+                  shake: 0.008,
+                  name: 'butcher-hook',
+                },
+                bodySize: {
+                  width: 40,
+                  height: 20,
+                },
+                spriteOffset: {
+                  x: this.facingRight ? 18 : 3,
+                  y: 20,
+                },
+              })
+              this.CharacterConfig.attacks.abilityTwo.cooldown.timer =
+                Scene.time.delayedCall(
+                  this.CharacterConfig.attacks.abilityTwo.cooldown.amount,
+                  () => {
+                    this.CharacterConfig.attacks.abilityTwo.cooldown.canFire = true
+                  }
+                )
+            }
+          )
+        },
       },
       ultimate: {
         cooldown: 4000,

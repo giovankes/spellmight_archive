@@ -186,6 +186,10 @@ export const CST = {
             IMG: 'SPR_CHARACTER_BUTCHER_CLEAVER_IMG',
             ANIM: 'SPR_CHARACTER_BUTCHER_ABILITY_CLEAVER_ANIM',
           },
+          HOOK: {
+            IMG: 'SPR_CHARACTER_BUTCHER_ABILITY_HOOK_IMG',
+            ANIM: 'SPR_CHARACTER_BUTCHER_ABILITY_HOOK_ANIM',
+          },
         },
         ANIMS: {
           IDLE: 'SPR_CHARACTER_BUTCHER_IDLE',
