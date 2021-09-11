@@ -502,6 +502,7 @@ class ButcherCharacter extends Character {
                 hitDetails: {
                   hitMultiplier: 0.3,
                   velocityX: 300,
+                  hook:true,
                   velocityY: 1000,
                   shake: 0.008,
                   name: 'butcher-hook',

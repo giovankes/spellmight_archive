@@ -37,7 +37,7 @@ import MageBlink from '../../assets/spritesheets/characters/mage/blink.png'
 import WitchAerialBurst from '../../assets/spritesheets/characters/witch/aerial-burst.png'
 
 import ButcherCleaver from '../../assets/images/abilities/butcher/cleaver.png'
-import ButcherHook from '../../assets/images/abilities/butcher/hook.jpg'
+import ButcherHook from '../../assets/images/abilities/butcher/hook-01.png'
 // Stage Elements
 import FieldBG from '../../assets/stages/THE_FIELD/BG/BG.png'
 import FieldFG from '../../assets/stages/THE_FIELD/FG/FG_GRASS.png'
