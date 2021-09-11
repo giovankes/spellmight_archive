@@ -34,11 +34,11 @@ class InputScene extends Phaser.Scene {
     // Key bindings
     //Keyboard
     // Movement
-    //
   }
   //XBOX CONTROLLER
   setGamepadBindings(index) {
     const pad = this.input.gamepad.getPad(index)
+    console.log(pad)
     if (pad.id.includes('Microsoft Controller')) {
       const playerIndex = PLAYERS.indexOf(index)
       pad.addListener('down', (buttonIndex, value, button) => {
@@ -169,7 +169,7 @@ class InputScene extends Phaser.Scene {
         this.currentScene.getControls('RIGHT', playerIndex, 'down')
       }
     })
-    // Other
+    // Otherhttps://giotje.dev/
     this.input.keyboard.addKey('ENTER').on('down', (e) => {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
