@@ -149,7 +149,6 @@ class InputScene extends Phaser.Scene {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
         this.currentScene.getControls('UP', playerIndex, 'down')
-        this.currentScene.getControls('JUMP', playerIndex, 'down')
       }
     })
     this.input.keyboard.addKey('S').on('down', (e) => {
@@ -186,20 +185,20 @@ class InputScene extends Phaser.Scene {
     this.input.keyboard.addKey('SPACE').on('down', (e) => {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
-        this.currentScene.getControls('LT', playerIndex, 'down')
+        this.currentScene.getControls('A', playerIndex, 'down')
       }
     })
     // Main
     this.input.keyboard.addKey('J').on('down', (e) => {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
-        this.currentScene.getControls('A', playerIndex, 'down')
+        this.currentScene.getControls('LT', playerIndex, 'down')
       }
     })
     this.input.keyboard.addKey('K').on('down', (e) => {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
-        this.currentScene.getControls('B', playerIndex, 'down')
+        this.currentScene.getControls('RT', playerIndex, 'down')
       }
     })
     this.input.keyboard.addKey('Q').on('down', (e) => {
@@ -219,7 +218,6 @@ class InputScene extends Phaser.Scene {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
         this.currentScene.getControls('UP', playerIndex, 'up')
-        this.currentScene.getControls('JUMP', playerIndex, 'up')
       }
     })
     this.input.keyboard.addKey('S').on('up', (e) => {
@@ -256,20 +254,20 @@ class InputScene extends Phaser.Scene {
     this.input.keyboard.addKey('SPACE').on('up', (e) => {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
-        this.currentScene.getControls('LT', playerIndex, 'up')
+        this.currentScene.getControls('A', playerIndex, 'up')
       }
     })
     // Main
     this.input.keyboard.addKey('J').on('up', (e) => {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
-        this.currentScene.getControls('A', playerIndex, 'up')
+        this.currentScene.getControls('LT', playerIndex, 'up')
       }
     })
     this.input.keyboard.addKey('K').on('up', (e) => {
       const playerIndex = PLAYERS.indexOf('keyboard')
       if (this.currentScene && this.currentScene.getControls) {
-        this.currentScene.getControls('B', playerIndex, 'up')
+        this.currentScene.getControls('RT', playerIndex, 'up')
       }
     })
     this.input.keyboard.addKey('Q').on('up', (e) => {
