@@ -1,11 +1,30 @@
-import http from 'node:http';
+import http from 'node:http'
 import express from 'express'
 import cors from 'cors'
 
 import { socker } from './socker/index.js'
-import {config} from './config.js'
+import { config } from './config.js'
 
-const app = express ();
+const app = express()
 const server = new http.Server(app)
-socker(server);
+socker(server)
 
+app.use(cors({ origin: config.ALLOWLIST_HOSTS, credentials: true }))
+app.use(express.json())
+app.use('/users', authenticated)
+app.use('/search', authenticated)
+
+routes(app)
+
+app.use((error, _request, response, _) => {
+  handleError(error, response)
+})
+
+app.listen(config.API_PORT, () => {
+  consola.success(`Api listening on port ${config.API_PORT}!`)
+})
+
+server.listen(config.SOCKET_PORT, () => {
+  consola.success(`Socker listening on port ${config.SOCKET_PORT}!`)
+  consola.info(`Api and socker whitelisted for ${config.ALLOWLIST_HOSTS}`)
+})
