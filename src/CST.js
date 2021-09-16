@@ -168,6 +168,7 @@ export const CST = {
       WITCH: {
         SPR: 'SPR_CHARACTER_WITCH',
         ANIMS: {
+          ATTACK: 'SPR_CHARACTER_WITCH_ATTACK',
           IDLE: 'SPR_CHARACTER_WITCH_IDLE',
           RUN: 'SPR_CHARACTER_WITCH_RUN',
           JUMP: 'SPR_CHARACTER_WITCH_JUMP',

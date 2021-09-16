@@ -20,6 +20,7 @@ import CharacterPortraitbutcher from '../../assets/images/characters/butcher/but
 import CharacterButcherRun from '../../assets/images/characters/butcher/butcher-run.png'
 import WitchIdle from '../../assets/spritesheets/characters/witch/character/B_witch_idle.png'
 import WitchRun from '../../assets/spritesheets/characters/witch/character/B_witch_run.png'
+import WitchAttacks from '../../assets/spritesheets/characters/witch/character/B_witch_attack.png'
 import Back from '../../assets/images/ui/menu/back.png'
 import Ready from '../../assets/images/ui/menu/ready.png'
 import mapGame from '../../assets/images/ui/map/map.svg'
@@ -71,6 +72,17 @@ class MenuLoad extends Phaser.Scene {
         startFrame: 0,
         endFrame: 5,
         repeat: true,
+      }
+    )
+    this.load.spritesheet(
+      CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.ATTACK,
+      WitchAttacks,
+      {
+        frameWidth: 48,
+        frameHeight: 48,
+        startFrame: 0,
+        endFrame: 10,
+        repeat: -1,
       }
     )
     this.load.spritesheet(

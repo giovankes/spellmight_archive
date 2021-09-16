@@ -19,7 +19,6 @@ import WitchUltimateIcon from '../../assets/images/abilities/witch/ultimate-icon
 import ButcherAbilityOneIcon from '../../assets/images/abilities/butcher/ability-1-icon.png'
 import ButcherAbilityTwoIcon from '../../assets/images/abilities/butcher/ability-2-icon.png'
 import ButcherUltimateIcon from '../../assets/images/abilities/butcher/ultimate-icon.png'
-
 // Character Elements
 import DustSprint from '../../assets/spritesheets/characters/dust-sprint.png'
 import DustDodge from '../../assets/spritesheets/characters/dust-dodge.png'
