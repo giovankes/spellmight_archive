@@ -463,7 +463,7 @@ class WitchCharacter extends Character {
       },
     }
 
-    const spr = CST.SPRITESHEET.CHARACTERS.WITCH.SPR
+    const spr = CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.IDLE
 
     super({
       // Edittable values
@@ -493,20 +493,20 @@ class WitchCharacter extends Character {
         {
           key: CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.IDLE,
           frames: {
-            key: spr,
-            startEnd: { start: 0, end: 0 },
+            key: CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.IDLE,
+            startEnd: { start: 0, end: 5 },
           },
           frameRate: 10,
-          repeat: 0,
+          repeat: true,
         },
         {
           key: CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.RUN,
           frames: {
-            key: spr,
-            startEnd: { start: 1, end: 4 },
+            key: CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.RUN,
+            startEnd: { start: 0, end: 7 },
           },
           frameRate: 10,
-          repeat: -1,
+          repeat: true,
         },
         {
           key: CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.JUMP,

@@ -34,8 +34,7 @@ import MageFireballParticle from '../../assets/images/abilities/mage/fire-partic
 import MageCasting from '../../assets/spritesheets/characters/mage/casting.png'
 import MageBlink from '../../assets/spritesheets/characters/mage/blink.png'
 
-import WitchAerialBurst from '../../assets/spritesheets/characters/witch/aerial-burst.png'
-
+import WitchAerialBurst from '../../assets/spritesheets/characters/witch/abilities/aerial-burst.png'
 import ButcherCleaver from '../../assets/images/abilities/butcher/cleaver.png'
 import ButcherHook from '../../assets/images/abilities/butcher/hook-01.png'
 // Stage Elements
