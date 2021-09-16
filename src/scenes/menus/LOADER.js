@@ -13,12 +13,13 @@ import MenuItem from '../../assets/images/ui/menu/menu-item.png'
 import Cleaver from '../../assets/images/abilities/butcher/cleaver.png'
 import CharacterPortraitMage from '../../assets/images/characters/mage/mage_temp_portrait.png'
 import CharacterMage from '../../assets/images/characters/mage/mage_temp.png'
-import CharacterWitch from '../../assets/images/characters/witch/witch-spritesheet-temp.png'
-import CharacterPortraitWitch from '../../assets/images/characters/witch/witch-temp-portrait.png'
+import CharacterWitch from '../../assets/spritesheets/characters/witch/character/B_witch_idle.png'
+import CharacterPortraitWitch from '../../assets/spritesheets/characters/witch/character/B_witch.gif'
 import CharacterButcher from '../../assets/images/characters/butcher/butcher-sprite.png'
 import CharacterPortraitbutcher from '../../assets/images/characters/butcher/butcher_portrait.png'
 import CharacterButcherRun from '../../assets/images/characters/butcher/butcher-run.png'
-
+import WitchIdle from '../../assets/spritesheets/characters/witch/character/B_witch_idle.png'
+import WitchRun from '../../assets/spritesheets/characters/witch/character/B_witch_run.png'
 import Back from '../../assets/images/ui/menu/back.png'
 import Ready from '../../assets/images/ui/menu/ready.png'
 import mapGame from '../../assets/images/ui/map/map.svg'
@@ -68,9 +69,33 @@ class MenuLoad extends Phaser.Scene {
         frameWidth: 48,
         frameHeight: 48,
         startFrame: 0,
+        endFrame: 5,
+        repeat: true,
+      }
+    )
+    this.load.spritesheet(
+      CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.RUN,
+      WitchRun,
+      {
+        frameWidth: 48,
+        frameHeight: 48,
+        startFrame: 0,
+        endFrame: 7,
+        repeat: true,
       }
     )
 
+    this.load.spritesheet(
+      CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.IDLE,
+      WitchIdle,
+      {
+        frameWidth: 48,
+        frameHeight: 48,
+        startFrame: 0,
+        endFrame: 5,
+        repeat: true,
+      }
+    )
     this.load.spritesheet(
       CST.SPRITESHEET.CHARACTERS.BUTCHER.SPR,
       CharacterButcher,
