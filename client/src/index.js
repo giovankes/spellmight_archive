@@ -6,6 +6,7 @@ import MenuEntry from './scenes/menus/menu_entry.js'
 import MenuMain from './scenes/menus/menu_main.js'
 import MenuCharacter from './scenes/menus/menu_character.js'
 import MenuStages from './scenes/menus/menu_stages.js'
+import MenuMultiplayer from './scenes/menus/menu_multiplayer.js'
 import StageLoad from './scenes/stages/stage_load.js'
 import StageTest from './scenes/stages/stage_test.js'
 import StageField from './scenes/stages/stage_field.js'
@@ -26,6 +27,7 @@ const config = {
     MenuEntry,
     MenuMain,
     MenuCharacter,
+    MenuMultiplayer,
     MenuStages,
     StageLoad,
     StageTest,

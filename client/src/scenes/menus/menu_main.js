@@ -199,6 +199,7 @@ class MenuMain extends Phaser.Scene {
       duration: 200,
       onComplete: () => {
         this.scene.start(to, config || null)
+        console.log(to, config)
         this.scene.get(CST.SCENES.INPUT).getCurrentScene(null)
       },
     })

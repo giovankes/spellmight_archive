@@ -67,6 +67,7 @@ export const CST = {
       CHARACTER: 'MENU_CHARACTER',
       STAGES: 'MENU_STAGES',
       MAP: 'MAP',
+      MULTIPLAYER: 'MENU_MULTIPLAYER',
     },
     STAGES: {
       LOAD: 'STAGE_LOAD',
