@@ -1,1 +1,1 @@
-export { default as socker } from './defaultController'
+export { default as socker } from './sockerController.js'

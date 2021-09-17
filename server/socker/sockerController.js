@@ -9,7 +9,7 @@ const app = (app) => {
   const io = new Server(app, {
     transports: ['websocket'], //to avoid sticky sessions when using multiple servers
     path: '/classic-mode',
-    cors: fixedOrigin(allowedList),
+    cors: fixedOrigin(ALLOWLIST_HOSTS),
     rememberUpgrade: true,
   })
 

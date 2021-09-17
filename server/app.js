@@ -1,10 +1,10 @@
 import http from 'http'
 import express from 'express'
 import cors from 'cors'
-
+import routes from './routes.js'
 import { socker } from './socker/index.js'
 import { config } from './config.js'
-
+import { handleError, authenticated } from './middlewares/index.js'
 const app = express()
 const server = new http.Server(app)
 socker(server)

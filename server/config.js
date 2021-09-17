@@ -20,17 +20,22 @@ export const config = {
 
   DB_URL: getDefault(
     process.env.DB_URL,
-    'mongodb://localhost:27017/spellmight'
+    'mongodb+srv://gio:jip_free1criy8DWIL@cluster0.amjpu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
   ),
   API_PORT: process.env.API_PORT
     ? Number.parseInt(process.env.API_PORT, 10)
-    : 8080,
+    : 8082,
   SOCKET_PORT: process.env.SOCKET_PORT
     ? Number.parseInt(process.env.SOCKET_PORT, 10)
     : 65080,
   SALT_ROUNDS: process.env.SALT_ROUNDS
     ? Number.parseInt(process.env.SALT_ROUNDS, 10)
     : 6,
+
+  REDIS_PORT: process.env.REDIS_PORT
+    ? Number.parseInt(process.env.REDIS_PORT, 10)
+    : 6379,
+  REDIS_HOST: getDefault(process.env.REDIS_HOST, 'localhost'),
   DEFAULT_MAX_TIMER: 120 * 1000,
   DEFAULT_MAX_PLAYERS: 14,
 
