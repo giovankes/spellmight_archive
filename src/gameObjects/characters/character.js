@@ -232,6 +232,7 @@ class Character extends Phaser.GameObjects.Container {
               ? `-=${this.CharacterConfig.dashDistance}`
               : '-=35',
             ease: 'Linear',
+            repeat: -1,
             duration: this.CharacterConfig.dashDuration
               ? this.CharacterConfig.dashDuration
               : 80,
@@ -564,14 +565,16 @@ class Character extends Phaser.GameObjects.Container {
   }
 
   attackManager(attack, variant) {
-    console.log(attack)
     if (this.casting) return
     let attackReturn = null
     switch (attack) {
       case 'attack light':
-        if (!variant) this.CharacterConfig.attacks.attackLight.neutral.exec()
-        else if (variant === 'forward')
+        if (!variant) {
+          this.CharacterConfig.attacks.attackLight.neutral.exec()
+          this.CharacterConfig.movementAnimations.attack()
+        } else if (variant === 'forward') {
           this.CharacterConfig.attacks.attackLight.forward.exec()
+        }
         break
 
       case 'attack heavy':
@@ -595,7 +598,6 @@ class Character extends Phaser.GameObjects.Container {
 
     if (!attackReturn || !attackReturn.hitbox) return
     const characters = this.CharacterConfig.Scene.Characters.getChildren()
-
     characters.forEach((character) => {
       if (character.id === this.id) return
       const playerBounds = character.getBounds()
@@ -610,8 +612,8 @@ class Character extends Phaser.GameObjects.Container {
   }
 
   handleAttack(attack, direction) {
-    console.log(attack)
     if (attack && attack.name) {
+      console.log(attack)
       switch (attack.name) {
         case 'mage-fireball':
           const hitAnim = new EffectSpritesheet({
@@ -645,6 +647,7 @@ class Character extends Phaser.GameObjects.Container {
     this.body.setDrag(10)
     this.body.setBounce(0.4)
     this.hitMultiplier += attack.hitMultiplier
+
     if (attack.shake) this.CharacterConfig.Scene.cameraShake(attack.shake)
     direction
       ? this.body.setVelocityX(attack.velocityX * this.hitMultiplier)

@@ -19,7 +19,6 @@ import WitchUltimateIcon from '../../assets/images/abilities/witch/ultimate-icon
 import ButcherAbilityOneIcon from '../../assets/images/abilities/butcher/ability-1-icon.png'
 import ButcherAbilityTwoIcon from '../../assets/images/abilities/butcher/ability-2-icon.png'
 import ButcherUltimateIcon from '../../assets/images/abilities/butcher/ultimate-icon.png'
-
 // Character Elements
 import DustSprint from '../../assets/spritesheets/characters/dust-sprint.png'
 import DustDodge from '../../assets/spritesheets/characters/dust-dodge.png'
@@ -34,8 +33,7 @@ import MageFireballParticle from '../../assets/images/abilities/mage/fire-partic
 import MageCasting from '../../assets/spritesheets/characters/mage/casting.png'
 import MageBlink from '../../assets/spritesheets/characters/mage/blink.png'
 
-import WitchAerialBurst from '../../assets/spritesheets/characters/witch/aerial-burst.png'
-
+import WitchAerialBurst from '../../assets/spritesheets/characters/witch/abilities/aerial-burst.png'
 import ButcherCleaver from '../../assets/images/abilities/butcher/cleaver.png'
 import ButcherHook from '../../assets/images/abilities/butcher/hook-01.png'
 // Stage Elements
