@@ -1,10 +1,10 @@
 import Phaser from 'phaser'
 import { CST } from '../../CST'
 import PlayerController, { PLAYERS } from '../../playerControllers'
-
+import io from 'socket.io-client'
 import ButtonOptions from '../../gameObjects/menu/options'
 import MenuRectangle from '../../gameObjects/menu/menu-rectangle'
-
+import consola from 'consola'
 class MenuMultiplayer extends Phaser.Scene {
   constructor() {
     super({
@@ -13,6 +13,13 @@ class MenuMultiplayer extends Phaser.Scene {
   }
 
   create() {
+
+    //multiplayer shit
+
+    this.socket = io('http://localhost:8081')
+    this.socket.on('connect', () => {
+      consola.success('Connected')
+    })
     this.add
       .image(0, 0, CST.IMAGE.MENU.MAIN_BG)
       .setOrigin(0)
