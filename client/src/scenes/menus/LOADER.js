@@ -74,6 +74,7 @@ class MenuLoad extends Phaser.Scene {
         repeat: true,
       }
     )
+
     this.load.spritesheet(
       CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.ATTACK,
       WitchAttacks,
@@ -85,6 +86,7 @@ class MenuLoad extends Phaser.Scene {
         repeat: -1,
       }
     )
+
     this.load.spritesheet(
       CST.SPRITESHEET.CHARACTERS.WITCH.ANIMS.RUN,
       WitchRun,

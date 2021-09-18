@@ -1,0 +1,46 @@
+const server = require('express')()
+const http = require('http').createServer(server)
+const io = require('socket.io')(http, {
+  cors: {
+    origin: '*',
+  },
+})
+const Room = require('./roomManager.js')
+let players = []
+const consola = require('consola')
+io.on('connection', async (socket) => {
+  const { username, userId, password, action, options } = socket.handshake.query
+  console.log(userId)
+  const room = new Room({
+    io,
+    socket,
+    userId,
+    password,
+    action,
+    options,
+    username,
+  })
+
+  const joinedRoom = await room.init(username)
+  consola.info('A user connected: ' + socket.id)
+  if (joinedRoom) {
+    console.log('hello')
+  }
+  console.log(joinedRoom)
+  players.push(socket.id)
+
+  socket.on('disconnect', function () {
+    consola.info('A user disconnected: ' + socket.id)
+  })
+})
+
+const verifySocket = (socket, next) => {
+  if (socket.handshake.query && socket.handshake.query.token) {
+    const decoded = verifyToken(socket.handshake.query.token)
+    socket.decoded = decoded
+    next()
+  }
+}
+http.listen(8081, function () {
+  consola.success('Server started!')
+})

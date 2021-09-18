@@ -127,6 +127,8 @@ class MenuMain extends Phaser.Scene {
         case 'A':
           if (this.menuItemSelected === 1) {
             this.goTo('versus')
+          } else if (this.menuItemSelected === 2) {
+            this.goTo('multiplayer')
           } else if (this.menuItemSelected === 3) {
             this.goTo('entry')
           }
@@ -197,19 +199,25 @@ class MenuMain extends Phaser.Scene {
       duration: 200,
       onComplete: () => {
         this.scene.start(to, config || null)
+        console.log(to, config)
         this.scene.get(CST.SCENES.INPUT).getCurrentScene(null)
       },
     })
   }
 
   goTo(menu) {
+    console.log(menu)
     switch (menu) {
       case 'versus':
         this.changeMenu(CST.SCENES.MENU.CHARACTER, {
           currentMenuText: 'Versus Mode - Character Select',
         })
         break
-
+      case 'multiplayer':
+        this.changeMenu(CST.SCENES.MENU.MULTIPLAYER, {
+          currentMenuText: 'Cum gang',
+        })
+        break
       case 'entry':
         this.changeMenu(CST.SCENES.MENU.ENTRY)
         break
