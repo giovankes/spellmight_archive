@@ -14,6 +14,7 @@ class MenuCreate extends Phaser.Scene {
       data: {},
     })
   }
+
   create() {
     this.socket = io('http://localhost:8081', {
       query: {
@@ -22,44 +23,45 @@ class MenuCreate extends Phaser.Scene {
         username: 'cum',
       },
     })
+
     this.socket.on('connect', () => {
       console.log(this.socket.io)
-
       consola.success('Connected')
     })
+
     this.socket.on('room created', (data) => {
-      console.log('xd')
       this.data = data
+      this.updateMenuText(this.data.username)
     })
+
     this.add
       .image(0, 0, CST.IMAGE.MENU.MAIN_BG)
       .setOrigin(0)
       .setScale(0.4)
-      .setDepth(0)
-    this.add
-      .rectangle(
-        0,
-        0,
-        this.game.renderer.width,
-        this.game.renderer.height,
-        0xcfbbb0,
-        0.4
-      )
-      .setOrigin(0)
-      .setDepth(0)
+      .setDepth(0),
+      this.add
+        .rectangle(
+          0,
+          0,
+          this.game.renderer.width,
+          this.game.renderer.height,
+          0xcfbbb0,
+          0.4
+        )
+        .setOrigin(0)
+        .setDepth(0)
 
     this.buttonOptions = new ButtonOptions({ Scene: this }).setDepth(1)
 
-    const menuRectangle = new MenuRectangle({
+    let menuRectangle = new MenuRectangle({
       Scene: this,
-      currentMenuText: 'Create shit',
+      currentMenuText: this.data.username ? this.data.username : 'Loading...',
     })
-    
+
     // Add player controller
     this.PlayerController = new PlayerController({
       Scene: this,
     })
-
     if (PLAYERS.length) {
       this.PlayerController.updatePlayers()
     }
@@ -80,6 +82,12 @@ class MenuCreate extends Phaser.Scene {
     this.scene
       .get(CST.SCENES.INPUT)
       .getCurrentScene(CST.SCENES.MENU.MULTIPLAYER_CREATE)
+  }
+  updateMenuText(username) {
+    let menuRectangle = new MenuRectangle({
+      Scene: this,
+      currentMenuText: this.data.username ? this.data.username : 'Loading...',
+    })
   }
 }
 
