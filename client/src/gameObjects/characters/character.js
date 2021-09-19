@@ -41,7 +41,6 @@ class Character extends Phaser.GameObjects.Container {
       config.sprite
     ).setOrigin(0)
     config.Scene.add.existing(this.sprite)
-
     // Create player label
     this.label = new Phaser.GameObjects.Text(
       config.Scene,
@@ -71,6 +70,7 @@ class Character extends Phaser.GameObjects.Container {
         .setOrigin(0.5)
         .setDisplaySize(15, 15),
     ])
+
     this.abilityIcons.getChildren().forEach((abilityIcon) => {
       config.Scene.add.existing(abilityIcon)
       this.add(abilityIcon)

@@ -7,10 +7,10 @@ import ButtonOptions from '../../gameObjects/menu/options'
 import MenuRectangle from '../../gameObjects/menu/menu-rectangle'
 import consola from 'consola'
 
-class MenuCreate extends Phaser.Scene {
+class MenuJoin extends Phaser.Scene {
   constructor() {
     super({
-      key: CST.SCENES.MENU.MULTIPLAYER_CREATE,
+      key: CST.SCENES.MENU.MULTIPLAYER_JOIN,
       data: {},
       menuItemsX: 120,
     })
@@ -19,9 +19,8 @@ class MenuCreate extends Phaser.Scene {
   create() {
     this.socket = io('http://localhost:8081', {
       query: {
-        action: 'create',
-        userId: v4(),
-        username: 'cum',
+        action: 'join',
+        username: 'lol',
       },
     })
 
@@ -29,7 +28,7 @@ class MenuCreate extends Phaser.Scene {
       consola.success('Connected')
     })
 
-    this.socket.on('room created', (data) => {
+    this.socket.on('room joined', (data) => {
       this.data = data
       this.updateMenuText(data.username)
       this.updateConnectedPlayers(Object.values(data.connected_clients))
@@ -66,7 +65,7 @@ class MenuCreate extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(1)
 
-       this.textOnline = this.add
+    this.textOnline = this.add
       .text(menuItemsX + 4, 150, 'Play', {
         fontFamily: 'Superscript',
         fontSize: 20,
@@ -136,8 +135,7 @@ class MenuCreate extends Phaser.Scene {
     })
   }
   updateConnectedPlayers(players) {
-    const menuItemsX = 120;
-    console.log(players.length.toString)
+    const menuItemsX = 120
     this.textPlayers = this.add
       .text(
         menuItemsX + 8,
@@ -157,4 +155,4 @@ class MenuCreate extends Phaser.Scene {
   }
 }
 
-export default MenuCreate
+export default MenuJoin
