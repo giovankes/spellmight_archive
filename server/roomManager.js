@@ -1,5 +1,6 @@
 const { Server, Socket } = require('socket.io')
 const { Adapter } = require('socket.io-adapter')
+const Rooms = require('./models/roomsModel.js').Rooms;
 //NOTE: cum manager
 class Room {
   constructor(options) {
@@ -50,6 +51,14 @@ class Room {
           username: this.username,
         })
         this.room_id = this.userId
+
+        const newRoom = new Rooms({
+          roomId:this.userId,
+        })
+
+        newRoom.save().then(()=> {
+          consola.success(`Saved room:${this.userId}`)
+        })
         return true
       }
       consola.warn('already exists')
