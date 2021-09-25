@@ -202,8 +202,11 @@ class Character extends Phaser.GameObjects.Container {
 
     this.isPlayer = config.isPlayer
   }
-
+  // NOTE: Movement manager
   movementManager(direction) {
+    //TODO: todo....
+    //BUG: little bug
+
     switch (direction) {
       case 'pressed left':
         if (this.casting) {
