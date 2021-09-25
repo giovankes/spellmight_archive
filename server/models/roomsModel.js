@@ -5,6 +5,12 @@ const RoomSchema = new Schema({
     type: String,
     required: true,
   },
+  users: {
+    username: {
+      type: String,
+      required: true,
+    },
+  },
 })
 
 module.exports = { Rooms: mongoose.model('rooms', RoomSchema) }

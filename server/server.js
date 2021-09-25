@@ -50,7 +50,6 @@ io.on('connection', async (socket) => {
   if (joinedRoom) {
     console.log('hello')
   }
-  console.log(joinedRoom)
   players.push(socket.id)
 
   socket.on('disconnect', function () {
@@ -65,6 +64,7 @@ const verifySocket = (socket, next) => {
     next()
   }
 }
+
 http.listen(8081, function () {
   consola.success('Server started!')
 })

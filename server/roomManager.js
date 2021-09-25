@@ -1,6 +1,7 @@
 const { Server, Socket } = require('socket.io')
 const { Adapter } = require('socket.io-adapter')
-const Rooms = require('./models/roomsModel.js').Rooms;
+const Rooms = require('./models/roomsModel.js').Rooms
+
 //NOTE: cum manager
 class Room {
   constructor(options) {
@@ -23,11 +24,11 @@ class Room {
     if (!clients) {
       consola.error('[INTERNAL ERROR] Room creation failed!')
     }
+
     consola.debug(`Connected clients are: ${clients}`)
 
     if (this.action === 'join') {
       this.rooms = this.io.sockets.adapter.rooms
-      console.log(this.rooms)
     }
 
     if (this.action === 'create') {
@@ -51,15 +52,29 @@ class Room {
           username: this.username,
         })
         this.room_id = this.userId
+        Rooms.find()
+          .lean()
+          .then((room) => {
+            room.forEach((r) => {
+              if (r.roomId === this.roomId) {
+                console.log('duplicate')
+                return
+              } else {
+                const newRoom = new Rooms({
+                  roomId: this.userId,
+                  users: {
+                    username: this.username,
+                  },
+                })
 
-        const newRoom = new Rooms({
-          roomId:this.userId,
-        })
+                newRoom.save().then(() => {
+                  consola.success(`Saved room:${this.userId}`)
+                })
 
-        newRoom.save().then(()=> {
-          consola.success(`Saved room:${this.userId}`)
-        })
-        return true
+                return true
+              }
+            })
+          })
       }
       consola.warn('already exists')
       this.socket.emit('error')
