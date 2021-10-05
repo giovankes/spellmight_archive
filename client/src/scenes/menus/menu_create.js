@@ -66,7 +66,7 @@ class MenuCreate extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(1)
 
-       this.textOnline = this.add
+    this.textOnline = this.add
       .text(menuItemsX + 4, 150, 'Play', {
         fontFamily: 'Superscript',
         fontSize: 20,
@@ -136,7 +136,7 @@ class MenuCreate extends Phaser.Scene {
     })
   }
   updateConnectedPlayers(players) {
-    const menuItemsX = 120;
+    const menuItemsX = 120
     console.log(players.length.toString)
     this.textPlayers = this.add
       .text(
