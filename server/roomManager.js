@@ -55,6 +55,7 @@ class Room {
         Rooms.find()
           .lean()
           .then((room) => {
+            console.log(room)
             room.forEach((r) => {
               if (r.roomId === this.roomId) {
                 console.log('duplicate')
@@ -64,6 +65,7 @@ class Room {
                   roomId: this.userId,
                   users: {
                     username: this.username,
+                    userID: this.userId,
                   },
                 })
 

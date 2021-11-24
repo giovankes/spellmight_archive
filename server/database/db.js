@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const consola = require('consola')
 const { config } = require('../config')
+console.log(config.DB_URL)
 mongoose.connect(config.DB_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
