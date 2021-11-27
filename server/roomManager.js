@@ -83,6 +83,10 @@ class Room {
       return false
     }
   }
+
+  async join_room(room) {
+    console.log(room)
+  }
 }
 
 module.exports = Room
