@@ -39,7 +39,7 @@ class InputScene extends Phaser.Scene {
   setGamepadBindings(index) {
     const pad = this.input.gamepad.getPad(index)
     console.log(pad)
-    if (pad.id.includes('Controller') ) {
+    if (pad.id.includes('Microsoft') ) {
       const playerIndex = PLAYERS.indexOf(index)
       pad.addListener('down', (buttonIndex, value, button) => {
         if (this.currentScene && this.currentScene.getControls) {
