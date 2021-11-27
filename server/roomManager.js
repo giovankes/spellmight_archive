@@ -18,7 +18,6 @@ class Room {
       maxTimeLimit: 0,
     }
   }
-
   async init(username) {
     const clients = await this.io.in(this.roomId).allSockets()
     if (!clients) {

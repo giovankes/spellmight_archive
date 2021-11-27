@@ -35,7 +35,6 @@ db.on('disconnected', () => {
 io.on('connection', async (socket) => {
   const { username, userId, password, action, options } = socket.handshake.query
   console.log(socket.handshake.query)
-  console.log(socket)
   const room = new Room({
     io,
     socket,
@@ -60,7 +59,6 @@ io.on('connection', async (socket) => {
     if (e) throw e
     console.log(data)
   })
-
   socket.on('join', (data, e) => {
     if (e) throw e
     console.log(data)
