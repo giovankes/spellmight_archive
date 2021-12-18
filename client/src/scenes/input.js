@@ -38,8 +38,7 @@ class InputScene extends Phaser.Scene {
   //XBOX CONTROLLER
   setGamepadBindings(index) {
     const pad = this.input.gamepad.getPad(index)
-    console.log(pad)
-    if (pad.id === '045e-0b12-Generic X-Box pad') {
+    if (pad.id.includes('Microsoft')) {
       const playerIndex = PLAYERS.indexOf(index)
       pad.addListener('down', (buttonIndex, value, button) => {
         if (this.currentScene && this.currentScene.getControls) {
