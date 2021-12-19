@@ -1,7 +1,6 @@
 const { Server, Socket } = require('socket.io')
 const { Adapter } = require('socket.io-adapter')
 const Rooms = require('./models/roomsModel.js').Rooms
-
 //NOTE: cum manager
 class Room {
   constructor(options) {
@@ -31,7 +30,7 @@ class Room {
     }
 
     if (this.action === 'create') {
-     if (clients.size === 0) {
+      if (clients.size === 0) {
         await this.socket.join(this.userId)
         this.store = this.io.sockets.adapter.rooms.get(this.userId)
         this.store.clients = [
