@@ -1,6 +1,3 @@
-const { Server, Socket } = require('socket.io')
-const { Adapter } = require('socket.io-adapter')
-const Rooms = require('./models/roomsModel.js').Rooms
 //NOTE: cum manager
 class Room {
   constructor(options) {
@@ -62,4 +59,4 @@ class Room {
   }
 }
 
-module.exports = Room
+export default Room

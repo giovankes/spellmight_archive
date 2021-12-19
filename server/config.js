@@ -1,7 +1,5 @@
-const dotenv = require('dotenv')
-const consola = require('consola')
+import dotenv from 'dotenv'
 dotenv.config()
-const config = {
+export default {
   DB_URL: process.env.DB_URL,
 }
-module.exports = config

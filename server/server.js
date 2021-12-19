@@ -1,15 +1,17 @@
-const server = require('express')()
-const mongoose = require('mongoose')
-const http = require('http').createServer(server)
-const config = require('./config.js')
-const io = require('socket.io')(http, {
+import server from 'express'
+import mongoose from 'mongoose'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+import Room from './roomManager'
+import consola from 'consola'
+import config from './config'
+const httpServer = createServer()
+const io = new Server(httpServer, {
   cors: {
     origin: '*',
   },
 })
-const Room = require('./roomManager.js')
 let players = []
-const consola = require('consola')
 
 mongoose.connect(config.DB_URL, {
   useNewUrlParser: true,
@@ -65,6 +67,6 @@ const verifySocket = (socket, next) => {
   }
 }
 
-http.listen(8081, function () {
+httpServer.listen(8081, function () {
   consola.success('Server started!')
 })
