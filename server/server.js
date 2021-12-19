@@ -32,6 +32,7 @@ db.on('error', (error) => {
 db.on('disconnected', () => {
   consola.warn('Mongoose connection disconnected')
 })
+
 io.on('connection', async (socket) => {
   const { username, userId, password, action, options } = socket.handshake.query
   console.log(socket.handshake.query)
@@ -44,7 +45,6 @@ io.on('connection', async (socket) => {
     options,
     username,
   })
-
   const joinedRoom = await room.init(username)
   consola.info('A user connected: ' + socket.id)
   if (joinedRoom) {
@@ -55,10 +55,10 @@ io.on('connection', async (socket) => {
   socket.on('disconnect', function () {
     consola.info('A user disconnected: ' + socket.id)
   })
-  socket.on('room created', (data, e) => {
-    if (e) throw e
-    console.log(data)
-  })
+
+  if(socket.handshake.query.action === 'create'){
+    console.log('poggers')
+  }
   socket.on('join', (data, e) => {
     if (e) throw e
     console.log(data)

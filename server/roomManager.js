@@ -51,31 +51,6 @@ class Room {
           username: this.username,
         })
         this.room_id = this.userId
-        Rooms.find()
-          .lean()
-          .then((room) => {
-            console.log(room)
-            room.forEach((r) => {
-              if (r.roomId === this.roomId) {
-                console.log('duplicate')
-                return
-              } else {
-                const newRoom = new Rooms({
-                  roomId: this.userId,
-                  users: {
-                    username: this.username,
-                    userID: this.userId,
-                  },
-                })
-
-                newRoom.save().then(() => {
-                  consola.success(`Saved room:${this.userId}`)
-                })
-
-                return true
-              }
-            })
-          })
       }
       consola.warn('already exists')
       this.socket.emit('error')
