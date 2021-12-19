@@ -55,14 +55,6 @@ io.on('connection', async (socket) => {
   socket.on('disconnect', function () {
     consola.info('A user disconnected: ' + socket.id)
   })
-
-  if(socket.handshake.query.action === 'create'){
-    console.log('poggers')
-  }
-  socket.on('join', (data, e) => {
-    if (e) throw e
-    console.log(data)
-  })
 })
 
 const verifySocket = (socket, next) => {
