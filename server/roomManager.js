@@ -1,3 +1,4 @@
+import { create } from './actions'
 //NOTE: cum manager
 class Room {
   constructor(options) {
@@ -27,6 +28,7 @@ class Room {
     }
 
     if (this.action === 'create') {
+      create()
       if (clients.size === 0) {
         await this.socket.join(this.userId)
         this.store = this.io.sockets.adapter.rooms.get(this.userId)
