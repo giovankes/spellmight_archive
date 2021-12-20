@@ -204,9 +204,6 @@ class Character extends Phaser.GameObjects.Container {
   }
   // NOTE: Movement manager
   movementManager(direction) {
-    //TODO: todo....
-    //BUG: little bug
-
     switch (direction) {
       case 'pressed left':
         if (this.casting) {
@@ -569,12 +566,14 @@ class Character extends Phaser.GameObjects.Container {
 
   attackManager(attack, variant) {
     if (this.casting) return
+    console.log(this.CharacterConfig.movementAnimations)
     let attackReturn = null
     switch (attack) {
       case 'attack light':
         if (!variant) {
           this.CharacterConfig.attacks.attackLight.neutral.exec()
-          this.CharacterConfig.movementAnimations.attack()
+          this.CharacterConfig.movementAnimations &&
+            this.CharacterConfig.movementAnimations.attack()
         } else if (variant === 'forward') {
           this.CharacterConfig.attacks.attackLight.forward.exec()
         }
