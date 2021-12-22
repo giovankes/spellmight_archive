@@ -150,7 +150,7 @@ class Character extends Phaser.GameObjects.Container {
     this.facingRight = true
 
     // //TODO Add some settings so the ID is more random
-    this.id = v4()
+    this.id = uuid()
     this.sprintSettings = {
       isSprinting: false,
       direction: null,
