@@ -1,7 +1,6 @@
 import Phaser from 'phaser'
-import UUIDv4 from 'uuid/v4'
-
-import { CST } from '../../CST'
+import {CST } from '../../CST'
+import {v4 as uuid} from 'uuid'
 import EffectSpritesheet from '../misc/effect-spritesheet'
 
 class Character extends Phaser.GameObjects.Container {
@@ -151,7 +150,7 @@ class Character extends Phaser.GameObjects.Container {
     this.facingRight = true
 
     // //TODO Add some settings so the ID is more random
-    this.id = UUIDv4()
+    this.id = v4()
     this.sprintSettings = {
       isSprinting: false,
       direction: null,
