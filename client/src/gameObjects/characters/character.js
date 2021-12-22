@@ -258,8 +258,7 @@ class Character extends Phaser.GameObjects.Container {
           this.body.setMaxVelocity(this.CharacterConfig.sprintVelocity, 2500)
           this.body.setAccelerationX(-this.CharacterConfig.accelerationX * 1.25)
           if (
-            this.CharacterConfig.movementAnimations &&
-            this.CharacterConfig.movementAnimations.run
+            this.CharacterConfig.movementAnimations.run 
           )
             this.CharacterConfig.movementAnimations.run()
           const dust = new EffectSpritesheet({
@@ -290,7 +289,6 @@ class Character extends Phaser.GameObjects.Container {
         if (!this.pressing.RIGHT) {
           this.body.setAccelerationX(0)
           if (
-            this.CharacterConfig.movementAnimations &&
             this.CharacterConfig.movementAnimations.idle
           )
             this.CharacterConfig.movementAnimations.idle()
@@ -571,7 +569,7 @@ class Character extends Phaser.GameObjects.Container {
       case 'attack light':
         if (!variant) {
           this.CharacterConfig.attacks.attackLight.neutral.exec()
-          this.CharacterConfig.movementAnimations &&
+          this.CharacterConfig.movementAnimations.attack &&
             this.CharacterConfig.movementAnimations.attack()
         } else if (variant === 'forward') {
           this.CharacterConfig.attacks.attackLight.forward.exec()
