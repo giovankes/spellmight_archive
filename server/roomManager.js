@@ -28,27 +28,17 @@ class Room {
     }
 
     if (this.action === 'create') {
-      create()
+      console.log(clients)
       if (clients.size === 0) {
-        await this.socket.join(this.userId)
-        this.store = this.io.sockets.adapter.rooms.get(this.userId)
-        this.store.clients = [
-          {
-            id: this.socket.id,
-            username,
-            isReady: false,
-          },
-        ]
-
-        this.socket.username = username
-        consola.info(`created ${this.userId}`)
-        this.socket.emit('room created', {
-          connected_clients: this.store.clients,
-          roomId: this.userId,
+        create({
+          socket: this.socket,
+          user_id: this.userId,
+          io: this.io,
+          username: username,
+          clients: clients,
           options: this.options,
-          username: this.username,
         })
-        this.room_id = this.userId
+        return true
       }
       consola.warn('already exists')
       this.socket.emit('error')
