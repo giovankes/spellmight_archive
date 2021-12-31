@@ -1,4 +1,4 @@
-import { create } from './actions'
+import { create, join } from './actions'
 //NOTE: cum manager
 class Room {
   constructor(options) {
@@ -24,11 +24,10 @@ class Room {
     consola.debug(`Connected clients are: ${clients}`)
 
     if (this.action === 'join') {
-      this.rooms = this.io.sockets.adapter.rooms
+      join({ io: this.io })
     }
 
     if (this.action === 'create') {
-      console.log(clients)
       if (clients.size === 0) {
         create({
           socket: this.socket,
@@ -39,10 +38,11 @@ class Room {
           options: this.options,
         })
         return true
+      } else {
+        consola.warn('already exists')
+        this.socket.emit('error')
+        return false
       }
-      consola.warn('already exists')
-      this.socket.emit('error')
-      return false
     }
   }
 

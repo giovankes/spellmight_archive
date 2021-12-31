@@ -1,3 +1,3 @@
 import create from './create'
-
-export {create}
+import join from './join'
+export { create, join }

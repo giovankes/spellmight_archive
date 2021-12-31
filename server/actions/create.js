@@ -18,6 +18,7 @@ const create = async ({
       },
     ]
 
+    console.log(store)
     socket.username = username
     consola.info(`created ${user_id}`)
     socket.emit('room created', {

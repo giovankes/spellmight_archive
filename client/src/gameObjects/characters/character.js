@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
-import {CST } from '../../CST'
-import {v4 as uuid} from 'uuid'
+import { CST } from '../../CST'
+import { v4 as uuid } from 'uuid'
 import EffectSpritesheet from '../misc/effect-spritesheet'
 
 class Character extends Phaser.GameObjects.Container {
@@ -257,9 +257,7 @@ class Character extends Phaser.GameObjects.Container {
 
           this.body.setMaxVelocity(this.CharacterConfig.sprintVelocity, 2500)
           this.body.setAccelerationX(-this.CharacterConfig.accelerationX * 1.25)
-          if (
-            this.CharacterConfig.movementAnimations.run 
-          )
+          if (this.CharacterConfig.movementAnimations.run)
             this.CharacterConfig.movementAnimations.run()
           const dust = new EffectSpritesheet({
             Scene: this.CharacterConfig.Scene,
@@ -288,9 +286,7 @@ class Character extends Phaser.GameObjects.Container {
       case 'unpressed left':
         if (!this.pressing.RIGHT) {
           this.body.setAccelerationX(0)
-          if (
-            this.CharacterConfig.movementAnimations.idle
-          )
+          if (this.CharacterConfig.movementAnimations.idle)
             this.CharacterConfig.movementAnimations.idle()
         }
         if (this.sprintSettings.value) {
