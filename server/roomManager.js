@@ -39,7 +39,7 @@ class Room {
         })
         return true
       } else {
-        consola.warn('already exists')
+        consola.ware('already exists')
         this.socket.emit('error')
         return false
       }

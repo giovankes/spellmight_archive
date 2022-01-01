@@ -1,3 +1,4 @@
+import { insert } from '../queries'
 const create = async ({
   socket,
   store,
@@ -24,6 +25,13 @@ const create = async ({
     socket.emit('room created', {
       connected_clients: store.clients,
       roomId: user_id,
+      options: options,
+      username: username,
+    })
+
+    insert({
+      room: user_id,
+      users: store.clients,
       options: options,
       username: username,
     })
