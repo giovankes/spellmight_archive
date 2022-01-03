@@ -45,7 +45,7 @@ io.on('connection', async (socket) => {
     action,
     options,
     username,
-  }) 
+  })
   const joinedRoom = await room.init(username)
   players.push(socket.id)
 })

@@ -1,3 +1,3 @@
 import insert from './insert'
 
-export {insert}
+export { insert }

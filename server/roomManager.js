@@ -24,7 +24,7 @@ class Room {
     consola.debug(`Connected clients are: ${clients}`)
 
     if (this.action === 'join') {
-      join({ socket: this.socket, io:this.io })
+      join({ socket: this.socket, io: this.io })
     }
 
     if (this.action === 'create') {
