@@ -1,4 +1,4 @@
-import { create, join } from './actions'
+import { create, join, fetch_rooms } from './actions'
 //NOTE: cum manager
 class Room {
   constructor(options) {
@@ -16,6 +16,7 @@ class Room {
     }
   }
   async init(username) {
+    console.log(this.action)
     const clients = await this.io.in(this.roomId).allSockets()
     if (!clients) {
       consola.error('[INTERNAL ERROR] Room creation failed!')
@@ -43,6 +44,12 @@ class Room {
         this.socket.emit('error')
         return false
       }
+    }
+    if (this.action === 'fetch_rooms') {
+      fetch_rooms({
+        socket: this.socket,
+        io: this.io,
+      })
     }
   }
 }

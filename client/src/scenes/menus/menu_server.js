@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-
+import io from 'socket.io-client'
 import { CST } from '../../CST'
 
 class MenuServer extends Phaser.Scene {
@@ -10,6 +10,12 @@ class MenuServer extends Phaser.Scene {
   }
 
   create() {
+    this.socket = io('http://localhost:8081', {
+      query: {
+        action: 'fetch_rooms',
+        username: 'lol',
+      },
+    })
     this.add
       .image(0, 0, CST.IMAGE.MENU.MAIN_BG)
       .setOrigin(0)
@@ -26,20 +32,11 @@ class MenuServer extends Phaser.Scene {
       )
       .setOrigin(0)
       .setDepth(0)
-
-    const menuItemsX = 120
-    this.menuItemLocal = this.add
-      .image(menuItemsX, 100, CST.IMAGE.UI.MENU.MENU_ITEM)
-      .setOrigin(0.5)
-      .setDepth(1)
-    this.menuItemOnline = this.add
-      .image(menuItemsX, 150, CST.IMAGE.UI.MENU.MENU_ITEM)
-      .setOrigin(0.5)
-      .setDepth(1)
-    this.menuItemExit = this.add
-      .image(menuItemsX, 200, CST.IMAGE.UI.MENU.MENU_ITEM)
-      .setOrigin(0.5)
-      .setDepth(1)
+    this.add
+      .image(10, 10, CST.IMAGE.UI.MENU.SERVER)
+      .setOrigin(0)
+      .setScale(0.6)
+      .setDepth(0)
   }
 }
 

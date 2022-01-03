@@ -31,7 +31,7 @@ import PlayerOneCursor from '../../assets/images/ui/menu/player-one-cursor.png'
 import PlayerTwoCursor from '../../assets/images/ui/menu/player-two-cursor.png'
 import PlayerThreeCursor from '../../assets/images/ui/menu/player-three-cursor.png'
 import PlayerFourCursor from '../../assets/images/ui/menu/player-four-cursor.png'
-
+import ServerSelector from '../../assets/images/ui/menu/server.png'
 class MenuLoad extends Phaser.Scene {
   constructor() {
     super({ key: CST.SCENES.MENU.LOAD })
@@ -45,6 +45,7 @@ class MenuLoad extends Phaser.Scene {
     this.load.image(CST.IMAGE.UI.MENU.MENU_BAR, MenuBar)
     this.load.image(CST.IMAGE.UI.MENU.MENU_SELECTED, MenuSelected)
     this.load.image(CST.IMAGE.UI.MENU.MENU_ITEM, MenuItem)
+    this.load.image(CST.IMAGE.UI.MENU.SERVER, ServerSelector)
     this.load.image(CST.IMAGE.UI.MENU.BACK, Back)
     this.load.image(CST.IMAGE.UI.MENU.READY, Ready)
     this.load.image(CST.IMAGE.MENU.P1_CURSOR, PlayerOneCursor)

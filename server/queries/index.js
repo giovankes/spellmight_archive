@@ -1,3 +1,3 @@
 import insert from './insert'
-
-export { insert }
+import fetch from './fetch'
+export { insert, fetch }

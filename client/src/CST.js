@@ -129,6 +129,7 @@ export const CST = {
         MENU_ITEM: 'IMG_MENU_ITEM',
         BACK: 'BACK',
         READY: 'READY',
+        SERVER: 'IMG_MENU_SERVER',
       },
     },
     CHARACTER: {
