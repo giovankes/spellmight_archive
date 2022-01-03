@@ -46,9 +46,7 @@ class Room {
     }
   }
 
-  async join_room(room) {
-    console.log(room)
-  }
+  
 }
 
 export default Room

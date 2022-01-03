@@ -37,7 +37,6 @@ db.on('disconnected', () => {
 
 io.on('connection', async (socket) => {
   const { username, userId, password, action, options } = socket.handshake.query
-  console.log(socket.handshake.query)
   const room = new Room({
     io,
     socket,
@@ -48,16 +47,7 @@ io.on('connection', async (socket) => {
     username,
   })
   const joinedRoom = await room.init(username)
-  consola.info('A user connected: ' + socket.id)
-  if (joinedRoom) {
-    console.log('hello')
-  }
   players.push(socket.id)
-  socket.on("disconnecting", () => {
-    console.log(socket.rooms)
-  }) 
-  
-  
 })
 
 const verifySocket = (socket, next) => {

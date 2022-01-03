@@ -1,10 +1,15 @@
 const pluck = (rooms) => {
-  return Object.keys(rooms)
+  let room_id // load empty variable [string] into memory
+
+  for (const [id] of rooms.entries()) {
+    room_id = id //overwrite empty variable with value
+  }
+  return room_id
 }
 
-const join = ({ socket }) => {
+const join = async ({ socket }) => {
   const rooms = socket.rooms
-  console.log(rooms)
+  const room_id = await pluck(rooms)
 }
 
 export default join
