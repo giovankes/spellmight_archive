@@ -7,9 +7,5 @@ const pluck = (rooms) => {
   return room_id
 }
 
-const join = async ({ socket }) => {
-  const rooms = socket.rooms
-  const room_id = await pluck(rooms)
-}
-
+const join = async ({ socket, io }) => {}
 export default join

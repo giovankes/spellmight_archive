@@ -10,6 +10,7 @@ const create = async ({
 }) => {
   if (clients.size <= 0) {
     await socket.join(user_id)
+    console.log(user_id)
     store = io.sockets.adapter.rooms.get(user_id)
     store.clients = [
       {
