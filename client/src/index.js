@@ -15,7 +15,7 @@ import MenuCreate from './scenes/menus/menu_create.js'
 import StageStonehenge from './scenes/stages/stage_stonehenge'
 import Input from './scenes/input'
 import HUD from './scenes/ingame_interface'
-
+import MenuServer from './scenes/menus/menu_server'
 const config = {
   type: Phaser.WEBGL,
   width: 480,
@@ -32,7 +32,7 @@ const config = {
     MenuMultiplayer,
     MenuCreate,
     MenuStages,
-    MenuJoin,
+    MenuServer,
     StageLoad,
     StageTest,
     StageField,

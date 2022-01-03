@@ -176,7 +176,7 @@ class MenuMultiplayer extends Phaser.Scene {
         })
         break
       case 'join':
-        this.changeMenu(CST.SCENES.MENU.MULTIPLAYER_JOIN, {
+        this.changeMenu(CST.SCENES.MENU.MULTIPLAYER_SERVER, {
           currentMenuText: 'Cum gang',
         })
         break
