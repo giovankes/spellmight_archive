@@ -53,10 +53,11 @@ io.on('connection', async (socket) => {
     console.log('hello')
   }
   players.push(socket.id)
-
-  socket.on('disconnect', function () {
-    consola.info('A user disconnected: ' + socket.id)
-  })
+  socket.on("disconnecting", () => {
+    console.log(socket.rooms)
+  }) 
+  
+  
 })
 
 const verifySocket = (socket, next) => {
