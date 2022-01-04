@@ -214,8 +214,8 @@ class MenuMain extends Phaser.Scene {
         })
         break
       case 'multiplayer':
-        this.changeMenu(CST.SCENES.MENU.MULTIPLAYER, {
-          currentMenuText: 'Cum gang',
+        this.changeMenu(CST.SCENES.MENU.MULTIPLAYER_LOGIN, {
+          currentMenuText: 'Login !',
         })
         break
       case 'entry':

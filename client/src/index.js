@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import ShakePositionPlugin from 'phaser3-rex-plugins/plugins/shakeposition-plugin.js'
+import InputTextPlugin from 'phaser3-rex-plugins/plugins/inputtext-plugin.js'
 
 import LOADER from './scenes/menus/LOADER.js'
 import MenuEntry from './scenes/menus/menu_entry.js'
@@ -16,6 +17,7 @@ import StageStonehenge from './scenes/stages/stage_stonehenge'
 import Input from './scenes/input'
 import HUD from './scenes/ingame_interface'
 import MenuServer from './scenes/menus/menu_server'
+import MenuLogin from './scenes/menus/menu_login'
 const config = {
   type: Phaser.WEBGL,
   width: 480,
@@ -32,6 +34,8 @@ const config = {
     MenuMultiplayer,
     MenuCreate,
     MenuStages,
+    MenuLogin,
+    MenuJoin,
     MenuServer,
     StageLoad,
     StageTest,
@@ -47,11 +51,14 @@ const config = {
     mouse: true,
     gamepad: true,
   },
+  dom: {
+    createContainer: true,
+  },
   pixelArt: true,
   physics: {
     default: 'arcade',
     arcade: {
-      debug: false,
+      debug: true,
     },
   },
   plugins: {
@@ -61,6 +68,11 @@ const config = {
         plugin: ShakePositionPlugin,
         start: true,
       },
+      {
+        key:'rexInput',
+        plugin:InputTextPlugin,
+        start:true,
+      }
     ],
   },
 }

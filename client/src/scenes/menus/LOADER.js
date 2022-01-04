@@ -9,7 +9,6 @@ import ButtonOptions from '../../assets/images/ui/menu/button-options.png'
 import MenuBar from '../../assets/images/ui/menu/menu-bar.png'
 import MenuSelected from '../../assets/images/ui/menu/menu-selected.png'
 import MenuItem from '../../assets/images/ui/menu/menu-item.png'
-
 import Cleaver from '../../assets/images/abilities/butcher/cleaver.png'
 import CharacterPortraitMage from '../../assets/images/characters/mage/mage_temp_portrait.png'
 import CharacterMage from '../../assets/images/characters/mage/mage_temp.png'

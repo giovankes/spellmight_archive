@@ -23,6 +23,15 @@ module.exports = {
         test: /\.(gif|png|jpe?g|svg|xml)$/i,
         use: 'file-loader',
       },
+      {
+        test: /\.html$/,
+        use: {
+          loader: 'html-loader',
+          options: {
+            attrs: [':data-src'],
+          },
+        },
+      },
     ],
   },
   plugins: [
