@@ -89,9 +89,17 @@ class MenuCharacter extends Phaser.Scene {
           characterID: 3,
           imageKey: CST.IMAGE.CHARACTER.BUTCHER.PORTRAIT,
         })
-        const randomCharacter = new CharacterSelectPortrait({
+        const characterPortraitFour = new CharacterSelectPortrait({
           x: 60,
           y: 85,
+          scene,
+          parent: this,
+          characterID: 4,
+          imageKey: CST.IMAGE.CHARACTER.ORO.PORTRAIT,
+        })
+        const randomCharacter = new CharacterSelectPortrait({
+          x: 20,
+          y: 120,
           scene,
           parent: this,
           characterID: 'RANDOM',
@@ -101,6 +109,7 @@ class MenuCharacter extends Phaser.Scene {
           characterPortraitOne,
           characterPotraitTwo,
           characterPortraitThree,
+          characterPortraitFour,
           randomCharacter,
         ])
         this.title = new Phaser.GameObjects.Text(scene, 30, 0, 'INACTIVE', {
@@ -124,6 +133,7 @@ class MenuCharacter extends Phaser.Scene {
           characterPortraitOne,
           characterPotraitTwo,
           characterPortraitThree,
+          characterPortraitFour,
           randomCharacter,
         ])
 
@@ -185,6 +195,10 @@ class MenuCharacter extends Phaser.Scene {
               scale = 1.4
               title = 'Butcher'
               break
+            case 4:
+              characterTexture = CST.SPRITESHEET.CHARACTERS.ORO.IMG
+              scale = 0.1
+              title = 'undefined'
             default:
               break
           }
