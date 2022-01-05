@@ -1,7 +1,6 @@
 import Phaser from 'phaser'
 import ShakePositionPlugin from 'phaser3-rex-plugins/plugins/shakeposition-plugin.js'
-import InputTextPlugin from 'phaser3-rex-plugins/plugins/inputtext-plugin.js'
-
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js'
 import LOADER from './scenes/menus/LOADER.js'
 import MenuEntry from './scenes/menus/menu_entry.js'
 import MenuMain from './scenes/menus/menu_main.js'
@@ -68,12 +67,8 @@ const config = {
         plugin: ShakePositionPlugin,
         start: true,
       },
-      {
-        key:'rexInput',
-        plugin:InputTextPlugin,
-        start:true,
-      }
     ],
+ 
   },
 }
 
