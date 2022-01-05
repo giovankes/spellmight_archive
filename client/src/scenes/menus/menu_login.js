@@ -3,7 +3,6 @@ import Phaser from 'phaser'
 import io from 'socket.io-client'
 import { uuid as v4 } from 'uuidv4'
 
-import UserForm from '../../assets/text/username.html'
 import { CST } from '../../CST'
 import MenuRectangle from '../../gameObjects/menu/menu-rectangle'
 import ButtonOptions from '../../gameObjects/menu/options'
