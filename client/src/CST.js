@@ -1,7 +1,4 @@
 export const CST = {
-  FORMS: {
-    USER: 'FORM_USER',
-  },
   ABILITIES: {
     MAGE: {
       FIREBALL: {
