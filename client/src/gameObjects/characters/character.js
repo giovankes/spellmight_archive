@@ -1,7 +1,6 @@
 import Phaser from 'phaser'
-import UUIDv4 from 'uuid/v4'
-
 import { CST } from '../../CST'
+import { v4 as uuid } from 'uuid'
 import EffectSpritesheet from '../misc/effect-spritesheet'
 
 class Character extends Phaser.GameObjects.Container {
@@ -151,7 +150,7 @@ class Character extends Phaser.GameObjects.Container {
     this.facingRight = true
 
     // //TODO Add some settings so the ID is more random
-    this.id = UUIDv4()
+    this.id = uuid()
     this.sprintSettings = {
       isSprinting: false,
       direction: null,
@@ -202,7 +201,7 @@ class Character extends Phaser.GameObjects.Container {
 
     this.isPlayer = config.isPlayer
   }
-
+  // NOTE: Movement manager
   movementManager(direction) {
     switch (direction) {
       case 'pressed left':
@@ -566,12 +565,14 @@ class Character extends Phaser.GameObjects.Container {
 
   attackManager(attack, variant) {
     if (this.casting) return
+    console.log(this.CharacterConfig.movementAnimations)
     let attackReturn = null
     switch (attack) {
       case 'attack light':
         if (!variant) {
           this.CharacterConfig.attacks.attackLight.neutral.exec()
-          this.CharacterConfig.movementAnimations.attack()
+          this.CharacterConfig.movementAnimations.attack &&
+            this.CharacterConfig.movementAnimations.attack()
         } else if (variant === 'forward') {
           this.CharacterConfig.attacks.attackLight.forward.exec()
         }

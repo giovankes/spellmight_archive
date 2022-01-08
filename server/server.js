@@ -1,16 +1,42 @@
-const server = require('express')()
-const http = require('http').createServer(server)
-const io = require('socket.io')(http, {
+import server from 'express'
+import mongoose from 'mongoose'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+import Room from './roomManager'
+import consola from 'consola'
+import config from './config'
+const httpServer = createServer()
+const io = new Server(httpServer, {
   cors: {
     origin: '*',
   },
 })
-const Room = require('./roomManager.js')
 let players = []
-const consola = require('consola')
+
+mongoose.connect(config.DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+
+const db = mongoose.connection
+
+// When successfully connected
+db.on('connected', () => {
+  consola.success('Mongoose connection open')
+})
+
+// If the connection throws an error
+db.on('error', (error) => {
+  consola.warn(`Mongoose connection error: ${error}`)
+})
+
+// When the connection is disconnected
+db.on('disconnected', () => {
+  consola.warn('Mongoose connection disconnected')
+})
+
 io.on('connection', async (socket) => {
   const { username, userId, password, action, options } = socket.handshake.query
-  console.log(userId)
   const room = new Room({
     io,
     socket,
@@ -20,18 +46,8 @@ io.on('connection', async (socket) => {
     options,
     username,
   })
-
   const joinedRoom = await room.init(username)
-  consola.info('A user connected: ' + socket.id)
-  if (joinedRoom) {
-    console.log('hello')
-  }
-  console.log(joinedRoom)
   players.push(socket.id)
-
-  socket.on('disconnect', function () {
-    consola.info('A user disconnected: ' + socket.id)
-  })
 })
 
 const verifySocket = (socket, next) => {
@@ -41,6 +57,7 @@ const verifySocket = (socket, next) => {
     next()
   }
 }
-http.listen(8081, function () {
+
+httpServer.listen(8081, function () {
   consola.success('Server started!')
 })

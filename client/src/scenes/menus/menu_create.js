@@ -21,7 +21,7 @@ class MenuCreate extends Phaser.Scene {
       query: {
         action: 'create',
         userId: v4(),
-        username: 'cum',
+        username: 'test',
       },
     })
 

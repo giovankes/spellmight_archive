@@ -1,5 +1,4 @@
-const { Server, Socket } = require('socket.io')
-const { Adapter } = require('socket.io-adapter')
+import { create, join, fetch_rooms } from './actions'
 //NOTE: cum manager
 class Room {
   constructor(options) {
@@ -16,47 +15,43 @@ class Room {
       maxTimeLimit: 0,
     }
   }
-
   async init(username) {
+    console.log(this.action)
     const clients = await this.io.in(this.roomId).allSockets()
     if (!clients) {
       consola.error('[INTERNAL ERROR] Room creation failed!')
     }
+
     consola.debug(`Connected clients are: ${clients}`)
 
     if (this.action === 'join') {
-      this.rooms = this.io.sockets.adapter.rooms
-      console.log(this.rooms)
+      join({ socket: this.socket, io: this.io })
     }
 
     if (this.action === 'create') {
       if (clients.size === 0) {
-        await this.socket.join(this.userId)
-        this.store = this.io.sockets.adapter.rooms.get(this.userId)
-        this.store.clients = [
-          {
-            id: this.socket.id,
-            username,
-            isReady: false,
-          },
-        ]
-
-        this.socket.username = username
-        consola.info(`created ${this.userId}`)
-        this.socket.emit('room created', {
-          connected_clients: this.store.clients,
-          roomId: this.userId,
+        create({
+          socket: this.socket,
+          user_id: this.userId,
+          io: this.io,
+          username: username,
+          clients: clients,
           options: this.options,
-          username: this.username,
         })
-        this.room_id = this.userId
         return true
+      } else {
+        consola.ware('already exists')
+        this.socket.emit('error')
+        return false
       }
-      consola.warn('already exists')
-      this.socket.emit('error')
-      return false
+    }
+    if (this.action === 'fetch_rooms') {
+      fetch_rooms({
+        socket: this.socket,
+        io: this.io,
+      })
     }
   }
 }
 
-module.exports = Room
+export default Room
