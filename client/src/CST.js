@@ -143,6 +143,9 @@ export const CST = {
       BUTCHER: {
         PORTRAIT: 'IMG_CHARACTER_PORTRAIT_BUTCHER',
       },
+      ORO: {
+        PORTRAIT: 'IMG_CHARACTER_PORTAIT_ORO',
+      },
     },
   },
   TEXT: {
@@ -155,6 +158,9 @@ export const CST = {
   SPRITESHEET: {
     CHARACTERS: {
       TEST: 'SPR_CHARACTER_TEST',
+      ORO: {
+        IMG: 'SPR_CHARACTER_ORO',
+      },
       MAGE: {
         IMG: 'SPR_CHARACTER_MAGE',
         ABILITIES: {

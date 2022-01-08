@@ -9,6 +9,8 @@ import ButtonOptions from '../../assets/images/ui/menu/button-options.png'
 import MenuBar from '../../assets/images/ui/menu/menu-bar.png'
 import MenuSelected from '../../assets/images/ui/menu/menu-selected.png'
 import MenuItem from '../../assets/images/ui/menu/menu-item.png'
+import CharacterOro from '../../assets/images/characters/oro/kirby.png'
+import CharacterPortraitOro from '../../assets/images/characters/oro/kirby-portrait.png'
 import Cleaver from '../../assets/images/abilities/butcher/cleaver.png'
 import CharacterPortraitMage from '../../assets/images/characters/mage/mage_temp_portrait.png'
 import CharacterMage from '../../assets/images/characters/mage/mage_temp.png'
@@ -62,7 +64,8 @@ class MenuLoad extends Phaser.Scene {
     this.load.image(CST.SPRITESHEET.CHARACTERS.MAGE.IMG, CharacterMage)
     this.load.image(CST.IMAGE.CHARACTER.MAGE.PORTRAIT, CharacterPortraitMage)
     this.load.image(CST.IMAGE.CHARACTER.WITCH.PORTRAIT, CharacterPortraitWitch)
-
+    this.load.image(CST.SPRITESHEET.CHARACTERS.ORO.IMG, CharacterOro)
+    this.load.image(CST.IMAGE.CHARACTER.ORO.PORTRAIT, CharacterPortraitOro)
     this.load.spritesheet(
       CST.SPRITESHEET.CHARACTERS.WITCH.SPR,
       CharacterWitch,
