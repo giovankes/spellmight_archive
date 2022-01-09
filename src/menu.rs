@@ -52,15 +52,50 @@ fn setup_menu(
     font_assets: Res<FontAssets>,
     button_colors: Res<ButtonColors>,
 ) {
-    commands.spawn_bundle(TextBundle::default());
     commands.spawn_bundle(UiCameraBundle::default());
+    commands.spawn_bundle(TextBundle {
+        style: Style {
+            size: Size::new(Val::Px(120.0), Val::Px(50.0)),
+            position_type: PositionType::Absolute,
+            margin: Rect {
+                bottom: Val::Percent(75.0),
+                left: Val::Percent(40.0),
+                ..Default::default()
+            },
+            position: Rect {
+                left: Val::Px(45.0),
+                top: Val::Px(5.0),
+                right: Val::Px(20.0),
+                bottom: Val::Px(0.0),
+            },
+            ..Default::default()
+        },
+        text: Text {
+            sections: vec![TextSection {
+                value: "spellmight".to_string(),
+                style: TextStyle {
+                    font: font_assets.fira_sans.clone(),
+                    font_size: 40.0,
+                    color: Color::rgb(0.9, 0.9, 0.9),
+                    ..Default::default()
+                },
+            }],
+            ..Default::default()
+        },
+        ..Default::default()
+    });
     commands
         .spawn_bundle(ButtonBundle {
             style: Style {
+                position_type: PositionType::Absolute,
                 size: Size::new(Val::Px(120.0), Val::Px(50.0)),
-                margin: Rect::all(Val::Auto),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
+                margin: Rect::all(Val::Px(50.0)),
+                position: Rect {
+                    left: Val::Percent(42.0),
+                    top: Val::Percent(0.0),
+                    right: Val::Px(0.0),
+                    bottom: Val::Percent(20.0),
+                },
                 ..Default::default()
             },
             color: button_colors.normal.clone(),
