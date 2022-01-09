@@ -21,11 +21,25 @@ struct ButtonColors {
     hovered: UiColor,
 }
 
+struct TextColors {
+    normal: UiColor,
+    hovered: UiColor,
+}
+
 impl Default for ButtonColors {
     fn default() -> Self {
         ButtonColors {
             normal: Color::rgb(0.15, 0.15, 0.15).into(),
             hovered: Color::rgb(0.25, 0.25, 0.25).into(),
+        }
+    }
+}
+
+impl Default for TextColors {
+    fn default() -> Self {
+        TextColors {
+            normal: Color::rgb(0.15, 0.15, 0.15).into(),
+            hovered: Color::rgb(0.25, 0.2, 0.25).into(),
         }
     }
 }
@@ -38,6 +52,7 @@ fn setup_menu(
     font_assets: Res<FontAssets>,
     button_colors: Res<ButtonColors>,
 ) {
+    commands.spawn_bundle(TextBundle::default());
     commands.spawn_bundle(UiCameraBundle::default());
     commands
         .spawn_bundle(ButtonBundle {

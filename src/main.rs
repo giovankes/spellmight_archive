@@ -1,4 +1,4 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+:![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 //modules
 use bevy::prelude::{App, ClearColor, Color, WindowDescriptor, Msaa};
 use bevy::DefaultPlugins;
