@@ -1,11 +1,8 @@
-// paths
-#[path = "components/menu/menu.rs"]
-// mods
-mod menu;
-
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 //modules
-use bevy::prelude::*;
-
+use bevy::prelude::{App, ClearColor, Color, WindowDescriptor, Msaa};
+use bevy::DefaultPlugins;
+use spellmight::GamePlugin;
 //states
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 enum AppState {
@@ -15,5 +12,16 @@ enum AppState {
 }
 
 fn main() {
-    App::build().add_plugins(DefaultPlugins).run();
+    App::new()
+        .insert_resource(Msaa { samples: 1 })
+        .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
+        .insert_resource(WindowDescriptor {
+            width: 800.,
+            height: 600.,
+            title: "Bevy game".to_string(), // ToDo
+            ..Default::default()
+        })
+        .add_plugins(DefaultPlugins)
+        .add_plugin(GamePlugin)
+        .run();
 }
