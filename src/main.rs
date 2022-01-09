@@ -18,7 +18,7 @@ fn main() {
         .insert_resource(WindowDescriptor {
             width: 800.,
             height: 600.,
-            title: "Bevy game".to_string(), // ToDo
+            title: "spellmight".to_string(), // ToDo
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
