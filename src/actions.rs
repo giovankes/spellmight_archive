@@ -110,7 +110,7 @@ impl GameControl {
                 keyboard_input.pressed(KeyCode::W) || keyboard_input.pressed(KeyCode::Up)
             }
             GameControl::Down => {
-                keyboard_input.pressed(KeyCode::S) || keyboard_input.pressed(KeyCod::Down)
+                keyboard_input.pressed(KeyCode::S) || keyboard_input.pressed(KeyCode::Down)
             }
             GameControl::Left => {
                 keyboard_input.pressed(KeyCode::A) || keyboard_input.pressed(KeyCode::Left)
