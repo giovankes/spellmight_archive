@@ -29,7 +29,6 @@ enum GameState {
 
 pub struct GamePlugin;
 
-
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_state(GameState::Loading)

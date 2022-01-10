@@ -130,7 +130,7 @@ fn click_play_button(
     text_query: Query<Entity, With<Text>>,
 ) {
     for (button, interaction, mut color, children) in interaction_query.iter_mut() {
-        let text = text_query.get(children).unwrap();
+        let text = text_query.get(children[0]).unwrap();
         match *interaction {
             Interaction::Clicked => {
                 commands.entity(button).despawn();
