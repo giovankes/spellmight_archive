@@ -131,6 +131,8 @@ fn click_play_button(
 ) {
     for (button, interaction, mut color, children) in interaction_query.iter_mut() {
         let text = text_query.get(children[0]).unwrap();
+        println!("{:?}", children);
+        println!("{:?}", text);
         match *interaction {
             Interaction::Clicked => {
                 commands.entity(button).despawn();
