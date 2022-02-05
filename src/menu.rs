@@ -106,7 +106,7 @@ fn setup_menu(
             parent.spawn_bundle(TextBundle {
                 text: Text {
                     sections: vec![TextSection {
-                        value: "Play".to_string(),
+                        value: "singleplayer".to_string(),
                         style: TextStyle {
                             font: font_assets.fira_sans.clone(),
                             font_size: 40.0,
@@ -129,11 +129,10 @@ fn click_play_button(
     mut text_query: Query<Entity, With<Text>>,
 ) {
     for (button, interaction, mut color, children) in interaction_query.iter_mut() {
-        
         match *interaction {
             Interaction::Clicked => {
                 commands.entity(button).despawn();
-                for(text) in text_query.iter_mut(){
+                for (text) in text_query.iter_mut() {
                     commands.entity(text).despawn();
                 }
                 state.set(GameState::Playing).unwrap();
