@@ -121,22 +121,21 @@ fn setup_menu(
 }
 
 type ButtonInteraction<'a> = (Entity, &'a Interaction, &'a mut UiColor, &'a Children);
-
 fn click_play_button(
     mut commands: Commands,
     button_colors: Res<ButtonColors>,
     mut state: ResMut<State<GameState>>,
     mut interaction_query: Query<ButtonInteraction, (Changed<Interaction>, With<Button>)>,
-    text_query: Query<Entity, With<Text>>,
+    mut text_query: Query<Entity, With<Text>>,
 ) {
     for (button, interaction, mut color, children) in interaction_query.iter_mut() {
-        let text = text_query.get(children[0]).unwrap();
-        println!("{:?}", children);
-        println!("{:?}", text);
+        
         match *interaction {
             Interaction::Clicked => {
                 commands.entity(button).despawn();
-                commands.entity(text).despawn();
+                for(text) in text_query.iter_mut(){
+                    commands.entity(text).despawn();
+                }
                 state.set(GameState::Playing).unwrap();
             }
             Interaction::Hovered => {

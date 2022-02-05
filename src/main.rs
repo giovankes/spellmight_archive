@@ -3,6 +3,7 @@
 use bevy::prelude::{App, ClearColor, Color, Msaa, WindowDescriptor};
 use bevy::DefaultPlugins;
 use spellmight::GamePlugin;
+
 //states
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 enum AppState {
@@ -18,7 +19,7 @@ fn main() {
         .insert_resource(WindowDescriptor {
             width: 800.,
             height: 600.,
-            title: "spellmight".to_string(), 
+            title: "spellmight".to_string(),
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
