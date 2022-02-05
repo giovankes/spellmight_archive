@@ -3,12 +3,10 @@
 use bevy::prelude::{App, ClearColor, Color, Msaa, WindowDescriptor};
 use bevy::DefaultPlugins;
 use spellmight::GamePlugin;
-use spellmight::ChooseCharacterPlugin;
 //states
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 enum AppState {
     MainMenu,
-    ChooseCharacter,
     InGame,
     Paused,
 }

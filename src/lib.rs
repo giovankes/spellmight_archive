@@ -1,14 +1,14 @@
 mod actions;
 mod audio;
+mod choose_character;
 mod loading;
 mod menu;
 mod player;
-
 use crate::actions::ActionsPlugin;
 use crate::audio::InternalAudioPlugin;
+use crate::choose_character::ChooseCharacterPlugin;
 use crate::loading::LoadingPlugin;
 use crate::menu::MenuPlugin;
-use crate::character::ChooseCharacter;
 use crate::player::PlayerPlugin;
 use bevy::app::App;
 #[cfg(debug_assertions)]
@@ -24,6 +24,8 @@ enum GameState {
     Loading,
     // During this State the actual game logic is executed
     Playing,
+    // During this state the choose character logic is executed
+    ChooseCharacter,
     // Here the menu is drawn and waiting for player interaction
     Menu,
 }
@@ -37,8 +39,8 @@ impl Plugin for GamePlugin {
             .add_plugin(MenuPlugin)
             .add_plugin(ActionsPlugin)
             .add_plugin(InternalAudioPlugin)
-            .add_plugin(PlayerPlugin);
-
+            .add_plugin(PlayerPlugin)
+            .add_plugin(ChooseCharacterPlugin);
         #[cfg(debug_assertions)]
         {
             app.add_plugin(FrameTimeDiagnosticsPlugin::default())

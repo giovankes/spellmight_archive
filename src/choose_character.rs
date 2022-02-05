@@ -1,11 +1,12 @@
 use crate::loading::FontAssets;
 use crate::GameState;
+use bevy::prelude::*;
 
 pub struct ChooseCharacterPlugin;
 
 impl Plugin for ChooseCharacterPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<TextColors>().add_system_set(
+        app.init_resource::<TextColor>().add_system_set(
             SystemSet::on_enter(GameState::ChooseCharacter).with_system(setup_screen.system()),
         );
     }
@@ -15,9 +16,9 @@ struct TextColor {
     normal: UiColor,
 }
 
-impl Default for TextColors {
+impl Default for TextColor {
     fn default() -> Self {
-        TextColors {
+        TextColor {
             normal: Color::rgb(0.15, 0.15, 0.15).into(),
         }
     }
@@ -27,7 +28,7 @@ fn setup_screen(mut commands: Commands, font_assets: Res<FontAssets>) {
     commands.spawn_bundle(UiCameraBundle::default());
     commands.spawn_bundle(TextBundle {
         style: Style {
-            size: Size::new(Val::px(120.0), Val::Px(50.0)),
+            size: Size::new(Val::Px(120.0), Val::Px(50.0)),
             position_type: PositionType::Absolute,
             margin: Rect {
                 bottom: Val::Percent(75.0),

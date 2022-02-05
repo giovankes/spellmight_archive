@@ -135,7 +135,7 @@ fn click_play_button(
                 for (text) in text_query.iter_mut() {
                     commands.entity(text).despawn();
                 }
-                state.set(GameState::Playing).unwrap();
+                state.set(GameState::ChooseCharacter).unwrap();
             }
             Interaction::Hovered => {
                 *color = button_colors.hovered.clone();
