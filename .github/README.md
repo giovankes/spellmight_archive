@@ -10,3 +10,5 @@ to do so run this command:<br/>
 fork the repo (or not) and then clone it locally
 
 compile the development build using `cargo run build` || `cargo build`
+
+and then run the build with `cargo run`
